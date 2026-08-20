@@ -22,7 +22,7 @@ jobs:
     with:
       enable_cloudflare: true
       # [REQUIRED] Update with target Cloudflare Pages project name (e.g., 'project-comingsoon')
-      cloudflare_project_name: 'maintenance-eim'
+      cloudflare_project_name: 'link-eim'
       enable_lighthouse: true
       lighthouse_routes: |
         /

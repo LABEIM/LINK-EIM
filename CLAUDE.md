@@ -1,5 +1,15 @@
 # CLAUDE.md
 
+<!-- 
+================================================================================
+INSTRUCTIONS FOR NEW PROJECTS:
+1. Replace all placeholders in brackets (e.g. [PROJECT_PATH]) with the specific
+   configuration and absolute workspace path of your repository.
+2. Adjust or remove any sections, rules, or path overrides that do not apply.
+3. Keep this file maintained as an active operational guide for Claude Code.
+================================================================================
+-->
+
 @AGENTS.md
 
 **All project rules live in [`AGENTS.md`](AGENTS.md)** — the single source of truth for every AI
@@ -10,7 +20,7 @@ to Claude Code — operational refinements of rules already defined in `AGENTS.m
 ## Worktree isolation — Claude Code specifics
 
 The full mandatory worktree protocol (base-branch confirmation, `.claude/worktrees/` canonical
-path, teardown rules) is defined in `AGENTS.md` (Section 1: Agent Operational Workflow). Claude-Code-specific points:
+path, teardown rules, `cp -al` node_modules if applicable) is defined in `AGENTS.md` (Section 1: Agent Operational Workflow). Claude-Code-specific points:
 
 - Confirm the base branch with the operator via `AskUserQuestion` unless they already told you.
 - Prefer the native `EnterWorktree` tool — it already creates worktrees under
@@ -46,7 +56,7 @@ Commit those artifacts inside the `_tasks/` repo (`git -C _tasks …`), never in
 
 This project overrides the harness's default session scratchpad (`/tmp/claude-*/…`). Write
 temporary/working files — exports, generated zips, one-off intermediate outputs, anything you'd
-otherwise put in `/tmp` — to `/home/arukast/Projects/comingsoon-eim/_artifacts/` instead.
+otherwise put in `/tmp` — to `[PROJECT_PATH]/_artifacts/` (or `./_artifacts/`) instead.
 
 - `_artifacts/` is a root `_*` path: gitignored, lives on disk only, never tracked.
 - Reason: keeping scratch output inside the project (vs `/tmp`) makes it trivial for the operator
@@ -56,4 +66,4 @@ otherwise put in `/tmp` — to `/home/arukast/Projects/comingsoon-eim/_artifacts
 
 ## Base-green before opening PRs
 
-Before cutting a branch or opening a PR, run baseline verification (e.g. static asset checks, HTML syntax validation, local server tests via `python3 -m http.server 8000`). A PR opened while the base tip is broken must carry `⚠️ base-red inherited: #<issue>` in its body. To drain an accumulated red state (base tip + red PRs), resolve the baseline issues first.
+Before cutting a branch or opening a PR, run the baseline verification (`AGENTS.md` → Section 1.1 / Section 4.2). A PR opened while the base tip is red must carry `⚠️ base-red inherited: #<issue>` in its body. To drain an accumulated red state (base tip + red PRs), resolve baseline issues first.
