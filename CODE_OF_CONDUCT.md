@@ -1,5 +1,3 @@
-# Contributor Covenant Code of Conduct
-
 > [!NOTE]
 > **Instructions for New Projects:**  
 > Copy this file to your repository root as `CODE_OF_CONDUCT.md`:

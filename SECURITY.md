@@ -1,5 +1,3 @@
-# Security Policy
-
 > [!NOTE]
 > **Instructions for New Projects:**  
 > Copy this file to your repository root as `SECURITY.md`:
@@ -10,7 +8,7 @@
 
 ---
 
-# Security Policy — [PROJECT_NAME]
+# Security Policy
 
 The **[ORGANIZATION_NAME / Enterprise Infrastructure Management (EIM) Research Laboratory]**, Telkom University, takes the security of our software, data infrastructure, and user systems seriously. This Security Policy outlines the supported versions, vulnerability reporting procedures, response timelines, and responsible disclosure practices for **[PROJECT_NAME]**.
 

@@ -1,5 +1,3 @@
-# Contributing to [PROJECT_NAME]
-
 > [!NOTE]
 > **Instructions for New Projects:**  
 > Copy this file to your repository root as `CONTRIBUTING.md`:
