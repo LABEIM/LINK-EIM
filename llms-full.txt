@@ -1,0 +1,90 @@
+# Enterprise Infrastructure Management (EIM) Research Laboratory — Comprehensive Context (llms-full.txt)
+
+> Full technical documentation, architectural specifications, routing configurations, and development guidelines for EIM Lab pre-launch and maintenance infrastructure.
+
+## 1. Organizational Overview
+- **Entity:** Enterprise Infrastructure Management (EIM) Research Laboratory
+- **Affiliation:** Telkom University, Bandung, West Java, Indonesia
+- **Campus Address:** TULT Building 8th Floor, Room TULT.08.09, Telkom University, Bandung, Indonesia
+- **Official Portal:** https://eimlab.org
+- **Central Maintenance Hub:** https://maintenance-eim.pages.dev/
+- **GitHub Organization:** https://github.com/LABEIM
+- **Email Inquiries:** lab@eimlab.org
+
+### Research Domains
+1. **Computer Networking:** Design, analysis, and testing of network architectures, routing & switching protocols, and optimization of enterprise-scale data communication infrastructure.
+2. **Cloud Computing:** Exploration of cloud computing services, containerization (Docker, Kubernetes), server & network virtualization, and hybrid data center infrastructure integration.
+3. **Cyber Security:** Implementation of network security, system vulnerability analysis, penetration testing (pentesting), encryption auditing, and digital information asset protection.
+
+---
+
+## 2. System Architecture: Central Edge Gateway Model
+
+The EIM Lab architecture isolates pre-launch and maintenance states entirely from application repositories:
+
+```
+[ Visitor / Crawler / AI Agent ]
+               │
+               ▼
+[ Cloudflare Worker: 'eim-edge-router' (*.eimlab.org/*) ]
+       │
+       ├── Domain in COMING_SOON_SITES? ──► Fetch Central Hub (HTTP 200 OK)
+       ├── Domain in MAINTENANCE_SITES? ──► Fetch Central Hub (HTTP 503 Service Unavailable)
+       └── Live / Bypass Secret? ─────────► Proxy to Production Application
+```
+
+### Key Technical Properties:
+- **Central Repository (`Maintain-EIM`):** Hosted on Cloudflare Pages (`maintenance-eim.pages.dev`).
+- **Dynamic Profile Resolver (`config.js`):** Deep merges global configuration with site-specific overrides and mode presets (`maintenance` vs `comingsoon`).
+- **Zero Build Requirement:** Built with pure HTML5, vanilla JavaScript (ES6+), and CDN-driven Tailwind CSS.
+- **Multilingual Support:** Client-side i18n engine supporting English (`EN`) and Bahasa Indonesia (`ID`).
+
+---
+
+## 3. Configuration & Profile Reference (`config.js`)
+
+The hub adapts dynamically based on query parameters:
+- `?site=<slug>` : Selects a project profile (`studygroup`, `link`, `kuliahumum`, `smart-campus`, `sensor-net`).
+- `?mode=maintenance` : Switches headline and countdown to Maintenance mode.
+- `?mode=comingsoon` : Switches headline and countdown to Coming Soon mode.
+- `?lang=en` or `?lang=id` : Forces explicit language selection.
+
+### Registered Site Profiles:
+1. `studygroup`: Study Group pre-launch portal (`https://github.com/LABEIM/SG-EIM`)
+2. `link`: Official Links directory portal (`https://github.com/LABEIM/LINK-EIM`)
+3. `kuliahumum`: Public Lecture pre-launch portal (`https://github.com/LABEIM/KU-EIM`)
+4. `smart-campus`: Smart Campus IoT platform pre-launch portal (`https://github.com/LABEIM/SmartCampus`)
+5. `sensor-net`: Wireless Sensor Network research pre-launch portal (`https://github.com/LABEIM/SensorNet`)
+
+---
+
+## 4. Starter Templates for New Repositories (`templates/`)
+
+All new EIM Lab repositories must use the standardized templates in [`templates/`](templates/):
+- `README.template.md` : Standard project documentation with CI/CD and license badges.
+- `AGENTS.template.md` : Guidelines and operational workflows for AI coding agents.
+- `CLAUDE.template.md` : Claude Code workspace and scratch path configurations.
+- `GEMINI.template.md` : Gemini CLI / Antigravity operational rule pointer.
+- `CODE_OF_CONDUCT.template.md` : Contributor Covenant 2.1 code of conduct.
+- `CONTRIBUTING.template.md` : Standard git workflow, commit conventions, and PR lifecycle.
+- `SECURITY.template.md` : Vulnerability reporting policy and SLO commitments.
+- `robots.template.txt` : Search engine & AI crawler directive template.
+- `sitemap.template.xml` : Bilingual XML sitemap template.
+- `llms.template.txt` : Tailored concise LLM context file for application repositories.
+- `llms-full.template.txt` : Comprehensive LLM context & architecture template for child projects.
+- `security.template.txt` : RFC 9116 security declaration template.
+- `manifest.template.webmanifest` : PWA web app manifest template.
+- `LICENSE.MIT` / `LICENSE.ALL-RIGHTS-RESERVED` : Open-source or proprietary license templates.
+
+---
+
+## 5. Security & Responsible Disclosure (RFC 9116)
+
+- **Contact:** mailto:lab@eimlab.org
+- **GitHub Advisories:** https://github.com/LABEIM/Maintain-EIM/security
+- **Policy URL:** https://github.com/LABEIM/Maintain-EIM/blob/main/SECURITY.md
+- **Preferred Languages:** English (`en`), Indonesian (`id`)
+- **Vulnerability Response SLOs:**
+  - Acknowledgment: 24–48 hours
+  - Initial Triage: 3 business days
+  - Remediation & Patch: 14 business days (critical) / 30 business days (medium/low)

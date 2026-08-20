@@ -1,0 +1,12 @@
+# ==============================================================================
+# Enterprise Infrastructure Management (EIM) Research Laboratory
+# Maintain-EIM — RFC 9116 Security Disclosure Standard
+# ==============================================================================
+
+Contact: mailto:lab@eimlab.org
+Contact: https://github.com/LABEIM/Maintain-EIM/security
+Expires: 2027-12-31T23:59:59.000Z
+Preferred-Languages: en, id
+Canonical: https://maintenance-eim.pages.dev/.well-known/security.txt
+Policy: https://github.com/LABEIM/Maintain-EIM/blob/main/SECURITY.md
+Acknowledgments: https://github.com/LABEIM/Maintain-EIM/graphs/contributors

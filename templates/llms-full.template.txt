@@ -1,0 +1,86 @@
+# [PROJECT_NAME] — Comprehensive Context (llms-full.txt)
+
+> Full technical specifications, API routes, architecture diagrams, directory structure, and development guidelines for [PROJECT_NAME] at the Enterprise Infrastructure Management (EIM) Research Laboratory.
+
+## 1. Project Overview
+- **Project Name:** [PROJECT_NAME]
+- **Organization:** Enterprise Infrastructure Management (EIM) Research Laboratory, Telkom University
+- **Campus Location:** TULT Building 8th Floor, Room TULT.08.09, Bandung, Indonesia
+- **Official Website:** https://eimlab.org
+- **Repository:** https://github.com/LABEIM/[REPOSITORY-NAME]
+- **Production URL:** https://[YOUR_DOMAIN]/
+- **Documentation:** https://github.com/LABEIM/[REPOSITORY-NAME]#readme
+- **Maintainer Contact:** [lab@eimlab.org or project lead email]
+
+### Purpose & Scope
+[Detailed multi-paragraph description of the project goals, research context, target audience, and key capabilities.]
+
+---
+
+## 2. Tech Stack & System Architecture
+
+### Technology Stack
+- **Frontend / Fullstack Framework:** [e.g. Next.js 14 (App Router) / Vite React / Astro / SvelteKit]
+- **Backend / API Engine:** [e.g. Fastify / Express / Python FastAPI / Cloudflare Workers]
+- **Database / Storage:** [e.g. PostgreSQL / Cloudflare D1 / Redis / Supabase]
+- **Styling:** [e.g. Tailwind CSS / Vanilla CSS]
+- **Authentication:** [e.g. NextAuth.js / Supabase Auth / OAuth 2.0]
+- **Hosting / Edge Platform:** [e.g. Cloudflare Pages / Workers]
+- **CI/CD:** [e.g LABEIM Shared CI/CD (`LABEIM/Shared-CICD/.github/workflows/deploy-app.yml@main`)]
+
+### Architectural Overview
+```
+[ Client Browser / Mobile / IoT Device ]
+                   │
+                   ▼
+       [ Cloudflare Edge CDN & WAF ]
+                   │
+                   ▼
+     [ Application / API Gateway ]
+        ├── Auth / Middleware
+        ├── Route Handlers & Server Actions
+        └── Database / Upstream Services
+```
+
+---
+
+## 3. Directory Layout & Core Files
+
+```text
+.
+├── src/ (or app/)             # Primary application source code
+│   ├── components/            # Reusable UI components
+│   ├── lib/ (or utils/)       # Business logic and shared helpers
+│   └── routes/ (or pages/)    # Page views and API route handlers
+├── public/                    # Static assets (favicons, images, manifests)
+│   ├── robots.txt             # Crawler guidance
+│   ├── sitemap.xml            # XML sitemap
+│   ├── llms.txt               # AI summary
+│   ├── llms-full.txt          # Full AI context (this file)
+│   └── .well-known/           # RFC 9116 security.txt
+├── AGENTS.md                  # AI coding agent workflow and rules
+├── CLAUDE.md                  # Claude Code operational instructions
+├── GEMINI.md                  # Gemini CLI pointer
+├── CONTRIBUTING.md            # Git branch strategy & PR guidelines
+├── SECURITY.md                # Vulnerability reporting SLOs
+└── README.md                  # Main repository README
+```
+
+---
+
+## 4. Key Endpoints & Routes
+
+| Method | Endpoint | Description | Auth Required |
+| :--- | :--- | :--- | :---: |
+| `GET` | `/` | Main user dashboard / landing page | No |
+| `GET` | `/api/health` | Healthcheck and readiness probe | No |
+| `GET` | `/.well-known/security.txt` | RFC 9116 security disclosure | No |
+| `GET` | `/llms.txt` | Concise AI context document | No |
+
+---
+
+## 5. Developer & Agent Guidelines
+
+- **Agent Rules:** Adhere strictly to the definitions of done, startup workflows, and tech stack constraints in [`AGENTS.md`](https://github.com/LABEIM/[REPOSITORY-NAME]/blob/main/AGENTS.md).
+- **Contributing:** Follow conventional commits (`feat:`, `fix:`, `docs:`, `refactor:`) and branch protection rules in [`CONTRIBUTING.md`](https://github.com/LABEIM/[REPOSITORY-NAME]/blob/main/CONTRIBUTING.md).
+- **Security Policy:** Report any vulnerabilities privately per [`SECURITY.md`](https://github.com/LABEIM/[REPOSITORY-NAME]/blob/main/SECURITY.md).

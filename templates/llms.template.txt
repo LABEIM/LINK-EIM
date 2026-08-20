@@ -1,0 +1,27 @@
+# [PROJECT_NAME] — Enterprise Infrastructure Management (EIM) Research Laboratory
+
+> [Brief 1-2 sentence description of what this application/system does, target users, and key features.]
+
+## Project Overview
+- **Project Name:** [PROJECT_NAME]
+- **Organization:** Enterprise Infrastructure Management (EIM) Research Laboratory, Telkom University
+- **Repository:** https://github.com/LABEIM/[REPOSITORY-NAME]
+- **Production URL:** https://[YOUR_DOMAIN]/
+- **Documentation:** https://github.com/LABEIM/[REPOSITORY-NAME]#readme
+- **Maintainer Contact:** [lab@eimlab.org or project lead email]
+
+## Tech Stack & Architecture
+- **Framework:** [e.g. Next.js 14 / Vite React / Fastify / Django]
+- **Styling:** [e.g. Tailwind CSS]
+- **Deployment:** [e.g. Cloudflare Pages / Cloudflare Workers / Docker]
+- **CI/CD:** [e.g LABEIM Shared CI/CD Workflow (`.github/workflows/ci-cd.yml`)]
+
+## Key Endpoints & Routes
+- `/` : Primary dashboard / landing page
+- `/api/...` : [API description if applicable]
+
+## Developer & Agent Guidelines
+- [Full Context & Architecture (llms-full.txt)](https://[YOUR_DOMAIN]/llms-full.txt): Comprehensive technical specifications, data schemas, and architecture diagrams.
+- See [`AGENTS.md`](https://github.com/LABEIM/[REPOSITORY-NAME]/blob/main/AGENTS.md) for coding standards, workflows, and quality gates.
+- See [`CONTRIBUTING.md`](https://github.com/LABEIM/[REPOSITORY-NAME]/blob/main/CONTRIBUTING.md) for branch strategy and pull request instructions.
+- See [`SECURITY.md`](https://github.com/LABEIM/[REPOSITORY-NAME]/blob/main/SECURITY.md) for vulnerability disclosure.

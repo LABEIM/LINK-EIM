@@ -1,0 +1,24 @@
+{
+  "name": "[PROJECT_NAME] — EIM Lab",
+  "short_name": "[SHORT_NAME]",
+  "description": "[PROJECT_DESCRIPTION]",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0B0F19",
+  "theme_color": "#4F46E5",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "https://eimlab.org/assets/brand/eim-favicon.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "https://eimlab.org/assets/logo.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}

@@ -1,0 +1,12 @@
+# ==============================================================================
+# Enterprise Infrastructure Management (EIM) Research Laboratory
+# Project: [PROJECT_NAME] — RFC 9116 Security Disclosure Standard
+# ==============================================================================
+
+Contact: mailto:[SECURITY_EMAIL_OR_lab@eimlab.org]
+Contact: https://github.com/LABEIM/[REPOSITORY-NAME]/security
+Expires: 2027-12-31T23:59:59.000Z
+Preferred-Languages: en, id
+Canonical: https://[YOUR_DOMAIN]/.well-known/security.txt
+Policy: https://github.com/LABEIM/[REPOSITORY-NAME]/blob/main/SECURITY.md
+Acknowledgments: https://github.com/LABEIM/[REPOSITORY-NAME]/graphs/contributors

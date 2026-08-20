@@ -1,0 +1,53 @@
+# ==============================================================================
+# Enterprise Infrastructure Management (EIM) Research Laboratory
+# Maintain-EIM — Central Coming Soon & Maintenance Hub
+# Host: https://maintenance-eim.pages.dev/
+# ==============================================================================
+
+# Search Engine Crawlers & Public Indexing
+User-agent: Googlebot
+User-agent: Bingbot
+User-agent: Applebot
+User-agent: DuckDuckBot
+User-agent: Slurp
+User-agent: YandexBot
+User-agent: Baiduspider
+Allow: /
+Disallow: /_artifacts/
+Disallow: /scratch/
+Disallow: /templates/
+Disallow: /admin/
+Disallow: /api/internal/
+Disallow: /.git/
+Disallow: /.github/
+
+# AI Crawlers & LLM Agents (Permitted for Public Indexing & llms.txt Discovery)
+User-agent: GPTBot
+User-agent: ClaudeBot
+User-agent: PerplexityBot
+User-agent: Google-Extended
+User-agent: Amazonbot
+User-agent: meta-externalagent
+User-agent: Bytespider
+Allow: /
+Allow: /llms.txt
+Allow: /llms-full.txt
+Disallow: /_artifacts/
+Disallow: /scratch/
+Disallow: /templates/
+Disallow: /admin/
+Disallow: /api/internal/
+
+# Default Crawl Rules
+User-agent: *
+Allow: /
+Disallow: /_artifacts/
+Disallow: /scratch/
+Disallow: /templates/
+Disallow: /admin/
+Disallow: /api/internal/
+Disallow: /.git/
+Disallow: /.github/
+
+# Canonical Sitemaps & Discovery
+Sitemap: https://maintenance-eim.pages.dev/sitemap.xml
