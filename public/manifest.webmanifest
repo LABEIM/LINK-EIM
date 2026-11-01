@@ -1,24 +1,25 @@
 {
-  "name": "[PROJECT_NAME] — EIM Lab",
-  "short_name": "[SHORT_NAME]",
-  "description": "[PROJECT_DESCRIPTION]",
+  "name": "EIM Lab — Links",
+  "short_name": "EIM Lab",
+  "description": "Official link hub for the Enterprise Infrastructure Management (EIM) Research Laboratory at Telkom University.",
   "start_url": "/",
+  "scope": "/",
   "display": "standalone",
-  "background_color": "#0B0F19",
-  "theme_color": "#4F46E5",
+  "background_color": "#020617",
+  "theme_color": "#020617",
   "orientation": "portrait-primary",
   "icons": [
     {
-      "src": "https://eimlab.org/assets/brand/eim-favicon.png",
-      "sizes": "192x192",
+      "src": "/assets/favicon.png",
+      "sizes": "64x64",
       "type": "image/png",
-      "purpose": "any maskable"
+      "purpose": "any"
     },
     {
-      "src": "https://eimlab.org/assets/logo.png",
-      "sizes": "512x512",
+      "src": "/assets/logo-icon.png",
+      "sizes": "256x256",
       "type": "image/png",
-      "purpose": "any maskable"
+      "purpose": "any"
     }
   ]
 }

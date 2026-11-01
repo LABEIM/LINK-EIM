@@ -1,0 +1,35 @@
+---
+import type { LinkItem } from '../data/site';
+import Icon from './Icon.astro';
+
+interface Props {
+  link: LinkItem;
+}
+
+const { link } = Astro.props;
+const isExternal = link.href.startsWith('http');
+---
+
+<a
+  href={link.href}
+  target={isExternal ? '_blank' : undefined}
+  rel={isExternal ? 'noopener noreferrer' : undefined}
+  class="group flex min-h-14 items-center gap-3 rounded-xl border border-white/[0.08] bg-white/[0.03] px-3.5 py-2.5 text-left transition-[background-color,border-color,transform] duration-200 hover:border-cyan-400/40 hover:bg-white/[0.06] active:scale-[0.99] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-950 motion-reduce:transition-none"
+>
+  <span
+    class="grid size-10 shrink-0 place-items-center rounded-lg bg-cyan-400/10 text-cyan-300 ring-1 ring-cyan-400/20 ring-inset transition-colors group-hover:bg-cyan-400/15 group-hover:text-cyan-200"
+  >
+    <Icon name={link.icon} class="size-5" />
+  </span>
+  <span class="min-w-0 flex-1">
+    <span class="block text-sm font-medium text-slate-100">{link.label}</span>
+    {link.description && (
+      <span class="mt-0.5 block text-xs leading-relaxed text-slate-400">{link.description}</span>
+    )}
+  </span>
+  <Icon
+    name="arrow-up-right"
+    class="size-4 shrink-0 text-slate-500 transition-[color,transform] duration-200 group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:text-cyan-300 motion-reduce:transition-none"
+  />
+  {isExternal && <span class="sr-only">(opens in a new tab)</span>}
+</a>

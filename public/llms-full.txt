@@ -20,10 +20,12 @@ LINK-EIM is the official link-in-bio page for the EIM Research Laboratory at Tel
 ## 2. Tech Stack & System Architecture
 
 ### Technology Stack
-- **Frontend / Fullstack Framework:** Not yet finalized — the initial scaffold has not landed.
-- **Backend / API Engine:** None planned — the link hub is static content.
+- **Frontend Framework:** Astro 7 with static output and TypeScript strict mode.
+- **Styling:** Tailwind CSS v4, using shadcn/ui design tokens (dark-first slate surfaces, cyan primary, indigo ambient accent).
+- **Content Model:** Plain data arrays in `src/data/site.ts` — Keystatic-friendly, no runtime CMS.
+- **Backend / API Engine:** None — the link hub is static content.
 - **Database / Storage:** None — link data is maintained in the repository.
-- **Styling:** Not yet finalized.
+- **Client JavaScript:** None beyond Astro's zero-JS static output.
 - **Authentication:** None — the site is public.
 - **Hosting / Edge Platform:** Self-hosted at `link.eimlab.org`.
 - **CI/CD:** LABEIM shared CI/CD (`.github/workflows/ci-cd.yml`).
@@ -33,12 +35,14 @@ LINK-EIM is the official link-in-bio page for the EIM Research Laboratory at Tel
 [ Visitor Browser / Mobile ]
                 │
                 ▼
-  [ Self-hosted Static Host ]
+  [ Self-hosted Static Host ]  ←  Astro build (dist/)
                 │
                 ▼
-      [ public/ static assets ]
-        ├── Link hub page
+      [ dist/ static output ]
+        ├── index.html          # Link hub page
+        ├── assets/             # Lab emblem + favicon
         ├── robots.txt / sitemap.xml
+        ├── manifest.webmanifest
         ├── llms.txt / llms-full.txt
         └── .well-known/security.txt
 ```
@@ -49,7 +53,18 @@ LINK-EIM is the official link-in-bio page for the EIM Research Laboratory at Tel
 
 ```text
 .
+├── src/
+│   ├── components/
+│   │   ├── Icon.astro         # Inline Lucide SVG icon map
+│   │   └── LinkCard.astro     # Accessible link row component
+│   ├── data/
+│   │   └── site.ts            # Site metadata + link groups (edit links here)
+│   ├── pages/
+│   │   └── index.astro        # Single-page link hub
+│   └── styles/
+│       └── global.css         # Tailwind v4 + shadcn/ui tokens
 ├── public/                    # Static assets and crawler/AI metadata
+│   ├── assets/                # Lab emblem + favicon
 │   ├── robots.txt             # Crawler guidance
 │   ├── sitemap.xml            # XML sitemap
 │   ├── manifest.webmanifest   # PWA manifest
@@ -57,6 +72,9 @@ LINK-EIM is the official link-in-bio page for the EIM Research Laboratory at Tel
 │   ├── llms-full.txt          # Full AI context (this file)
 │   └── .well-known/
 │       └── security.txt       # RFC 9116 security disclosure
+├── astro.config.mjs           # Astro + Tailwind Vite plugin
+├── package.json               # Scripts and dependencies
+├── tsconfig.json              # Astro strict TypeScript config
 ├── .github/workflows/         # CI/CD pipelines
 ├── AGENTS.md                  # AI coding agent workflow and rules
 ├── CLAUDE.md                  # Claude Code operational instructions
@@ -66,6 +84,15 @@ LINK-EIM is the official link-in-bio page for the EIM Research Laboratory at Tel
 ├── SECURITY.md                # Vulnerability reporting SLOs
 └── README.md                  # Main repository README
 ```
+
+### Local Verification Commands
+
+| Command | Purpose |
+| :--- | :--- |
+| `npm install` | Install dependencies |
+| `npm run dev` | Dev server on `http://localhost:4321/` |
+| `npm run build` | Production static build to `dist/` |
+| `npm run check` | Astro/TypeScript diagnostics |
 
 ---
 

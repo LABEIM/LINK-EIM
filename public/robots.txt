@@ -1,7 +1,7 @@
 # ==============================================================================
 # Enterprise Infrastructure Management (EIM) Research Laboratory
-# Project: [PROJECT_NAME]
-# Host: https://[YOUR_DOMAIN]/
+# Project: LINK-EIM
+# Host: https://link.eimlab.org/
 # ==============================================================================
 
 # Search Engine Crawlers
@@ -10,10 +10,7 @@ User-agent: Bingbot
 User-agent: Applebot
 User-agent: DuckDuckBot
 Allow: /
-Disallow: /admin/
-Disallow: /api/internal/
 Disallow: /_artifacts/
-Disallow: /scratch/
 
 # AI Crawlers & LLM Agents
 User-agent: GPTBot
@@ -23,18 +20,12 @@ User-agent: Google-Extended
 Allow: /
 Allow: /llms.txt
 Allow: /llms-full.txt
-Disallow: /admin/
-Disallow: /api/internal/
 Disallow: /_artifacts/
-Disallow: /scratch/
 
 # Default Crawl Rules
 User-agent: *
 Allow: /
-Disallow: /admin/
-Disallow: /api/internal/
 Disallow: /_artifacts/
-Disallow: /scratch/
 
 # Sitemaps
-Sitemap: https://[YOUR_DOMAIN]/sitemap.xml
+Sitemap: https://link.eimlab.org/sitemap.xml

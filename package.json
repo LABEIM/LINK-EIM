@@ -1,0 +1,27 @@
+{
+  "name": "link-eim",
+  "version": "1.0.0",
+  "description": "[![License: All Rights Reserved](https://img.shields.io/badge/License-All_Rights_Reserved-red.svg)](LICENSE) [![CI/CD](https://github.com/LABEIM/LINK-EIM/actions/workflows/ci-cd.yml/badge.svg)](https://github.com/LABEIM/LINK-EIM/actions) [![Contributor Covenant](https://img.shields.io/badge/Contributor%20Covenant-2.1-4baaaa.svg)](CODE_OF_CONDUCT.md) [![Security Policy](https://img.shields.io/badge/Security-Policy-brightgreen.svg)](SECURITY.md) [![Website](https://img.shields.io/badge/Website-eimlab.org-0284c7.svg)](https://eimlab.org) [![Organization](https://img.shields.io/badge/Org-LABEIM-6366f1.svg)](https://eimlab.org)",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "check": "astro check"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "module",
+  "private": "true",
+  "dependencies": {
+    "@tailwindcss/vite": "^4.3.3",
+    "astro": "^7.4.4",
+    "tailwindcss": "^4.3.3"
+  },
+  "devDependencies": {
+    "@astrojs/check": "^0.9.12",
+    "typescript": "^6.0.3"
+  }
+}

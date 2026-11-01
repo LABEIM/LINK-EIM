@@ -88,7 +88,7 @@ Whether you are fixing a bug or adding a new feature, follow the git workflow de
 
 Ensure you have the required runtimes and tools installed on your development machine:
 - **Git** (latest stable)
-- **Runtime / Package Manager**: To be determined — the project toolchain is still being set up.
+- **Node.js** 20 or newer (verified on Node 24) with **npm**
 - **Editor**: VS Code, Cursor, or your preferred IDE
 
 ### Installation & Development Server
@@ -100,8 +100,14 @@ Ensure you have the required runtimes and tools installed on your development ma
    ```
 
 2. **Install dependencies, start the development server, and verify the baseline:**
-   > [!NOTE]
-   > The project toolchain has not been set up yet. Install, development-server, lint, test, and build commands will be documented in this section once the initial scaffold lands.
+   ```bash
+   npm install
+   npm run dev      # http://localhost:4321/
+   npm run check    # Astro/TypeScript diagnostics
+   npm run build    # static build to dist/
+   ```
+
+Link content (labels, descriptions, URLs, status badge) is defined in `src/data/site.ts`; the page itself lives in `src/pages/index.astro`.
 
 ---
 
