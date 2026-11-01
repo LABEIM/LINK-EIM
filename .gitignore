@@ -39,8 +39,9 @@ dist/
 _artifacts/
 _tasks/
 
-# Command Code Agent
+# Agent
 .commandcode
+.claude
 
 # Astro generated types
 .astro/
