@@ -1,10 +1,13 @@
-# Link EIM
+# LINK-EIM
 
 [![License: All Rights Reserved](https://img.shields.io/badge/License-All_Rights_Reserved-red.svg)](LICENSE)
-
 [![CI/CD](https://github.com/LABEIM/LINK-EIM/actions/workflows/ci-cd.yml/badge.svg)](https://github.com/LABEIM/LINK-EIM/actions)
-[![Website](https://img.shields.io/badge/Website-link.eimlab.org-0284c7.svg)](https://link.eimlab.org)
+[![Contributor Covenant](https://img.shields.io/badge/Contributor%20Covenant-2.1-4baaaa.svg)](CODE_OF_CONDUCT.md)
+[![Security Policy](https://img.shields.io/badge/Security-Policy-brightgreen.svg)](SECURITY.md)
+[![Website](https://img.shields.io/badge/Website-eimlab.org-0284c7.svg)](https://eimlab.org)
 [![Organization](https://img.shields.io/badge/Org-LABEIM-6366f1.svg)](https://eimlab.org)
+
+A self-hosted link hub for the Enterprise Infrastructure Management (EIM) Research Laboratory — one fast, privacy-respecting page that gathers every official lab destination: website, laboratory information, research, and social channels.
 
 [**Live Website**](https://link.eimlab.org) · [**EIM Research Lab**](https://eimlab.org) · [**Report Issue**](https://github.com/LABEIM/LINK-EIM/issues)
 
@@ -12,9 +15,34 @@
 
 ## About This Project
 
+**LINK-EIM** is the official link-in-bio page for the EIM Research Laboratory at Telkom University. Rather than relying on a third-party service like Linktree, the lab hosts its own lightweight, fully self-contained hub at [`link.eimlab.org`](https://link.eimlab.org), keeping every link, asset, and visitor interaction under laboratory control with no external tracking.
+
+The page brings all of the lab's public destinations into a single, easy-to-share URL:
+
+- **Lab Website** — the main portal and entry point at [`eimlab.org`](https://eimlab.org).
+- **Laboratory Information** — who we are, our research focus, facilities, and how to reach the team.
+- **Research & Publications** — ongoing projects, published papers, and academic output.
+- **People** — faculty, researchers, and student members of the laboratory.
+- **News & Announcements** — the latest updates, events, and opportunities.
+- **Social & Contact** — official social channels and the lab contact email.
+
+The project is built around three priorities: **speed** (static output and minimal client-side JavaScript), **accessibility** (semantic HTML, keyboard support, and WCAG AA contrast), and **privacy** (no third-party trackers, all assets self-hosted). It is designed to be deployable on the lab's own infrastructure and editable by the team without any proprietary dependency.
+
 - **Status:** In Active Development
 - **Maintained by:** Enterprise Infrastructure Management (EIM) Research Laboratory, Telkom University
-- **Target Launch:** Quarter 4 (Q4) 2026
+- **Target Launch:** Q4 2026
+
+---
+
+## Community & Contributing
+
+We are committed to fostering an open, welcoming, and harassment-free environment for all researchers, developers, and contributors. All participants and team members are expected to adhere to our [Code of Conduct](CODE_OF_CONDUCT.md).
+
+For contribution workflows, git branching standards, and Pull Request guidelines, please refer to our [Contributing Guide](CONTRIBUTING.md).
+
+To report security vulnerabilities responsibly, please review our [Security Policy](SECURITY.md).
+
+For concerns or incident reports, please contact the project team or laboratory administration at [`lab@eimlab.org`](mailto:lab@eimlab.org).
 
 ---
 
