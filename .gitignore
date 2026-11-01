@@ -38,3 +38,6 @@ dist/
 # Agent Scratch & Task Repositories
 _artifacts/
 _tasks/
+
+# Command Code Agent
+.commandcode
