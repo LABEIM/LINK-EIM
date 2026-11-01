@@ -1,15 +1,5 @@
 # CLAUDE.md
 
-<!-- 
-================================================================================
-INSTRUCTIONS FOR NEW PROJECTS:
-1. Replace all placeholders in brackets (e.g. [PROJECT_PATH]) with the specific
-   configuration and absolute workspace path of your repository.
-2. Adjust or remove any sections, rules, or path overrides that do not apply.
-3. Keep this file maintained as an active operational guide for Claude Code.
-================================================================================
--->
-
 @AGENTS.md
 
 **All project rules live in [`AGENTS.md`](AGENTS.md)** — the single source of truth for every AI
