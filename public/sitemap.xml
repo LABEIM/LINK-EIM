@@ -4,23 +4,13 @@
 
     <!-- Canonical Homepage -->
     <url>
-        <loc>https://[YOUR_DOMAIN]/</loc>
-        <lastmod>[YYYY-MM-DD]</lastmod>
+        <loc>https://link.eimlab.org/</loc>
+        <lastmod>2026-11-01</lastmod>
         <changefreq>daily</changefreq>
         <priority>1.0</priority>
-        <xhtml:link rel="alternate" hreflang="en" href="https://[YOUR_DOMAIN]/?lang=en" />
-        <xhtml:link rel="alternate" hreflang="id" href="https://[YOUR_DOMAIN]/?lang=id" />
-        <xhtml:link rel="alternate" hreflang="x-default" href="https://[YOUR_DOMAIN]/" />
+        <xhtml:link rel="alternate" hreflang="en" href="https://link.eimlab.org/?lang=en" />
+        <xhtml:link rel="alternate" hreflang="id" href="https://link.eimlab.org/?lang=id" />
+        <xhtml:link rel="alternate" hreflang="x-default" href="https://link.eimlab.org/" />
     </url>
-
-    <!-- Additional Routes (Example) -->
-    <!--
-    <url>
-        <loc>https://[YOUR_DOMAIN]/about</loc>
-        <lastmod>[YYYY-MM-DD]</lastmod>
-        <changefreq>monthly</changefreq>
-        <priority>0.8</priority>
-    </url>
-    -->
 
 </urlset>

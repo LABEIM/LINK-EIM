@@ -1,18 +1,8 @@
-> [!NOTE]
-> **Instructions for New Projects:**  
-> Copy this file to your repository root as `CODE_OF_CONDUCT.md`:
-> ```bash
-> cp templates/CODE_OF_CONDUCT.template.md CODE_OF_CONDUCT.md
-> ```
-> Replace the bracketed placeholders (`[PROJECT_NAME]`, `[CONTACT_EMAIL]`, `[ORGANIZATION_NAME]`, `[ORGANIZATION_WEBSITE]`) with your project-specific details.
-
----
-
 # Contributor Covenant Code of Conduct
 
 ## Our Pledge
 
-We as members, contributors, and leaders of **[PROJECT_NAME]** (under **[ORGANIZATION_NAME / Enterprise Infrastructure Management (EIM) Research Laboratory]**) pledge to make participation in our community and project a harassment-free experience for everyone, regardless of age, body size, visible or invisible disability, ethnicity, sex characteristics, gender identity and expression, level of experience, education, socio-economic status, nationality, personal appearance, race, caste, color, religion, or sexual identity and orientation.
+We as members, contributors, and leaders of **LINK-EIM** (under **Enterprise Infrastructure Management (EIM) Research Laboratory, Telkom University**) pledge to make participation in our community and project a harassment-free experience for everyone, regardless of age, body size, visible or invisible disability, ethnicity, sex characteristics, gender identity and expression, level of experience, education, socio-economic status, nationality, personal appearance, race, caste, color, religion, or sexual identity and orientation.
 
 We pledge to act and interact in ways that contribute to an open, welcoming, diverse, inclusive, and healthy community.
 
@@ -49,7 +39,7 @@ Community leaders have the right and responsibility to remove, edit, or reject c
 
 ## Scope
 
-This Code of Conduct applies within all community spaces associated with **[PROJECT_NAME]**, including:
+This Code of Conduct applies within all community spaces associated with **LINK-EIM**, including:
 - GitHub repositories, pull requests, issue trackers, and discussions
 - Community and team communication channels
 - Any public space when an individual is representing the project (e.g., using an official e-mail address, posting via an official social media account, or acting as an appointed representative at an online or offline event).
@@ -60,9 +50,9 @@ This Code of Conduct applies within all community spaces associated with **[PROJ
 
 Instances of abusive, harassing, or otherwise unacceptable behavior may be reported to the project leadership team:
 
-- **Primary Contact Email:** [[CONTACT_EMAIL]](mailto:[CONTACT_EMAIL])
+- **Primary Contact Email:** [lab@eimlab.org](mailto:lab@eimlab.org)
 - **Laboratory Administration:** [contact@eimlab.org](mailto:contact@eimlab.org)
-- **Organization Website:** [[ORGANIZATION_WEBSITE / https://eimlab.org]](https://eimlab.org)
+- **Organization Website:** [eimlab.org](https://eimlab.org)
 
 All complaints will be reviewed and investigated promptly and fairly. All community leaders are obligated to respect the privacy and security of the reporter of any incident.
 

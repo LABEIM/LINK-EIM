@@ -1,16 +1,6 @@
-> [!NOTE]
-> **Instructions for New Projects:**  
-> Copy this file to your repository root as `CONTRIBUTING.md`:
-> ```bash
-> cp templates/CONTRIBUTING.template.md CONTRIBUTING.md
-> ```
-> Replace the bracketed placeholders (e.g. `[PROJECT_NAME]`, `[REPOSITORY-NAME]`, `[MAIN_BRANCH]`, `[INSTALL_COMMAND]`, `[CONTACT_EMAIL]`) with your project's specific details.
-
----
-
 # Contributing Guidelines
 
-Thank you for your interest in contributing to **[PROJECT_NAME]**, a project under the **[ORGANIZATION_NAME / Enterprise Infrastructure Management (EIM) Research Laboratory]**, Telkom University.
+Thank you for your interest in contributing to **LINK-EIM**, a project under the **Enterprise Infrastructure Management (EIM) Research Laboratory**, Telkom University.
 
 We welcome contributions from researchers, software engineers, students, and open-source enthusiasts. This document provides clear guidelines to ensure a collaborative, transparent, and efficient workflow.
 
@@ -50,19 +40,7 @@ All members, contributors, and maintainers are expected to uphold our [Code of C
 
 ## Intellectual Property & Licensing
 
-<!-- Select the relevant licensing option below based on whether your project uses LICENSE.MIT or LICENSE.ALL-RIGHTS-RESERVED -->
-
-<!-- ========================================================================= -->
-<!-- OPTION A: For Open-Source Projects (MIT Licensed)                          -->
-<!-- ========================================================================= -->
-<!--
-This project is open-source under the [MIT License](LICENSE). By contributing to this repository, you agree that your contributions will be licensed under the same MIT License terms that govern the project.
--->
-
-<!-- ========================================================================= -->
-<!-- OPTION B: For Proprietary / Lab Internal Projects (All Rights Reserved)     -->
-<!-- ========================================================================= -->
-This repository and its assets are proprietary and licensed under [All Rights Reserved](LICENSE) by **[ORGANIZATION_NAME / Enterprise Infrastructure Management (EIM) Research Laboratory]**, Telkom University.
+This repository and its assets are proprietary and licensed under [All Rights Reserved](LICENSE) by **Enterprise Infrastructure Management (EIM) Research Laboratory**, Telkom University.
 
 We welcome contributions from external collaborators, researchers, and students under the following terms:
 1. **Grant of Rights & Assignment:** By submitting a Pull Request, issue, patch, or code snippet, you agree that your contribution is provided to the laboratory, and you grant the laboratory all necessary rights, title, and interest to use, modify, integrate, and distribute the contributed work under the repository's proprietary terms.
@@ -76,7 +54,7 @@ We welcome contributions from external collaborators, researchers, and students 
 ### Reporting Issues & Bugs
 
 If you discover an issue, defect, or unexpected behavior:
-1. Check the [Issue Tracker](https://github.com/LABEIM/[REPOSITORY-NAME]/issues) to ensure the bug hasn't already been reported.
+1. Check the [Issue Tracker](https://github.com/LABEIM/LINK-EIM/issues) to ensure the bug hasn't already been reported.
 2. If unresolved, create a new issue using a concise, descriptive title.
 3. Provide essential details:
    - **Description**: A clear summary of the unexpected behavior.
@@ -110,33 +88,20 @@ Whether you are fixing a bug or adding a new feature, follow the git workflow de
 
 Ensure you have the required runtimes and tools installed on your development machine:
 - **Git** (latest stable)
-- **Runtime / Package Manager**: `[e.g. Node.js >= 20.x, pnpm / npm / bun / Python >= 3.11 / Go >= 1.22]`
+- **Runtime / Package Manager**: To be determined — the project toolchain is still being set up.
 - **Editor**: VS Code, Cursor, or your preferred IDE
 
 ### Installation & Development Server
 
 1. **Fork and clone the repository:**
    ```bash
-   git clone https://github.com/LABEIM/[REPOSITORY-NAME].git
-   cd [REPOSITORY-NAME]
+   git clone https://github.com/LABEIM/LINK-EIM.git
+   cd LINK-EIM
    ```
 
-2. **Install dependencies:**
-   ```bash
-   [INSTALL_COMMAND / e.g. npm install]
-   ```
-
-3. **Start the local development server:**
-   ```bash
-   [DEV_SERVER_COMMAND / e.g. npm run dev]
-   ```
-
-4. **Verify baseline build and tests:**
-   ```bash
-   [LINT_COMMAND / e.g. npm run lint]
-   [TEST_COMMAND / e.g. npm test]
-   [BUILD_COMMAND / e.g. npm run build]
-   ```
+2. **Install dependencies, start the development server, and verify the baseline:**
+   > [!NOTE]
+   > The project toolchain has not been set up yet. Install, development-server, lint, test, and build commands will be documented in this section once the initial scaffold lands.
 
 ---
 
@@ -144,7 +109,7 @@ Ensure you have the required runtimes and tools installed on your development ma
 
 ### Branch Naming Standard
 
-Always create a new feature or fix branch from `[MAIN_BRANCH / main]`. Do not commit directly to `[MAIN_BRANCH]`.
+Always create a new feature or fix branch from `main`. Do not commit directly to `main`.
 
 ```text
 feat/add-sensor-telemetry-endpoint
@@ -203,12 +168,12 @@ git commit -S -m "feat(telemetry): add batch metrics processor"
 ### PR Submission Checklist
 
 Before submitting your Pull Request, ensure:
-- [ ] Code compiles and passes all checks (`[LINT_COMMAND]`, `[BUILD_COMMAND]`).
-- [ ] Automated tests pass successfully (`[TEST_COMMAND]`).
+- [ ] Code compiles and passes all lint, type, and build checks.
+- [ ] Automated tests pass successfully.
 - [ ] New functionality includes corresponding unit or integration tests.
 - [ ] Documentation (`README.md`, API specs, comments) is updated to reflect changes.
 - [ ] Commit history is clean, signed, and adheres to Conventional Commits.
-- [ ] Branch is rebased onto the latest `[MAIN_BRANCH]` branch with no merge conflicts.
+- [ ] Branch is rebased onto the latest `main` branch with no merge conflicts.
 
 ### CI/CD Verification
 
@@ -221,7 +186,7 @@ Once your PR is opened:
 
 - Project maintainers will review your PR for architectural alignment, code quality, test coverage, and security.
 - Maintainers may request modifications or suggest improvements.
-- Once approved, your PR will be merged into `[MAIN_BRANCH]`.
+- Once approved, your PR will be merged into `main`.
 
 ---
 
@@ -240,7 +205,7 @@ Once your PR is opened:
 If you discover a security vulnerability or sensitive exploit:
 - **Do not open a public GitHub issue, discussion, or PR.**
 - Review our [Security Policy](SECURITY.md) for full reporting procedures and response guidelines.
-- Report the vulnerability privately via email to: [`[CONTACT_EMAIL / lab@eimlab.org]`](mailto:[CONTACT_EMAIL]).
+- Report the vulnerability privately via email to: [`lab@eimlab.org`](mailto:lab@eimlab.org).
 - Include full technical details and steps to reproduce. We will coordinate a patched release promptly.
 
 ---
@@ -248,7 +213,7 @@ If you discover a security vulnerability or sensitive exploit:
 ## Community & Contact
 
 Have questions, ideas, or feedback?
-- **Issue Tracker:** [https://github.com/LABEIM/[REPOSITORY-NAME]/issues](https://github.com/LABEIM/[REPOSITORY-NAME]/issues)
-- **Lab Email:** [[CONTACT_EMAIL / lab@eimlab.org]](mailto:[CONTACT_EMAIL])
+- **Issue Tracker:** [https://github.com/LABEIM/LINK-EIM/issues](https://github.com/LABEIM/LINK-EIM/issues)
+- **Lab Email:** [lab@eimlab.org](mailto:lab@eimlab.org)
 - **Lab Portal:** [https://eimlab.org](https://eimlab.org)
 - **Organization:** Enterprise Infrastructure Management (EIM) Research Laboratory, Telkom University
