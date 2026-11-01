@@ -71,13 +71,13 @@ export const linkGroups: LinkGroup[] = [
     links: [
       {
         label: 'Practicum & Event Schedule',
-        description: 'Lab sessions, workshops, and activities',
+        description: 'Sessions, workshops, and events',
         href: 'https://eimlab.org/event',
         icon: 'calendar',
       },
       {
         label: 'Learning Modules',
-        description: 'Study materials and lab repositories',
+        description: 'Materials and lab repositories',
         href: 'https://github.com/LABEIM',
         icon: 'book-open',
       },
@@ -94,19 +94,19 @@ export const linkGroups: LinkGroup[] = [
     links: [
       {
         label: 'Research Divisions',
-        description: 'Networks, security, cloud, and enterprise systems',
+        description: 'Networks, security, and cloud',
         href: 'https://eimlab.org/structure',
         icon: 'flask-conical',
       },
       {
         label: 'News & Publications',
-        description: 'Latest research output and announcements',
+        description: 'Research output and announcements',
         href: 'https://eimlab.org/news',
         icon: 'newspaper',
       },
       {
         label: 'GitHub Organization',
-        description: 'Open-source projects and lab repositories',
+        description: 'Open-source lab projects',
         href: 'https://github.com/LABEIM',
         icon: 'github',
       },
@@ -117,13 +117,13 @@ export const linkGroups: LinkGroup[] = [
     links: [
       {
         label: 'Assistant Recruitment',
-        description: 'Join the lab as a research assistant',
+        description: 'Join as a research assistant',
         href: 'https://eimlab.org/registration',
         icon: 'clipboard-check',
       },
       {
         label: 'Meet the Team',
-        description: 'Faculty, researchers, and lab members',
+        description: 'Faculty, researchers, and members',
         href: 'https://eimlab.org/structure',
         icon: 'users',
       },
@@ -158,7 +158,7 @@ export const linkGroups: LinkGroup[] = [
       },
       {
         label: 'Location Map',
-        description: 'Gedung TULT, Telkom University, Bandung',
+        description: 'Gedung TULT, Bandung',
         href: 'https://maps.google.com/?q=Gedung+TULT+Telkom+University+Bandung',
         icon: 'map-pin',
       },

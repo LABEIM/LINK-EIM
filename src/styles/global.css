@@ -1,80 +1,36 @@
 @import "tailwindcss";
 
 /*
- * shadcn/ui design tokens (Tailwind v4), dark-first.
- * Slate surfaces, cyan primary, indigo ambient accent.
+ * "Lab index" system: flat near-black canvas, hairline rules, sharp corners,
+ * one accent. Semantic tokens only — no gradients, glass, or glows.
  */
-:root {
-  --radius: 0.75rem;
+@theme {
+  --font-sans: "IBM Plex Sans", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
 
-  --background: oklch(0.129 0.042 264.695);
-  --foreground: oklch(0.984 0.003 247.858);
-  --card: oklch(0.208 0.042 265.755);
-  --card-foreground: oklch(0.984 0.003 247.858);
-  --primary: oklch(0.789 0.154 211.53);
-  --primary-foreground: oklch(0.129 0.042 264.695);
-  --secondary: oklch(0.279 0.041 260.031);
-  --secondary-foreground: oklch(0.984 0.003 247.858);
-  --muted: oklch(0.279 0.041 260.031);
-  --muted-foreground: oklch(0.704 0.04 256.788);
-  --accent: oklch(0.279 0.041 260.031);
-  --accent-foreground: oklch(0.984 0.003 247.858);
-  --border: oklch(1 0 0 / 10%);
-  --input: oklch(1 0 0 / 15%);
-  --ring: oklch(0.789 0.154 211.53);
-}
-
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --color-card: var(--card);
-  --color-card-foreground: var(--card-foreground);
-  --color-primary: var(--primary);
-  --color-primary-foreground: var(--primary-foreground);
-  --color-secondary: var(--secondary);
-  --color-secondary-foreground: var(--secondary-foreground);
-  --color-muted: var(--muted);
-  --color-muted-foreground: var(--muted-foreground);
-  --color-accent: var(--accent);
-  --color-accent-foreground: var(--accent-foreground);
-  --color-border: var(--border);
-  --color-input: var(--input);
-  --color-ring: var(--ring);
-
-  --radius-sm: calc(var(--radius) - 4px);
-  --radius-md: calc(var(--radius) - 2px);
-  --radius-lg: var(--radius);
-  --radius-xl: calc(var(--radius) + 4px);
+  --color-canvas: #0a0a0a;
+  --color-surface: #141416;
+  --color-line: #2a2a2e;
+  --color-ink: #f4f4f5;
+  --color-ink-muted: #a1a1aa;
+  --color-accent: #22d3ee;
 }
 
 @layer base {
-  *,
-  ::after,
-  ::before,
-  ::backdrop,
-  ::file-selector-button {
-    border-color: var(--border);
-  }
-
   html {
     color-scheme: dark;
   }
 
   body {
-    background-color: var(--background);
-    color: var(--foreground);
+    background-color: var(--color-canvas);
+    color: var(--color-ink);
+    font-family: var(--font-sans);
     -webkit-font-smoothing: antialiased;
     text-rendering: optimizeLegibility;
   }
-}
 
-/* Dotted infrastructure grid with cyan/indigo ambient light. */
-.lab-background {
-  background-color: var(--background);
-  background-image:
-    radial-gradient(70rem 44rem at 50% -18%, oklch(0.789 0.154 211.53 / 0.16), transparent 62%),
-    radial-gradient(46rem 34rem at 108% 110%, oklch(0.585 0.233 276.966 / 0.14), transparent 65%),
-    radial-gradient(oklch(1 0 0 / 0.06) 1px, transparent 1px);
-  background-size: auto, auto, 26px 26px;
-  background-attachment: fixed;
+  ::selection {
+    background-color: var(--color-accent);
+    color: var(--color-canvas);
+  }
 }
