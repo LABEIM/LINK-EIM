@@ -14,23 +14,16 @@ const isExternal = link.href.startsWith('http');
   href={link.href}
   target={isExternal ? '_blank' : undefined}
   rel={isExternal ? 'noopener noreferrer' : undefined}
-  class="group -mx-3 flex min-h-14 items-center gap-4 border-b border-line px-3 py-3.5 transition-[background-color,transform] duration-150 hover:bg-surface active:translate-y-px active:bg-surface focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-inset focus-visible:outline-none motion-reduce:transition-none"
+  class="group grid min-h-14 grid-cols-[1.25rem_1fr_1.25rem] items-center gap-3 rounded-xl border border-line bg-surface px-4 py-2.5 transition-[background-color,border-color,transform] duration-150 hover:border-accent/35 hover:bg-surface-hover active:scale-[0.99] focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-card focus-visible:outline-none motion-reduce:transition-none"
 >
   <Icon
     name={link.icon}
-    class="size-[18px] shrink-0 text-ink-muted transition-colors duration-150 group-hover:text-accent motion-reduce:transition-none"
+    class="size-[18px] text-ink-muted transition-colors duration-150 group-hover:text-accent motion-reduce:transition-none"
   />
-  <span class="min-w-0 flex-1">
-    <span class="block text-base leading-snug font-medium text-ink">{link.label}</span>
-    {link.description && (
-      <span class="mt-0.5 block text-[13px] leading-relaxed text-ink-muted">
-        {link.description}
-      </span>
-    )}
-  </span>
+  <span class="truncate text-center text-[15px] font-medium text-ink">{link.label}</span>
   <Icon
     name="arrow-up-right"
-    class="size-4 shrink-0 text-ink-muted transition-[color,transform] duration-150 group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:text-accent motion-reduce:transition-none"
+    class="size-4 justify-self-end text-ink-muted transition-[color,transform] duration-150 group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:text-accent motion-reduce:transition-none"
   />
   {isExternal && <span class="sr-only">(opens in a new tab)</span>}
 </a>
