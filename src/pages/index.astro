@@ -1,4 +1,9 @@
 ---
+import '@fontsource/ibm-plex-sans/latin-400.css';
+import '@fontsource/ibm-plex-sans/latin-500.css';
+import '@fontsource/ibm-plex-sans/latin-600.css';
+import '@fontsource/ibm-plex-mono/latin-400.css';
+import '@fontsource/ibm-plex-mono/latin-500.css';
 import '../styles/global.css';
 import Icon from '../components/Icon.astro';
 import LinkCard from '../components/LinkCard.astro';
@@ -7,6 +12,7 @@ import { site, linkGroups } from '../data/site';
 const siteUrl = Astro.site ?? new URL('https://link.eimlab.org');
 const canonical = new URL(Astro.url.pathname, siteUrl).href;
 const ogImage = new URL('/assets/logo-icon.png', siteUrl).href;
+const pad = (value: number) => String(value).padStart(2, '0');
 
 const jsonLd = {
   '@context': 'https://schema.org',
@@ -37,7 +43,7 @@ const jsonLd = {
     <link rel="icon" href="/assets/favicon.png" type="image/png" sizes="64x64" />
     <link rel="apple-touch-icon" href="/assets/favicon.png" />
     <link rel="manifest" href="/manifest.webmanifest" />
-    <meta name="theme-color" content="#020617" />
+    <meta name="theme-color" content="#0a0a0a" />
 
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content="EIM Lab" />
@@ -53,111 +59,112 @@ const jsonLd = {
     <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
   </head>
 
-  <body class="lab-background min-h-dvh">
-    <main class="mx-auto flex w-full max-w-md flex-col px-4 py-6 sm:py-10">
-      <article
-        class="overflow-hidden rounded-3xl border border-white/[0.07] bg-slate-900/50 shadow-[0_24px_90px_-30px_rgba(2,6,23,0.9)] backdrop-blur-xl"
-      >
-        <header class="flex flex-col items-center px-6 pt-9 pb-6 text-center sm:px-8">
-          <div class="relative size-24">
-            <div
-              class="absolute -inset-3 rounded-full bg-cyan-400/25 blur-2xl"
-              aria-hidden="true"
-            >
-            </div>
-            <img
-              src="/assets/logo-icon.png"
-              alt="EIM Lab emblem"
-              width="96"
-              height="96"
-              class="relative size-24 rounded-full border border-white/10 bg-white object-contain p-2 shadow-xl ring-1 ring-cyan-400/20"
-            />
-          </div>
-
-          <h1 class="mt-5 text-3xl font-bold tracking-tight text-white">{site.name}</h1>
-          <p class="mt-1 text-sm font-medium text-slate-300">{site.fullName}</p>
-          <p class="mt-3 max-w-xs text-sm leading-relaxed text-pretty text-slate-400">
-            {site.tagline}
-          </p>
-
-          <div class="mt-4 flex flex-col items-center gap-2">
+  <body class="min-h-dvh">
+    <main class="mx-auto w-full max-w-md px-5 pt-8 pb-12 sm:pt-12">
+      <header>
+        <div class="flex items-start gap-4">
+          <img
+            src="/assets/logo-icon.png"
+            alt="EIM Lab emblem"
+            width="48"
+            height="48"
+            fetchpriority="high"
+            class="mt-0.5 size-12 shrink-0 border border-line bg-white object-contain p-1"
+          />
+          <div class="min-w-0">
             <p
-              class="inline-flex items-center gap-1.5 rounded-full border border-white/10 bg-white/[0.04] px-3 py-1 text-xs text-slate-300"
+              class="font-mono text-[10px] tracking-[0.18em] text-ink-muted uppercase"
             >
-              <Icon name="graduation-cap" class="size-3.5 text-cyan-300" />
-              {site.institution} · S1 Information Systems
+              Research Laboratory
             </p>
-
-            <a
-              href={site.status.href}
-              target="_blank"
-              rel="noopener noreferrer"
-              class="group inline-flex items-center gap-2 rounded-full border border-emerald-400/25 bg-emerald-400/[0.08] px-3 py-1.5 text-xs font-medium text-emerald-200 transition-colors hover:border-emerald-300/40 hover:bg-emerald-400/[0.14] focus-visible:ring-2 focus-visible:ring-emerald-400 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-950 focus-visible:outline-none"
+            <h1
+              class="mt-1 text-[2.5rem] leading-none font-semibold tracking-[-0.04em] text-ink sm:text-[2.75rem]"
             >
-              <span class="relative flex size-2">
-                <span
-                  class="absolute inline-flex size-full animate-ping rounded-full bg-emerald-400 opacity-60 motion-reduce:animate-none"
-                >
-                </span>
-                <span class="relative inline-flex size-2 rounded-full bg-emerald-400"></span>
-              </span>
-              {site.status.label}
-              <span class="sr-only">(opens in a new tab)</span>
-            </a>
+              EIM Lab
+            </h1>
           </div>
-        </header>
-
-        <div class="px-5 pb-7 sm:px-7">
-          <a
-            href={site.featuredLink.href}
-            target="_blank"
-            rel="noopener noreferrer"
-            class="group flex min-h-14 items-center justify-center gap-2.5 rounded-xl border border-cyan-400/30 bg-cyan-400/[0.08] px-4 py-3 text-sm font-semibold text-cyan-100 transition-[background-color,border-color,transform] duration-200 hover:border-cyan-300/50 hover:bg-cyan-400/[0.14] active:scale-[0.99] focus-visible:ring-2 focus-visible:ring-cyan-400 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-950 focus-visible:outline-none motion-reduce:transition-none"
-          >
-            <Icon name="globe" class="size-5 text-cyan-300" />
-            {site.featuredLink.label}
-            <Icon
-              name="arrow-up-right"
-              class="size-4 text-cyan-300/70 transition-transform duration-200 group-hover:-translate-y-0.5 group-hover:translate-x-0.5 motion-reduce:transition-none"
-            />
-            <span class="sr-only">(opens in a new tab)</span>
-          </a>
-
-          <nav aria-label="EIM Lab destinations" class="mt-7 space-y-7">
-            {
-              linkGroups.map((group) => (
-                <section aria-labelledby={`group-${group.title.toLowerCase().replace(/[^a-z]+/g, '-')}`}>
-                  <h2
-                    id={`group-${group.title.toLowerCase().replace(/[^a-z]+/g, '-')}`}
-                    class="flex items-center gap-3 font-mono text-[0.7rem] font-semibold tracking-[0.18em] text-slate-400 uppercase"
-                  >
-                    <span class="h-px flex-1 bg-white/10" aria-hidden="true" />
-                    {group.title}
-                    <span class="h-px flex-1 bg-white/10" aria-hidden="true" />
-                  </h2>
-                  <div class="mt-3 space-y-2.5">
-                    {group.links.map((link) => (
-                      <LinkCard link={link} />
-                    ))}
-                  </div>
-                </section>
-              ))
-            }
-          </nav>
         </div>
 
-        <footer
-          class="border-t border-white/[0.06] bg-slate-950/40 px-6 py-6 text-center text-xs leading-relaxed text-slate-400"
-        >
-          <p>{site.address}</p>
-          <p>{site.hours}</p>
-          <p class="mt-3">{site.faculty}</p>
-          <p>{site.institution}</p>
-          <p class="mt-3 text-slate-400">
-            © 2026 EIM Lab, Telkom University. All rights reserved.
+        <p class="mt-6 max-w-[26rem] text-base leading-relaxed text-pretty text-ink-muted">
+          {site.tagline}
+        </p>
+
+        <div class="mt-5 border-t border-line pt-4">
+          <p class="font-mono text-[11px] leading-relaxed text-ink-muted">
+            {site.fullName}<br />
+            Telkom University · S1 Information Systems<br />
+            School of Industrial Engineering · Bandung
           </p>
-        </footer>
-      </article>
+        </div>
+
+        <a
+          href={site.status.href}
+          target="_blank"
+          rel="noopener noreferrer"
+          class="mt-5 inline-flex min-h-11 items-center gap-2.5 border border-accent/40 px-3 font-mono text-[11px] tracking-[0.12em] text-accent uppercase transition-colors duration-150 hover:bg-accent hover:text-canvas focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-canvas focus-visible:outline-none motion-reduce:transition-none"
+        >
+          <span class="size-1.5 shrink-0 bg-accent" aria-hidden="true"></span>
+          {site.status.label}
+          <Icon name="arrow-up-right" class="size-3.5" />
+          <span class="sr-only">(opens in a new tab)</span>
+        </a>
+      </header>
+
+      <a
+        href={site.featuredLink.href}
+        target="_blank"
+        rel="noopener noreferrer"
+        class="group mt-7 flex min-h-14 items-center justify-between gap-4 bg-ink px-4 text-canvas transition-colors duration-150 hover:bg-accent focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-canvas focus-visible:outline-none motion-reduce:transition-none"
+      >
+        <span class="flex items-center gap-2.5 text-[15px] font-semibold tracking-[-0.01em]">
+          <Icon name="globe" class="size-[18px]" />
+          {site.featuredLink.label}
+        </span>
+        <Icon
+          name="arrow-up-right"
+          class="size-4 transition-transform duration-150 group-hover:-translate-y-0.5 group-hover:translate-x-0.5 motion-reduce:transition-none"
+        />
+        <span class="sr-only">(opens in a new tab)</span>
+      </a>
+
+      <nav aria-label="EIM Lab destinations" class="mt-10">
+        {
+          linkGroups.map((group, index) => {
+            const id = `group-${group.title.toLowerCase().replace(/[^a-z]+/g, '-')}`;
+            return (
+              <section class="mb-9 last:mb-0" aria-labelledby={id}>
+                <div class="flex items-baseline justify-between gap-4 border-b border-line pb-2">
+                  <h2
+                    id={id}
+                    class="font-mono text-[11px] tracking-[0.16em] text-ink-muted uppercase"
+                  >
+                    <span class="text-accent">{pad(index + 1)}</span>
+                    <span class="mx-2 text-line">/</span>
+                    {group.title}
+                  </h2>
+                  <span class="font-mono text-[10px] text-ink-muted">
+                    {pad(group.links.length)}
+                  </span>
+                </div>
+                <div>
+                  {group.links.map((link) => (
+                    <LinkCard link={link} />
+                  ))}
+                </div>
+              </section>
+            );
+          })
+        }
+      </nav>
+
+      <footer class="mt-10 border-t border-line pt-6 font-mono text-[11px] leading-relaxed text-ink-muted">
+        <p>Gedung TULT, 8th Floor, Room TULT.08.09</p>
+        <p>Bandung, Indonesia</p>
+        <p class="mt-3">Monday–Friday · 08.00–17.00 WIB</p>
+        <p class="mt-5">S1 Information Systems · School of Industrial Engineering (FRI)</p>
+        <p>Telkom University</p>
+        <p class="mt-3">© 2026 EIM Lab. All rights reserved.</p>
+      </footer>
     </main>
   </body>
 </html>
