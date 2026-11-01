@@ -1,16 +1,6 @@
-> [!NOTE]
-> **Instructions for New Projects:**  
-> Copy this file to your repository root as `SECURITY.md`:
-> ```bash
-> cp templates/SECURITY.template.md SECURITY.md
-> ```
-> Replace the bracketed placeholders (`[PROJECT_NAME]`, `[REPOSITORY-NAME]`, `[MAIN_BRANCH]`, `[SECURITY_EMAIL]`, `[CONTACT_EMAIL]`, `[ORGANIZATION_NAME]`, `[ORGANIZATION_WEBSITE]`) with your project-specific details.
-
----
-
 # Security Policy
 
-The **[ORGANIZATION_NAME / Enterprise Infrastructure Management (EIM) Research Laboratory]**, Telkom University, takes the security of our software, data infrastructure, and user systems seriously. This Security Policy outlines the supported versions, vulnerability reporting procedures, response timelines, and responsible disclosure practices for **[PROJECT_NAME]**.
+The **Enterprise Infrastructure Management (EIM) Research Laboratory**, Telkom University, takes the security of our software, data infrastructure, and user systems seriously. This Security Policy outlines the supported versions, vulnerability reporting procedures, response timelines, and responsible disclosure practices for **LINK-EIM**.
 
 ---
 
@@ -20,9 +10,7 @@ We actively provide security patches, dependency updates, and vulnerability fixe
 
 | Version / Branch | Supported | Notes |
 | :--- | :---: | :--- |
-| `[MAIN_BRANCH / main]` | :white_check_mark: | Actively maintained with the latest security fixes |
-| `[STABLE_RELEASE_TAG / e.g. v1.x]` | :white_check_mark: | Current production release line |
-| `< [PREVIOUS_MAJOR_VERSION / e.g. v1.0.0]` | :x: | End of Life (EOL) — upgrade to latest release |
+| `main` | :white_check_mark: | Actively maintained with the latest security fixes |
 
 ---
 
@@ -32,17 +20,17 @@ We actively provide security patches, dependency updates, and vulnerability fixe
 > **Do not report security vulnerabilities through public GitHub issues, discussions, pull requests, or public chat channels.**  
 > Public disclosure exposes users and systems before a patch can be developed and safely distributed.
 
-If you suspect or confirm a security vulnerability in **[PROJECT_NAME]**, please report it using one of the private reporting channels below:
+If you suspect or confirm a security vulnerability in **LINK-EIM**, please report it using one of the private reporting channels below:
 
 ### Option 1: GitHub Private Vulnerability Reporting (Preferred)
-1. Go to the repository's [Security Tab](https://github.com/LABEIM/[REPOSITORY-NAME]/security).
+1. Go to the repository's [Security Tab](https://github.com/LABEIM/LINK-EIM/security).
 2. Click **Report a vulnerability** under **Private vulnerability reporting**.
 3. Complete the advisory form with technical details, affected components, and reproduction steps.
 
 ### Option 2: Private Security Email
 Send an email directly to our security team:
-- **Lab Administration:** [[CONTACT_EMAIL / lab@eimlab.org]](mailto:[CONTACT_EMAIL])
-- **Subject:** `[SECURITY] Vulnerability Report in [PROJECT_NAME]: <Brief Summary>`
+- **Lab Administration:** [lab@eimlab.org](mailto:lab@eimlab.org)
+- **Subject:** `[SECURITY] Vulnerability Report in LINK-EIM: <Brief Summary>`
 
 ---
 
@@ -76,7 +64,7 @@ We make every reasonable effort to meet the following response milestones:
 ## Scope & Guidelines
 
 ### In-Scope
-- Vulnerabilities in the core source code, APIs, and microservices of **[PROJECT_NAME]**.
+- Vulnerabilities in the core source code, APIs, and microservices of **LINK-EIM**.
 - Authentication, authorization, session management flaws, and token leakage.
 - Injections, memory corruption, remote execution, or data exposure vulnerabilities.
 - Cryptographic weaknesses or improper key/secret storage.
@@ -93,7 +81,7 @@ We make every reasonable effort to meet the following response milestones:
 
 ## Secure Development & Best Practices
 
-Contributors and maintainers of **[PROJECT_NAME]** follow standard secure engineering practices:
+Contributors and maintainers of **LINK-EIM** follow standard secure engineering practices:
 
 - **Secret Management:** Never commit API keys, private tokens, passwords, or database credentials. Use `.env.example` templates and secrets managers.
 - **Dependency Auditing:** Regularly scan dependencies for known CVEs (e.g., `npm audit`, `pip-audit`, GitHub Dependabot / Secret Scanning).
@@ -117,6 +105,6 @@ We value ethical security researchers and will gladly credit you by name, handle
 ## Contact & Organization Information
 
 For general inquiries or questions regarding security policies:
-- **Lab Contact:** [[CONTACT_EMAIL / lab@eimlab.org]](mailto:[CONTACT_EMAIL])
-- **Organization Website:** [[ORGANIZATION_WEBSITE / https://eimlab.org]](https://eimlab.org)
+- **Lab Contact:** [lab@eimlab.org](mailto:lab@eimlab.org)
+- **Organization Website:** [eimlab.org](https://eimlab.org)
 - **Institution:** Enterprise Infrastructure Management (EIM) Research Laboratory, Telkom University
