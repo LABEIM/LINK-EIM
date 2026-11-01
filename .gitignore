@@ -41,3 +41,6 @@ _tasks/
 
 # Command Code Agent
 .commandcode
+
+# Astro generated types
+.astro/

@@ -34,6 +34,23 @@ The project is built around three priorities: **speed** (static output and minim
 
 ---
 
+## Tech Stack & Development
+
+- **Framework:** [Astro](https://astro.build) 7 (static output, zero client-side JS).
+- **Styling:** Tailwind CSS v4 with shadcn/ui design tokens — dark-first slate surfaces, cyan/indigo accents.
+- **Content:** Link groups are plain arrays in [`src/data/site.ts`](src/data/site.ts), ready for a Keystatic collection later.
+
+```bash
+npm install      # install dependencies
+npm run dev      # dev server at http://localhost:4321/
+npm run build    # static build to dist/
+npm run check    # Astro/TypeScript diagnostics
+```
+
+All public metadata (`llms.txt`, `llms-full.txt`, `sitemap.xml`, `robots.txt`, `manifest.webmanifest`) lives in `public/` and is copied verbatim into the build.
+
+---
+
 ## Community & Contributing
 
 We are committed to fostering an open, welcoming, and harassment-free environment for all researchers, developers, and contributors. All participants and team members are expected to adhere to our [Code of Conduct](CODE_OF_CONDUCT.md).

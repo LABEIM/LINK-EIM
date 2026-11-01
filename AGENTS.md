@@ -45,22 +45,26 @@ Before ending a session, the agent must perform these tasks:
 ## Section 2: Tech Stack & Architecture
 
 ### 2.1 Framework & Core Stack
-The project toolchain has not been chosen yet. Update this section when the initial scaffold lands.
-- **Framework**: Not yet finalized.
-- **Language**: Not yet finalized.
-- **UI Components & Library**: Not yet finalized.
-- **Styling**: Not yet finalized.
-- **State Management & Data Fetching**: None planned — the link hub is static content.
-- **Database / CMS / ORM**: None — link data is maintained in the repository.
-- **Typography & Icons**: Not yet finalized; brand assets are sourced from `eimlab.org`.
-- **Runtime & Package Manager**: Not yet finalized.
+- **Framework**: Astro 7 with static output.
+- **Language**: TypeScript (strict) for data and config; Astro components for markup.
+- **UI Components & Library**: shadcn/ui design tokens (no React runtime); accessible Astro components.
+- **Styling**: Tailwind CSS v4 via `@tailwindcss/vite`; dark-first slate surfaces with cyan/indigo accents.
+- **State Management & Data Fetching**: None — the link hub is static content.
+- **Database / CMS / ORM**: None — link data lives in Keystatic-friendly arrays in `src/data/site.ts`.
+- **Typography & Icons**: System sans/mono stacks; inline Lucide SVG icons; brand assets sourced from `eimlab.org`.
+- **Runtime & Package Manager**: Node.js 20+ (verified on 24), npm.
 - **Deployment**: Self-hosted static site served at `link.eimlab.org`.
 
 ### 2.2 Directory Layout & Component Roles
-- `public/`: Deployable static root — page assets plus crawler and AI metadata (`llms.txt`, `llms-full.txt`, `sitemap.xml`, `robots.txt`, `manifest.webmanifest`).
+- `src/`: Application source.
+  - `src/pages/index.astro`: Single-page link hub (layout, hero, groups, footer).
+  - `src/components/`: `Icon.astro` (inline SVG map) and `LinkCard.astro` (accessible link row).
+  - `src/data/site.ts`: Site metadata and link groups — edit all links here.
+  - `src/styles/global.css`: Tailwind import, shadcn/ui tokens, background treatment.
+- `public/`: Deployable static root — assets plus crawler and AI metadata (`llms.txt`, `llms-full.txt`, `sitemap.xml`, `robots.txt`, `manifest.webmanifest`).
+- `public/assets/`: Lab emblem and favicon (downloaded from `eimlab.org`).
 - `public/.well-known/`: RFC 9116 `security.txt` disclosure file.
 - `.github/workflows/`: CI/CD pipelines.
-- `src/` (or equivalent): Application source and link data, to be added when the initial scaffold lands.
 - Root documentation: `README.md`, `AGENTS.md`, `CLAUDE.md`, `GEMINI.md`, `CONTRIBUTING.md`, `CODE_OF_CONDUCT.md`, `SECURITY.md`, `LICENSE`.
 
 ### 2.3 Role-Based Access Control & Security Scoping
@@ -118,11 +122,14 @@ The project toolchain has not been chosen yet. Update this section when the init
    - Commit conventions: All commits must follow the [Conventional Commits](https://www.conventionalcommits.org/) specification (`feat:`, `fix:`, `docs:`, `style:`, `refactor:`, `test:`, `chore:`).
 
 ### 4.2 Testing & Portability
-1. **Verification Commands**:
-   - Not yet configured. Once the toolchain lands, document the lint, test, and build commands here and run them in CI.
-   - Until then, validate static output: well-formed XML (`sitemap.xml`), valid JSON (`manifest.webmanifest`), and resolvable links in `public/`.
-2. **Test Isolation**: Local development environments must run on isolated local ports without conflicting with existing services.
+1. **Verification Commands** (run from the repository root):
+   - `npm install` — install dependencies.
+   - `npm run build` — production static build to `dist/`; must succeed with zero errors.
+   - `npm run check` — Astro/TypeScript diagnostics; must report zero errors and warnings.
+   - `npm run dev` — local dev server at `http://localhost:4321/`.
+   - Static metadata sanity: `sitemap.xml` is well-formed XML and `manifest.webmanifest` is valid JSON.
+2. **Test Isolation**: Local development environments must run on isolated local ports without conflicting with existing services. Astro defaults to port `4321`; override with `npm run dev -- --port <port>` when that port is occupied.
 
 ### 4.3 Containerization & Ports (If Applicable)
-- **Dev Server**: Local port not yet decided; document it here once the toolchain lands.
-- **Production / Deployment Target**: Self-hosted static host at `link.eimlab.org`.
+- **Dev Server**: Local port `4321` (Astro default); override with `--port` if occupied.
+- **Production / Deployment Target**: Self-hosted static host at `link.eimlab.org`; build output in `dist/`.
