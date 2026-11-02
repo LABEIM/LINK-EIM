@@ -16,7 +16,7 @@
 - **Content:** Keystatic CMS (Cloud storage). Site settings and link groups are YAML in `src/content/`, loaded at build time by `src/data/site.ts`; links may use optional 16:9 images and groups may use a list or horizontal-scroll layout.
 - **Interface:** An editable social links list (platform + URL) renders as icons under the tagline; the card's top-right three-dot button opens a share dialog with a page preview and copy, WhatsApp, X, LinkedIn, email, and native-share actions. Horizontal groups show centered translucent overlay arrows on pointer devices and swipe on touch.
 - **Deployment:** Cloudflare Worker with static assets, served at `link.eimlab.org` (`dist/client` + `dist/server`).
-- **CI/CD:** LABEIM shared CI/CD workflow (`.github/workflows/ci-cd.yml`); the Worker cutover is still required for this layout.
+- **CI/CD:** LABEIM shared CI/CD workflow (`.github/workflows/ci-cd.yml`) deploys the prerendered `dist/client` to Cloudflare Pages; the Worker cutover is still required for the `/keystatic` admin.
 
 ## Key Endpoints & Routes
 - `/` : Primary link hub / landing page

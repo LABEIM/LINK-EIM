@@ -23,6 +23,11 @@ jobs:
       enable_cloudflare: true
       # [REQUIRED] Update with target Cloudflare Pages project name (e.g., 'project-comingsoon')
       cloudflare_project_name: 'link-eim'
+      # Astro's Cloudflare adapter writes the prerendered page to dist/client and the Worker to
+      # dist/server. The shared action deploys a static directory to Pages, so point it at the
+      # client output; otherwise it finds no dist/index.html and uploads its placeholder.
+      # The /keystatic admin still needs the Worker cutover.
+      dist_dir: 'dist/client'
       enable_lighthouse: true
       lighthouse_routes: |
         /

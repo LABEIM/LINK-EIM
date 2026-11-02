@@ -66,7 +66,9 @@ npm run build
 npx wrangler deploy --config dist/server/wrangler.json
 ```
 
-The generated config serves `dist/client` through the `ASSETS` binding, provisions the `SESSION` KV namespace on deploy, and declares the `IMAGES` binding. The Cloudflare custom domain for `link.eimlab.org` must point at this Worker. The shared Pages deployment in `.github/workflows/ci-cd.yml` still targets a static `dist/` directory and is not compatible with this layout; do not publish this branch to production until the Worker deploy and domain cutover are done. Serving `dist/client` alone still works for the public page but returns 404 for `/keystatic`.
+The generated config serves `dist/client` through the `ASSETS` binding, provisions the `SESSION` KV namespace on deploy, and declares the `IMAGES` binding. The Cloudflare custom domain for `link.eimlab.org` must point at this Worker.
+
+Until that cutover is done, the shared Pages workflow in `.github/workflows/ci-cd.yml` deploys `dist/client` so the prerendered public page is live. That deployment serves the link hub, metadata, and share dialog, but `/keystatic` and `/api/keystatic/*` return 404 because Pages cannot run the Worker's server routes. Use a local dev server (`npm run dev`) for CMS editing until the Worker deployment and domain move are complete.
 
 ---
 
