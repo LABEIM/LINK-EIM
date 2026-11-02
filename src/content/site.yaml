@@ -1,0 +1,21 @@
+name: EIM Lab
+fullName: Enterprise Infrastructure Management
+tagline: Research lab at Telkom University for enterprise networks, cybersecurity, cloud, and enterprise systems.
+institution: Telkom University
+faculty: S1 Information Systems, School of Industrial Engineering (FRI)
+url: https://link.eimlab.org
+labUrl: https://eimlab.org
+email: lab@eimlab.org
+address: Gedung TULT, 8th Floor, Room TULT.08.09, Bandung, Indonesia
+hours: Monday–Friday, 08.00–17.00 WIB
+socials:
+  instagram: https://www.instagram.com/eimresearchlab/
+  linkedin: https://www.linkedin.com/company/keprofesian-enterprise-infrastructure-management-eim/
+  github: https://github.com/LABEIM
+status:
+  label: Assistant Recruitment Open
+  href: https://eimlab.org/registration
+featuredLink:
+  label: Visit the lab website
+  href: https://eimlab.org
+  icon: globe

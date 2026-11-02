@@ -11,14 +11,16 @@
 - **Maintainer Contact:** lab@eimlab.org
 
 ## Tech Stack & Architecture
-- **Framework:** Astro 7 (static output), TypeScript strict.
+- **Framework:** Astro 7, TypeScript strict. The public page is prerendered; CMS admin/API routes are server-rendered.
 - **Styling:** Tailwind CSS v4 with semantic design tokens (centered rounded card on the lab's deep teal-black canvas, warm bone text, single teal accent from the emblem, drifting binary field, self-hosted Instrument Serif + IBM Plex Sans/Mono).
-- **Content:** Plain data arrays in `src/data/site.ts` (Keystatic-friendly).
-- **Deployment:** Self-hosted static site, served at `link.eimlab.org`.
-- **CI/CD:** LABEIM shared CI/CD workflow (`.github/workflows/ci-cd.yml`).
+- **Content:** Keystatic CMS (Cloud storage). Site settings and link groups are YAML in `src/content/`, loaded at build time by `src/data/site.ts`.
+- **Deployment:** Cloudflare Worker with static assets, served at `link.eimlab.org` (`dist/client` + `dist/server`).
+- **CI/CD:** LABEIM shared CI/CD workflow (`.github/workflows/ci-cd.yml`); the Worker cutover is still required for this layout.
 
 ## Key Endpoints & Routes
 - `/` : Primary link hub / landing page
+- `/keystatic` : Keystatic CMS admin (Keystatic Cloud sign-in required; not indexed)
+- `/api/keystatic/*` : CMS content API (authenticated; not indexed)
 - `/.well-known/security.txt` : RFC 9116 security disclosure
 
 ## Developer & Agent Guidelines

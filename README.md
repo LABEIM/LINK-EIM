@@ -26,7 +26,7 @@ The page brings all of the lab's public destinations into a single, easy-to-shar
 - **News & Announcements** — the latest updates, events, and opportunities.
 - **Social & Contact** — official social channels and the lab contact email.
 
-The project is built around three priorities: **speed** (static output and minimal client-side JavaScript), **accessibility** (semantic HTML, keyboard support, and WCAG AA contrast), and **privacy** (no third-party trackers, all assets self-hosted). It is designed to be deployable on the lab's own infrastructure and editable by the team without any proprietary dependency.
+The project is built around three priorities: **speed** (a prerendered public page and minimal client-side JavaScript), **accessibility** (semantic HTML, keyboard support, and WCAG AA contrast), and **privacy** (no third-party trackers, all assets self-hosted). It is designed to be deployable on the lab's own infrastructure and editable by the team without any proprietary dependency.
 
 - **Status:** In Active Development
 - **Maintained by:** Enterprise Infrastructure Management (EIM) Research Laboratory, Telkom University
@@ -36,18 +36,33 @@ The project is built around three priorities: **speed** (static output and minim
 
 ## Tech Stack & Development
 
-- **Framework:** [Astro](https://astro.build) 7 (static output; a small canvas script drives the decorative binary field).
+- **Framework:** [Astro](https://astro.build) 7. The public page is prerendered; the Keystatic admin and API routes are server-rendered by the Cloudflare adapter.
 - **Styling:** Tailwind CSS v4 with semantic design tokens — a centered rounded card on the lab's deep teal-black canvas, warm bone text, a single teal accent, and self-hosted Instrument Serif plus IBM Plex Sans/Mono.
-- **Content:** Link groups are plain arrays in [`src/data/site.ts`](src/data/site.ts), ready for a Keystatic collection later.
+- **Content:** Managed with [Keystatic](https://keystatic.com). Site settings live in [`src/content/site.yaml`](src/content/site.yaml), link groups in [`src/content/groups/`](src/content/groups/); [`src/data/site.ts`](src/data/site.ts) validates and loads them at build time.
 
 ```bash
 npm install      # install dependencies
-npm run dev      # dev server at http://localhost:4321/
-npm run build    # static build to dist/
+npm run dev      # dev server at http://localhost:4321/ (admin at /keystatic)
+npm run build    # build to dist/client (assets) and dist/server (Cloudflare Worker)
 npm run check    # Astro/TypeScript diagnostics
 ```
 
 All public metadata (`llms.txt`, `llms-full.txt`, `sitemap.xml`, `robots.txt`, `manifest.webmanifest`) lives in `public/` and is copied verbatim into the build.
+
+### Editing Content
+
+Open `/keystatic` on a running site and sign in with Keystatic Cloud. The Cloud project is read from `PUBLIC_KEYSTATIC_CLOUD_PROJECT` (`team/project`); set it in the build environment and locally in `.env`. Changes are committed to this repository through Keystatic Cloud's GitHub App. The YAML files under `src/content/` can also be edited directly — the build fails with a field-level error if a required value is missing or an icon is unknown.
+
+### Deployment
+
+Because the CMS admin is authenticated and server-rendered, the site now builds as a Cloudflare Worker with static assets:
+
+```bash
+npm run build
+npx wrangler deploy --config dist/server/wrangler.json
+```
+
+The generated config serves `dist/client` through the `ASSETS` binding, provisions the `SESSION` KV namespace on deploy, and declares the `IMAGES` binding. The Cloudflare custom domain for `link.eimlab.org` must point at this Worker. The shared Pages deployment in `.github/workflows/ci-cd.yml` still targets a static `dist/` directory and is not compatible with this layout; do not publish this branch to production until the Worker deploy and domain cutover are done. Serving `dist/client` alone still works for the public page but returns 404 for `/keystatic`.
 
 ---
 

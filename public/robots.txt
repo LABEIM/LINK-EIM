@@ -11,6 +11,8 @@ User-agent: Applebot
 User-agent: DuckDuckBot
 Allow: /
 Disallow: /_artifacts/
+Disallow: /keystatic
+Disallow: /api/keystatic
 
 # AI Crawlers & LLM Agents
 User-agent: GPTBot
@@ -21,11 +23,15 @@ Allow: /
 Allow: /llms.txt
 Allow: /llms-full.txt
 Disallow: /_artifacts/
+Disallow: /keystatic
+Disallow: /api/keystatic
 
 # Default Crawl Rules
 User-agent: *
 Allow: /
 Disallow: /_artifacts/
+Disallow: /keystatic
+Disallow: /api/keystatic
 
 # Sitemaps
 Sitemap: https://link.eimlab.org/sitemap.xml

@@ -1,0 +1,19 @@
+title: Contact & Socials
+order: 4
+links:
+  - label: Instagram
+    description: '@eimresearchlab'
+    href: https://www.instagram.com/eimresearchlab/
+    icon: instagram
+  - label: LinkedIn
+    description: EIM Research Laboratory
+    href: https://www.linkedin.com/company/keprofesian-enterprise-infrastructure-management-eim/
+    icon: linkedin
+  - label: Email
+    description: lab@eimlab.org
+    href: 'mailto:lab@eimlab.org'
+    icon: mail
+  - label: Location Map
+    description: Gedung TULT, Bandung
+    href: https://maps.google.com/?q=Gedung+TULT+Telkom+University+Bandung
+    icon: map-pin

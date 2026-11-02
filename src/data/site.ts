@@ -1,34 +1,23 @@
 /**
- * Single source of truth for the link hub.
+ * Build-time content loader for the Keystatic-managed YAML in `src/content/`.
  *
- * Keystatic-friendly shape: plain, serialisable objects and arrays — no functions,
- * no imports. Swap this module for `keystatic` collections later without touching
- * the page template.
+ * The YAML is imported with Vite's `?raw` glob so the build never touches the
+ * filesystem at runtime (Cloudflare Workers has none). Keystatic validates the
+ * shapes in its admin UI; these guards keep hand-edited files from failing
+ * silently at build time.
  */
 
-export type IconName =
-  | 'arrow-up-right'
-  | 'book-open'
-  | 'calendar'
-  | 'clipboard-check'
-  | 'file-text'
-  | 'flask-conical'
-  | 'github'
-  | 'globe'
-  | 'graduation-cap'
-  | 'info'
-  | 'instagram'
-  | 'linkedin'
-  | 'mail'
-  | 'map-pin'
-  | 'newspaper'
-  | 'users';
+import { parse } from 'yaml';
+import { linkIcons, type LinkIcon } from './icons';
+import siteSource from '../content/site.yaml?raw';
+
+export type { IconName } from './icons';
 
 export interface LinkItem {
   label: string;
   description?: string;
   href: string;
-  icon: IconName;
+  icon: LinkIcon;
 }
 
 export interface LinkGroup {
@@ -36,132 +25,134 @@ export interface LinkGroup {
   links: LinkItem[];
 }
 
-export const site = {
-  name: 'EIM Lab',
-  fullName: 'Enterprise Infrastructure Management',
-  tagline:
-    'Research lab at Telkom University for enterprise networks, cybersecurity, cloud, and enterprise systems.',
-  institution: 'Telkom University',
-  faculty: 'S1 Information Systems, School of Industrial Engineering (FRI)',
-  url: 'https://link.eimlab.org',
-  labUrl: 'https://eimlab.org',
-  email: 'lab@eimlab.org',
-  address: 'Gedung TULT, 8th Floor, Room TULT.08.09, Bandung, Indonesia',
-  hours: 'Monday–Friday, 08.00–17.00 WIB',
+export interface SiteSettings {
+  name: string;
+  fullName: string;
+  tagline: string;
+  institution: string;
+  faculty: string;
+  url: string;
+  labUrl: string;
+  email: string;
+  address: string;
+  hours: string;
   socials: {
-    instagram: 'https://www.instagram.com/eimresearchlab/',
-    linkedin:
-      'https://www.linkedin.com/company/keprofesian-enterprise-infrastructure-management-eim/',
-    github: 'https://github.com/LABEIM',
-  },
+    instagram: string;
+    linkedin: string;
+    github: string;
+  };
   status: {
-    label: 'Assistant Recruitment Open',
-    href: 'https://eimlab.org/registration',
-  },
+    label: string;
+    href: string;
+  };
   featuredLink: {
-    label: 'Visit the lab website',
-    href: 'https://eimlab.org',
-    icon: 'globe',
-  } satisfies LinkItem,
-};
+    label: string;
+    href: string;
+    icon: LinkIcon;
+  };
+}
 
-export const linkGroups: LinkGroup[] = [
-  {
-    title: 'Academics & Practicum',
-    links: [
-      {
-        label: 'Practicum & Event Schedule',
-        description: 'Sessions, workshops, and events',
-        href: 'https://eimlab.org/event',
-        icon: 'calendar',
-      },
-      {
-        label: 'Learning Modules',
-        description: 'Materials and lab repositories',
-        href: 'https://github.com/LABEIM',
-        icon: 'book-open',
-      },
-      {
-        label: 'Academic Guide',
-        description: 'Lab handbook and practicum overview',
-        href: 'https://eimlab.org/about',
-        icon: 'file-text',
-      },
-    ],
-  },
-  {
-    title: 'Research & Publications',
-    links: [
-      {
-        label: 'Research Divisions',
-        description: 'Networks, security, and cloud',
-        href: 'https://eimlab.org/structure',
-        icon: 'flask-conical',
-      },
-      {
-        label: 'News & Publications',
-        description: 'Research output and announcements',
-        href: 'https://eimlab.org/news',
-        icon: 'newspaper',
-      },
-      {
-        label: 'GitHub Organization',
-        description: 'Open-source lab projects',
-        href: 'https://github.com/LABEIM',
-        icon: 'github',
-      },
-    ],
-  },
-  {
-    title: 'Recruitment & Team',
-    links: [
-      {
-        label: 'Assistant Recruitment',
-        description: 'Join as a research assistant',
-        href: 'https://eimlab.org/registration',
-        icon: 'clipboard-check',
-      },
-      {
-        label: 'Meet the Team',
-        description: 'Faculty, researchers, and members',
-        href: 'https://eimlab.org/structure',
-        icon: 'users',
-      },
-      {
-        label: 'About EIM Lab',
-        description: 'Vision, mission, and facilities',
-        href: 'https://eimlab.org/about',
-        icon: 'info',
-      },
-    ],
-  },
-  {
-    title: 'Contact & Socials',
-    links: [
-      {
-        label: 'Instagram',
-        description: '@eimresearchlab',
-        href: site.socials.instagram,
-        icon: 'instagram',
-      },
-      {
-        label: 'LinkedIn',
-        description: 'EIM Research Laboratory',
-        href: site.socials.linkedin,
-        icon: 'linkedin',
-      },
-      {
-        label: 'Email',
-        description: site.email,
-        href: `mailto:${site.email}`,
-        icon: 'mail',
-      },
-      {
-        label: 'Location Map',
-        description: 'Gedung TULT, Bandung',
-        href: 'https://maps.google.com/?q=Gedung+TULT+Telkom+University+Bandung',
-        icon: 'map-pin',
-      },
-    ],
-  },
-];
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return typeof value === 'object' && value !== null && !Array.isArray(value);
+}
+
+function readString(value: unknown, field: string): string {
+  if (typeof value !== 'string' || value.trim() === '') {
+    throw new Error(`Keystatic content error: ${field} must be a non-empty string`);
+  }
+  return value;
+}
+
+function readRecord(value: unknown, field: string): Record<string, unknown> {
+  if (!isRecord(value)) {
+    throw new Error(`Keystatic content error: ${field} must be a mapping`);
+  }
+  return value;
+}
+
+function readIcon(value: unknown, field: string): LinkIcon {
+  const icon = readString(value, field);
+  if (!linkIcons.has(icon)) {
+    throw new Error(`Keystatic content error: ${field} has unknown icon "${icon}"`);
+  }
+  return icon as LinkIcon;
+}
+
+function parseSite(source: string): SiteSettings {
+  const data = readRecord(parse(source), 'src/content/site.yaml');
+  const socials = readRecord(data.socials, 'socials');
+  const status = readRecord(data.status, 'status');
+  const featuredLink = readRecord(data.featuredLink, 'featuredLink');
+
+  return {
+    name: readString(data.name, 'name'),
+    fullName: readString(data.fullName, 'fullName'),
+    tagline: readString(data.tagline, 'tagline'),
+    institution: readString(data.institution, 'institution'),
+    faculty: readString(data.faculty, 'faculty'),
+    url: readString(data.url, 'url'),
+    labUrl: readString(data.labUrl, 'labUrl'),
+    email: readString(data.email, 'email'),
+    address: readString(data.address, 'address'),
+    hours: readString(data.hours, 'hours'),
+    socials: {
+      instagram: readString(socials.instagram, 'socials.instagram'),
+      linkedin: readString(socials.linkedin, 'socials.linkedin'),
+      github: readString(socials.github, 'socials.github'),
+    },
+    status: {
+      label: readString(status.label, 'status.label'),
+      href: readString(status.href, 'status.href'),
+    },
+    featuredLink: {
+      label: readString(featuredLink.label, 'featuredLink.label'),
+      href: readString(featuredLink.href, 'featuredLink.href'),
+      icon: readIcon(featuredLink.icon, 'featuredLink.icon'),
+    },
+  };
+}
+
+function parseLink(entry: unknown, field: string): LinkItem {
+  const link = readRecord(entry, field);
+  const description =
+    typeof link.description === 'string' && link.description.trim() !== ''
+      ? link.description
+      : undefined;
+
+  return {
+    label: readString(link.label, `${field}.label`),
+    ...(description ? { description } : {}),
+    href: readString(link.href, `${field}.href`),
+    icon: readIcon(link.icon, `${field}.icon`),
+  };
+}
+
+function parseGroup(source: string, path: string): LinkGroup & { order: number } {
+  const data = readRecord(parse(source), path);
+
+  if (typeof data.order !== 'number' || !Number.isFinite(data.order)) {
+    throw new Error(`Keystatic content error: ${path} order must be a number`);
+  }
+  if (!Array.isArray(data.links) || data.links.length === 0) {
+    throw new Error(`Keystatic content error: ${path} links must be a non-empty list`);
+  }
+
+  return {
+    title: readString(data.title, `${path} title`),
+    order: data.order,
+    links: data.links.map((entry, index) => parseLink(entry, `${path} link ${index + 1}`)),
+  };
+}
+
+const groupSources = import.meta.glob<string>('../content/groups/*.yaml', {
+  eager: true,
+  query: '?raw',
+  import: 'default',
+});
+
+export const site = parseSite(siteSource);
+
+export const linkGroups: LinkGroup[] = Object.entries(groupSources)
+  .map(([path, source]) => parseGroup(source, path))
+  .sort((a, b) => a.order - b.order)
+  .map(({ order: _order, ...group }) => group);

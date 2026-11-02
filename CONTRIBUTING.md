@@ -102,12 +102,19 @@ Ensure you have the required runtimes and tools installed on your development ma
 2. **Install dependencies, start the development server, and verify the baseline:**
    ```bash
    npm install
-   npm run dev      # http://localhost:4321/
+   npm run dev      # http://localhost:4321/ (admin at /keystatic)
    npm run check    # Astro/TypeScript diagnostics
-   npm run build    # static build to dist/
+   npm run build    # dist/client (assets) + dist/server (Cloudflare Worker)
    ```
 
-Link content (labels, descriptions, URLs, status badge) is defined in `src/data/site.ts`; the page itself lives in `src/pages/index.astro`.
+### Editing Links & Site Settings
+
+Content is managed with Keystatic. Use either route:
+
+- **Keystatic admin** — open `http://localhost:4321/keystatic`, sign in with Keystatic Cloud, and edit "Site settings" or "Link groups". Saving commits the YAML to this repository through Keystatic Cloud's GitHub App. Set `PUBLIC_KEYSTATIC_CLOUD_PROJECT=team/project` in `.env` (see `.env.example`).
+- **Directly** — site settings are in `src/content/site.yaml`; each link group is `src/content/groups/<slug>.yaml`. A group's filename is its slug; do not add a `slug:` key. Groups render by the `order` field. Icons must be one of the values in `src/data/icons.ts`.
+
+`src/data/site.ts` parses and validates the YAML at build time, so a missing required field or unknown icon fails the build with a clear message. The page itself lives in `src/pages/index.astro`.
 
 ---
 

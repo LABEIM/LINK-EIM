@@ -1,0 +1,15 @@
+title: Academics & Practicum
+order: 1
+links:
+  - label: Practicum & Event Schedule
+    description: Sessions, workshops, and events
+    href: https://eimlab.org/event
+    icon: calendar
+  - label: Learning Modules
+    description: Materials and lab repositories
+    href: https://github.com/LABEIM
+    icon: book-open
+  - label: Academic Guide
+    description: Lab handbook and practicum overview
+    href: https://eimlab.org/about
+    icon: file-text

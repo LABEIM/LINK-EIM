@@ -1,0 +1,15 @@
+title: Research & Publications
+order: 2
+links:
+  - label: Research Divisions
+    description: Networks, security, and cloud
+    href: https://eimlab.org/structure
+    icon: flask-conical
+  - label: News & Publications
+    description: Research output and announcements
+    href: https://eimlab.org/news
+    icon: newspaper
+  - label: GitHub Organization
+    description: Open-source lab projects
+    href: https://github.com/LABEIM
+    icon: github

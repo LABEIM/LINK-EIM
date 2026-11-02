@@ -1,0 +1,15 @@
+title: Recruitment & Team
+order: 3
+links:
+  - label: Assistant Recruitment
+    description: Join as a research assistant
+    href: https://eimlab.org/registration
+    icon: clipboard-check
+  - label: Meet the Team
+    description: Faculty, researchers, and members
+    href: https://eimlab.org/structure
+    icon: users
+  - label: About EIM Lab
+    description: Vision, mission, and facilities
+    href: https://eimlab.org/about
+    icon: info
