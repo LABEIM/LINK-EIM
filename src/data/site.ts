@@ -8,7 +8,12 @@
  */
 
 import { parse } from 'yaml';
-import { linkIcons, type LinkIcon } from './icons';
+import {
+  linkIcons,
+  socialIcons,
+  type LinkIcon,
+  type SocialIcon,
+} from './icons';
 import siteSource from '../content/site.yaml?raw';
 
 export type { IconName } from './icons';
@@ -34,6 +39,11 @@ export interface LinkGroup {
   links: LinkItem[];
 }
 
+export interface SocialLink {
+  platform: SocialIcon;
+  url: string;
+}
+
 export interface SiteSettings {
   name: string;
   fullName: string;
@@ -45,11 +55,7 @@ export interface SiteSettings {
   email: string;
   address: string;
   hours: string;
-  socials: {
-    instagram: string;
-    linkedin: string;
-    github: string;
-  };
+  socials: SocialLink[];
   featuredLink: {
     label: string;
     href: string;
@@ -83,9 +89,27 @@ function readIcon(value: unknown, field: string): LinkIcon {
   return icon as LinkIcon;
 }
 
+function readSocials(value: unknown, field: string): SocialLink[] {
+  if (!Array.isArray(value)) {
+    throw new Error(`Keystatic content error: ${field} must be a list`);
+  }
+  return value.map((entry, index) => {
+    const item = readRecord(entry, `${field} ${index + 1}`);
+    const platform = readString(item.platform, `${field} ${index + 1}.platform`);
+    if (!socialIcons.has(platform)) {
+      throw new Error(
+        `Keystatic content error: ${field} ${index + 1}.platform has unknown platform "${platform}"`,
+      );
+    }
+    return {
+      platform: platform as SocialIcon,
+      url: readString(item.url, `${field} ${index + 1}.url`),
+    };
+  });
+}
+
 function parseSite(source: string): SiteSettings {
   const data = readRecord(parse(source), 'src/content/site.yaml');
-  const socials = readRecord(data.socials, 'socials');
   const featuredLink = readRecord(data.featuredLink, 'featuredLink');
 
   return {
@@ -99,11 +123,7 @@ function parseSite(source: string): SiteSettings {
     email: readString(data.email, 'email'),
     address: readString(data.address, 'address'),
     hours: readString(data.hours, 'hours'),
-    socials: {
-      instagram: readString(socials.instagram, 'socials.instagram'),
-      linkedin: readString(socials.linkedin, 'socials.linkedin'),
-      github: readString(socials.github, 'socials.github'),
-    },
+    socials: readSocials(data.socials, 'socials'),
     featuredLink: {
       label: readString(featuredLink.label, 'featuredLink.label'),
       href: readString(featuredLink.href, 'featuredLink.href'),

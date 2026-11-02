@@ -25,9 +25,12 @@
 @layer base {
   html {
     color-scheme: dark;
+    /* The scroll-snap deck must swipe inside its own track, never pan the page. */
+    overflow-x: clip;
   }
 
   body {
+    overflow-x: clip;
     background-color: var(--color-canvas);
     color: var(--color-ink);
     font-family: var(--font-sans);
@@ -60,5 +63,38 @@ body::before {
 @media (hover: hover) and (pointer: fine) {
   [data-scroll-controls]:not([hidden]) {
     display: block;
+  }
+}
+
+/* Share dialog: a flat scrim and a short rise, with no motion for reduced-motion users. */
+[data-share-dialog]::backdrop {
+  background: rgb(3 10 9 / 0.78);
+}
+
+[data-share-dialog][open] {
+  animation: share-in 160ms cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+[data-share-dialog][open]::backdrop {
+  animation: share-fade 160ms ease-out;
+}
+
+@keyframes share-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px) scale(0.98);
+  }
+}
+
+@keyframes share-fade {
+  from {
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [data-share-dialog][open],
+  [data-share-dialog][open]::backdrop {
+    animation: none;
   }
 }

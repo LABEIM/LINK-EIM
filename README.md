@@ -55,7 +55,7 @@ Open `/keystatic` on a running site and sign in with Keystatic Cloud. The Cloud 
 
 The **highlighted link** under the tagline is the single accent action — use it for recruitment, an announcement, or the most important destination. Links may also carry an optional 16:9 image and alt text, which renders them as media cards. A group can use a horizontal-scroll layout instead of the vertical list, but only when every link in it has an image.
 
-The header renders the configured social profiles plus the contact email as an icon row, and the three-dot menu at the card's top-right shares the page through the native share sheet where available, falling back to copying the URL. Horizontal groups overlay translucent arrows on the slides for pointer devices; touch users swipe the row.
+The header renders the editable **Social links** list — each item pairs a platform with a URL, can be reordered, and removing every item hides the row. The three-dot button at the card's top-right opens a share dialog with a page preview, copy link, WhatsApp, X, LinkedIn, and email actions, plus the native share sheet where the browser supports it. Horizontal groups overlay translucent arrows centered on the slides for pointer devices; touch users swipe the row.
 
 ### Deployment
 

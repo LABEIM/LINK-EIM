@@ -22,14 +22,46 @@ export const iconOptions = [
 
 export type LinkIcon = (typeof iconOptions)[number]['value'];
 
-/** Includes the controls used by `LinkCard`, the scroller, and the share menu. */
+/** Social platforms offered by the editable Site settings row. */
+export const socialOptions = [
+  { label: 'Instagram', value: 'instagram' },
+  { label: 'LinkedIn', value: 'linkedin' },
+  { label: 'GitHub', value: 'github' },
+  { label: 'YouTube', value: 'youtube' },
+  { label: 'X', value: 'x-twitter' },
+  { label: 'Facebook', value: 'facebook' },
+  { label: 'Email', value: 'mail' },
+  { label: 'Website', value: 'globe' },
+] as const;
+
+export type SocialIcon = (typeof socialOptions)[number]['value'];
+
+export const socialLabels: Record<SocialIcon, string> = {
+  instagram: 'Instagram',
+  linkedin: 'LinkedIn',
+  github: 'GitHub',
+  youtube: 'YouTube',
+  'x-twitter': 'X',
+  facebook: 'Facebook',
+  mail: 'Email the lab',
+  globe: 'Website',
+};
+
+export const socialIcons: ReadonlySet<string> = new Set(
+  socialOptions.map((option) => option.value),
+);
+
+/** Includes the controls used by `LinkCard`, the scroller, and the share dialog. */
 export type IconName =
   | LinkIcon
+  | SocialIcon
   | 'arrow-up-right'
   | 'chevron-left'
   | 'chevron-right'
   | 'more-horizontal'
   | 'share'
-  | 'link';
+  | 'link'
+  | 'x'
+  | 'message-circle';
 
 export const linkIcons: ReadonlySet<string> = new Set(iconOptions.map((option) => option.value));

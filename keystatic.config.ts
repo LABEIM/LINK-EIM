@@ -1,5 +1,5 @@
 import { collection, config, fields, singleton } from '@keystatic/core';
-import { iconOptions } from './src/data/icons';
+import { iconOptions, socialLabels, socialOptions } from './src/data/icons';
 
 /**
  * Keystatic Cloud storage: content is committed to the GitHub repository through
@@ -62,22 +62,25 @@ export default config({
           label: 'Office hours',
           validation: { isRequired: true },
         }),
-        socials: fields.object(
+        socials: fields.array(
+          fields.object({
+            platform: fields.select({
+              label: 'Platform',
+              options: socialOptions,
+              defaultValue: 'instagram',
+            }),
+            url: fields.text({
+              label: 'Link',
+              description: 'Use https://… for a web profile, or mailto:… for email.',
+              validation: { isRequired: true },
+            }),
+          }),
           {
-            instagram: fields.url({
-              label: 'Instagram',
-              validation: { isRequired: true },
-            }),
-            linkedin: fields.url({
-              label: 'LinkedIn',
-              validation: { isRequired: true },
-            }),
-            github: fields.url({
-              label: 'GitHub',
-              validation: { isRequired: true },
-            }),
-          },
-          { label: 'Social profiles' }
+            label: 'Social links',
+            description:
+              'Icons under the institution line. Drag to reorder; remove all to hide the row.',
+            itemLabel: (props) => socialLabels[props.fields.platform.value],
+          }
         ),
         featuredLink: fields.object(
           {

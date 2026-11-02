@@ -9,9 +9,14 @@ email: lab@eimlab.org
 address: Gedung TULT, 8th Floor, Room TULT.08.09, Bandung, Indonesia
 hours: Monday–Friday, 08.00–17.00 WIB
 socials:
-  instagram: https://www.instagram.com/eimresearchlab/
-  linkedin: https://www.linkedin.com/company/keprofesian-enterprise-infrastructure-management-eim/
-  github: https://github.com/LABEIM
+  - platform: instagram
+    url: https://www.instagram.com/eimresearchlab/
+  - platform: linkedin
+    url: https://www.linkedin.com/company/keprofesian-enterprise-infrastructure-management-eim/
+  - platform: github
+    url: https://github.com/LABEIM
+  - platform: mail
+    url: mailto:lab@eimlab.org
 featuredLink:
   label: Visit the lab website
   href: https://eimlab.org
