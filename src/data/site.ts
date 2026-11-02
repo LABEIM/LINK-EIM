@@ -13,15 +13,24 @@ import siteSource from '../content/site.yaml?raw';
 
 export type { IconName } from './icons';
 
+export type LinkLayout = 'list' | 'scroll';
+
+export interface LinkImage {
+  src: string;
+  alt: string;
+}
+
 export interface LinkItem {
   label: string;
   description?: string;
   href: string;
   icon: LinkIcon;
+  image?: LinkImage;
 }
 
 export interface LinkGroup {
   title: string;
+  layout: LinkLayout;
   links: LinkItem[];
 }
 
@@ -40,10 +49,6 @@ export interface SiteSettings {
     instagram: string;
     linkedin: string;
     github: string;
-  };
-  status: {
-    label: string;
-    href: string;
   };
   featuredLink: {
     label: string;
@@ -81,7 +86,6 @@ function readIcon(value: unknown, field: string): LinkIcon {
 function parseSite(source: string): SiteSettings {
   const data = readRecord(parse(source), 'src/content/site.yaml');
   const socials = readRecord(data.socials, 'socials');
-  const status = readRecord(data.status, 'status');
   const featuredLink = readRecord(data.featuredLink, 'featuredLink');
 
   return {
@@ -100,10 +104,6 @@ function parseSite(source: string): SiteSettings {
       linkedin: readString(socials.linkedin, 'socials.linkedin'),
       github: readString(socials.github, 'socials.github'),
     },
-    status: {
-      label: readString(status.label, 'status.label'),
-      href: readString(status.href, 'status.href'),
-    },
     featuredLink: {
       label: readString(featuredLink.label, 'featuredLink.label'),
       href: readString(featuredLink.href, 'featuredLink.href'),
@@ -118,12 +118,18 @@ function parseLink(entry: unknown, field: string): LinkItem {
     typeof link.description === 'string' && link.description.trim() !== ''
       ? link.description
       : undefined;
+  const imageSrc =
+    typeof link.image === 'string' && link.image.trim() !== '' ? link.image : undefined;
+  const image = imageSrc
+    ? { src: imageSrc, alt: readString(link.imageAlt, `${field}.imageAlt`) }
+    : undefined;
 
   return {
     label: readString(link.label, `${field}.label`),
     ...(description ? { description } : {}),
     href: readString(link.href, `${field}.href`),
     icon: readIcon(link.icon, `${field}.icon`),
+    ...(image ? { image } : {}),
   };
 }
 
@@ -137,10 +143,21 @@ function parseGroup(source: string, path: string): LinkGroup & { order: number }
     throw new Error(`Keystatic content error: ${path} links must be a non-empty list`);
   }
 
+  const layout = data.layout ?? 'list';
+  if (layout !== 'list' && layout !== 'scroll') {
+    throw new Error(`Keystatic content error: ${path} layout must be "list" or "scroll"`);
+  }
+
+  const links = data.links.map((entry, index) => parseLink(entry, `${path} link ${index + 1}`));
+  if (layout === 'scroll' && links.some((link) => !link.image)) {
+    throw new Error(`Keystatic content error: ${path} scroll layout requires an image on every link`);
+  }
+
   return {
     title: readString(data.title, `${path} title`),
+    layout,
     order: data.order,
-    links: data.links.map((entry, index) => parseLink(entry, `${path} link ${index + 1}`)),
+    links,
   };
 }
 

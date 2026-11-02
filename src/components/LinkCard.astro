@@ -7,23 +7,78 @@ interface Props {
 }
 
 const { link } = Astro.props;
+const image = link.image;
 const isExternal = link.href.startsWith('http');
+
+const focus =
+  'focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-card focus-visible:outline-none';
+const motion = 'transition-[background-color,border-color,transform] duration-150 motion-reduce:transition-none';
 ---
 
-<a
-  href={link.href}
-  target={isExternal ? '_blank' : undefined}
-  rel={isExternal ? 'noopener noreferrer' : undefined}
-  class="group grid min-h-15 grid-cols-[1.5rem_1fr_1.5rem] items-center gap-3 rounded-xl border border-line bg-surface px-4 py-2.5 transition-[background-color,border-color,transform] duration-150 hover:border-accent/35 hover:bg-surface-hover active:scale-[0.99] focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-card focus-visible:outline-none motion-reduce:transition-none sm:px-5"
->
-  <Icon
-    name={link.icon}
-    class="size-5 text-ink-muted transition-colors duration-150 group-hover:text-accent motion-reduce:transition-none"
-  />
-  <span class="truncate text-center text-base font-medium text-ink">{link.label}</span>
-  <Icon
-    name="arrow-up-right"
-    class="size-[18px] justify-self-end text-ink-muted transition-[color,transform] duration-150 group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:text-accent motion-reduce:transition-none"
-  />
-  {isExternal && <span class="sr-only">(opens in a new tab)</span>}
-</a>
+{
+  image ? (
+    <a
+      href={link.href}
+      target={isExternal ? '_blank' : undefined}
+      rel={isExternal ? 'noopener noreferrer' : undefined}
+      class:list={[
+        'group flex h-full flex-col overflow-hidden rounded-xl border border-line bg-surface hover:border-accent/35 hover:bg-surface-hover active:scale-[0.99]',
+        focus,
+        motion,
+      ]}
+    >
+      <div class="aspect-video w-full overflow-hidden bg-canvas">
+        <img
+          src={image.src}
+          alt={image.alt}
+          loading="lazy"
+          decoding="async"
+          class="h-full w-full object-cover transition-transform duration-300 group-hover:scale-[1.03] motion-reduce:transition-none"
+        />
+      </div>
+      <div class="flex flex-1 flex-col px-4 pt-3 pb-3.5">
+        <div class="grid min-h-6 grid-cols-[1.25rem_1fr_1.25rem] items-center gap-2.5">
+          <Icon
+            name={link.icon}
+            class="size-4 text-ink-muted transition-colors duration-150 group-hover:text-accent motion-reduce:transition-none"
+          />
+          <span class="line-clamp-2 text-center text-[15px] leading-snug font-medium text-ink">
+            {link.label}
+          </span>
+          <Icon
+            name="arrow-up-right"
+            class="size-4 justify-self-end text-ink-muted transition-[color,transform] duration-150 group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:text-accent motion-reduce:transition-none"
+          />
+        </div>
+        {link.description && (
+          <p class="mt-1.5 line-clamp-2 text-center text-[12px] leading-snug text-ink-muted">
+            {link.description}
+          </p>
+        )}
+      </div>
+      {isExternal && <span class="sr-only">(opens in a new tab)</span>}
+    </a>
+  ) : (
+    <a
+      href={link.href}
+      target={isExternal ? '_blank' : undefined}
+      rel={isExternal ? 'noopener noreferrer' : undefined}
+      class:list={[
+        'group grid min-h-15 grid-cols-[1.5rem_1fr_1.5rem] items-center gap-3 rounded-xl border border-line bg-surface px-4 py-2.5 hover:border-accent/35 hover:bg-surface-hover active:scale-[0.99] sm:px-5',
+        focus,
+        motion,
+      ]}
+    >
+      <Icon
+        name={link.icon}
+        class="size-5 text-ink-muted transition-colors duration-150 group-hover:text-accent motion-reduce:transition-none"
+      />
+      <span class="truncate text-center text-base font-medium text-ink">{link.label}</span>
+      <Icon
+        name="arrow-up-right"
+        class="size-[18px] justify-self-end text-ink-muted transition-[color,transform] duration-150 group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:text-accent motion-reduce:transition-none"
+      />
+      {isExternal && <span class="sr-only">(opens in a new tab)</span>}
+    </a>
+  )
+}

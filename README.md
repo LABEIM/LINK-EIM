@@ -53,6 +53,8 @@ All public metadata (`llms.txt`, `llms-full.txt`, `sitemap.xml`, `robots.txt`, `
 
 Open `/keystatic` on a running site and sign in with Keystatic Cloud. The Cloud project is read from `PUBLIC_KEYSTATIC_CLOUD_PROJECT` (`team/project`); set it in the build environment and locally in `.env`. Changes are committed to this repository through Keystatic Cloud's GitHub App. The YAML files under `src/content/` can also be edited directly — the build fails with a field-level error if a required value is missing or an icon is unknown.
 
+The **highlighted link** under the tagline is the single accent action — use it for recruitment, an announcement, or the most important destination. Links may also carry an optional 16:9 image and alt text, which renders them as media cards. A group can use a horizontal-scroll layout instead of the vertical list, but only when every link in it has an image.
+
 ### Deployment
 
 Because the CMS admin is authenticated and server-rendered, the site now builds as a Cloudflare Worker with static assets:

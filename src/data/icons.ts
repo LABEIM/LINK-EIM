@@ -22,7 +22,7 @@ export const iconOptions = [
 
 export type LinkIcon = (typeof iconOptions)[number]['value'];
 
-/** Includes the arrow used by `LinkCard`, which editors never pick. */
-export type IconName = LinkIcon | 'arrow-up-right';
+/** Includes the controls used by `LinkCard` and the scroller, which editors never pick. */
+export type IconName = LinkIcon | 'arrow-up-right' | 'chevron-left' | 'chevron-right';
 
 export const linkIcons: ReadonlySet<string> = new Set(iconOptions.map((option) => option.value));

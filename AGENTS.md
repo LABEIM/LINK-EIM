@@ -50,7 +50,7 @@ Before ending a session, the agent must perform these tasks:
 - **UI Components & Library**: Semantic Tailwind design tokens; accessible Astro components. React is loaded only inside the Keystatic admin at `/keystatic` — the public page has no React runtime.
 - **Styling**: Tailwind CSS v4 via `@tailwindcss/vite`; a centered rounded card on the lab's deep teal-black canvas, warm bone text, a single teal accent sampled from the emblem, a drifting binary field, and fine film grain.
 - **State Management & Data Fetching**: None on the public page; Keystatic handles content reads/writes inside the admin.
-- **Database / CMS / ORM**: Keystatic CMS with Cloud storage (`keystatic.config.ts`). Content is YAML in `src/content/` (site settings singleton + link group collection), validated and loaded at build time by `src/data/site.ts`.
+- **Database / CMS / ORM**: Keystatic CMS with Cloud storage (`keystatic.config.ts`). Content is YAML in `src/content/` (site settings singleton + link group collection), validated and loaded at build time by `src/data/site.ts`. Links may carry an optional 16:9 image with alt text; groups choose a vertical list or horizontal-scroll layout (scroll requires an image on every link).
 - **Typography & Icons**: Self-hosted Instrument Serif (display) plus IBM Plex Sans/Mono via Fontsource; inline Lucide SVG icons; brand assets sourced from `eimlab.org`.
 - **Runtime & Package Manager**: Node.js 20+ (verified on 24), npm.
 - **Deployment**: Cloudflare Worker with static assets, served at `link.eimlab.org`. `npm run build` emits `dist/client` (assets) and `dist/server` (Worker); deploy with `npx wrangler deploy --config dist/server/wrangler.json`.
@@ -58,7 +58,7 @@ Before ending a session, the agent must perform these tasks:
 ### 2.2 Directory Layout & Component Roles
 - `src/`: Application source.
   - `src/pages/index.astro`: Single-page link hub (layout, hero, groups, footer).
-  - `src/components/`: `Icon.astro` (inline SVG map) and `LinkCard.astro` (accessible link row).
+  - `src/components/`: `Icon.astro` (inline SVG map), `LinkCard.astro` (row or image card), and `LinkScroller.astro` (horizontal, snap-scrolling group with accessible controls).
   - `src/content/site.yaml`: Site settings singleton — edit via `/keystatic` or directly.
   - `src/content/groups/*.yaml`: Link groups; filename is the slug, `order` controls rendering order.
   - `src/data/site.ts`: Build-time YAML loader and validation for the page.

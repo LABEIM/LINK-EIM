@@ -79,19 +79,6 @@ export default config({
           },
           { label: 'Social profiles' }
         ),
-        status: fields.object(
-          {
-            label: fields.text({
-              label: 'Label',
-              validation: { isRequired: true },
-            }),
-            href: fields.url({
-              label: 'Link',
-              validation: { isRequired: true },
-            }),
-          },
-          { label: 'Status badge' }
-        ),
         featuredLink: fields.object(
           {
             label: fields.text({
@@ -108,7 +95,11 @@ export default config({
               defaultValue: 'globe',
             }),
           },
-          { label: 'Featured link' }
+          {
+            label: 'Highlighted link',
+            description:
+              'The single accent action under the tagline. Use it for recruitment, announcements, or the most important destination.',
+          }
         ),
       },
     }),
@@ -132,6 +123,16 @@ export default config({
           defaultValue: 1,
           validation: { isRequired: true, min: 1 },
         }),
+        layout: fields.select({
+          label: 'Layout',
+          description:
+            'Horizontal scroll shows the group as swipeable image cards. It requires an image on every link.',
+          options: [
+            { label: 'Vertical list', value: 'list' },
+            { label: 'Horizontal scroll', value: 'scroll' },
+          ],
+          defaultValue: 'list',
+        }),
         links: fields.array(
           fields.object({
             label: fields.text({
@@ -146,6 +147,17 @@ export default config({
               label: 'URL',
               description: 'Supports https:// links and mailto: addresses.',
               validation: { isRequired: true },
+            }),
+            image: fields.image({
+              label: 'Image',
+              description:
+                'Optional 16:9 image shown above the label, for posters, banners, or covers.',
+              directory: 'public/images/links',
+              publicPath: '/images/links/',
+            }),
+            imageAlt: fields.text({
+              label: 'Image alt text',
+              description: 'Describe the image for screen readers. Required when an image is set.',
             }),
             icon: fields.select({
               label: 'Icon',
