@@ -1,0 +1,22 @@
+title: Latest from the Lab
+order: 0
+layout: scroll
+links:
+  - label: Open Recruitment 2026
+    description: Research assistant intake
+    href: https://eimlab.org/registration
+    icon: clipboard-check
+    image: /images/links/recruitment-2026.webp
+    imageAlt: Open Recruitment 2026 poster for EIM Lab research assistants
+  - label: Research Showcase
+    description: Networks, security, and cloud
+    href: https://eimlab.org/news
+    icon: newspaper
+    image: /images/links/research-showcase.webp
+    imageAlt: Research showcase poster with the lab's three research areas
+  - label: Practicum 2026
+    description: Schedule, modules, and workshops
+    href: https://eimlab.org/event
+    icon: calendar
+    image: /images/links/practicum-2026.webp
+    imageAlt: Practicum 2026 poster with the academic schedule

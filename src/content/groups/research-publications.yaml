@@ -9,6 +9,8 @@ links:
     description: Research output and announcements
     href: https://eimlab.org/news
     icon: newspaper
+    image: /images/links/publications-2026.webp
+    imageAlt: News and publications poster listing recent lab output
   - label: GitHub Organization
     description: Open-source lab projects
     href: https://github.com/LABEIM
