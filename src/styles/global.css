@@ -1,19 +1,25 @@
 @import "tailwindcss";
 
 /*
- * "Lab index" system: flat near-black canvas, hairline rules, sharp corners,
- * one accent. Semantic tokens only — no gradients, glass, or glows.
+ * Linktree structure, editorial finish: warm bone on the lab's deep teal-black,
+ * serif display, solid surfaces, one teal accent from the emblem, fine film grain,
+ * and a drifting binary field behind the card.
  */
 @theme {
   --font-sans: "IBM Plex Sans", ui-sans-serif, system-ui, sans-serif;
+  --font-serif: "Instrument Serif", ui-serif, Georgia, serif;
   --font-mono: "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
 
-  --color-canvas: #0a0a0a;
-  --color-surface: #141416;
-  --color-line: #2a2a2e;
-  --color-ink: #f4f4f5;
-  --color-ink-muted: #a1a1aa;
-  --color-accent: #22d3ee;
+  --color-canvas: #071312;
+  --color-card: #0b1817;
+  --color-surface: #122220;
+  --color-surface-hover: #172a27;
+  --color-line: #223431;
+  --color-ink: #f2f0ea;
+  --color-ink-muted: #a8a49c;
+  --color-accent: #13b3a2;
+  --color-accent-bright: #3dd6c3;
+  --color-accent-ink: #04211e;
 }
 
 @layer base {
@@ -31,6 +37,17 @@
 
   ::selection {
     background-color: var(--color-accent);
-    color: var(--color-canvas);
+    color: var(--color-accent-ink);
   }
+}
+
+/* Fine grain, so the near-black canvas reads as paper rather than a flat fill. */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  opacity: 0.045;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)'/%3E%3C/svg%3E");
 }

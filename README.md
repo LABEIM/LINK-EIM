@@ -36,8 +36,8 @@ The project is built around three priorities: **speed** (static output and minim
 
 ## Tech Stack & Development
 
-- **Framework:** [Astro](https://astro.build) 7 (static output, zero client-side JS).
-- **Styling:** Tailwind CSS v4 with semantic design tokens — flat near-black canvas, hairline rules, a single cyan accent, and self-hosted IBM Plex Sans/Mono.
+- **Framework:** [Astro](https://astro.build) 7 (static output; a small canvas script drives the decorative binary field).
+- **Styling:** Tailwind CSS v4 with semantic design tokens — a centered rounded card on the lab's deep teal-black canvas, warm bone text, a single teal accent, and self-hosted Instrument Serif plus IBM Plex Sans/Mono.
 - **Content:** Link groups are plain arrays in [`src/data/site.ts`](src/data/site.ts), ready for a Keystatic collection later.
 
 ```bash
