@@ -7,7 +7,10 @@ import tailwindcss from '@tailwindcss/vite';
 export default defineConfig({
   site: 'https://link.eimlab.org',
   integrations: [react(), keystatic()],
-  adapter: cloudflare(),
+  adapter: cloudflare({
+    imageService: 'compile',
+    entrypointResolution: 'auto',
+  }),
   vite: {
     plugins: [tailwindcss()],
   },

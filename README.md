@@ -43,7 +43,7 @@ The project is built around three priorities: **speed** (a prerendered public pa
 ```bash
 npm install      # install dependencies
 npm run dev      # dev server at http://localhost:4321/ (admin at /keystatic)
-npm run build    # build to dist/client (assets) and dist/server (Cloudflare Worker)
+npm run build    # build to dist/ (static assets + Pages Functions worker)
 npm run check    # Astro/TypeScript diagnostics
 ```
 
@@ -59,16 +59,20 @@ The header renders the editable **Social links** list — each item pairs a plat
 
 ### Deployment
 
-Because the CMS admin is authenticated and server-rendered, the site now builds as a Cloudflare Worker with static assets:
+The site deploys to Cloudflare Pages, matching `eimlab.org`. `@astrojs/cloudflare` v12 emits the prerendered page plus a Pages Functions worker (`dist/_worker.js`) and `dist/_routes.json` into `dist/`; Pages serves the static files and runs `/keystatic` and `/api/keystatic/*` through that worker. The shared CI workflow deploys `dist/`:
+
+```yaml
+dist_dir: 'dist'
+```
+
+To deploy manually:
 
 ```bash
 npm run build
-npx wrangler deploy --config dist/server/wrangler.json
+npx wrangler pages deploy dist
 ```
 
-The generated config serves `dist/client` through the `ASSETS` binding, provisions the `SESSION` KV namespace on deploy, and declares the `IMAGES` binding.
-
-Until the domain cutover, the shared Pages workflow still deploys `dist/client` so the prerendered public page stays live. The `deploy-worker` job in `.github/workflows/ci-cd.yml` builds and deploys the Worker on every push to `main` as well, so the server-rendered CMS routes exist. To serve them from `link.eimlab.org`, remove that custom domain from the Pages project and add it to the `link-eim` Worker in the Cloudflare dashboard (Workers & Pages → the Worker → Settings → Domains & Routes). Pages cannot run the Worker's server routes, so `/keystatic` and `/api/keystatic/*` only work after that cutover.
+No Worker deployment, KV namespace, or domain cutover is needed — the custom domain stays on the Pages project as it does for `eimlab.org`.
 
 ---
 

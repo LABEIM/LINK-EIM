@@ -104,7 +104,7 @@ Ensure you have the required runtimes and tools installed on your development ma
    npm install
    npm run dev      # http://localhost:4321/ (admin at /keystatic)
    npm run check    # Astro/TypeScript diagnostics
-   npm run build    # dist/client (assets) + dist/server (Cloudflare Worker)
+   npm run build    # dist/ (static assets + Cloudflare Pages Functions worker)
    ```
 
 ### Editing Links & Site Settings
