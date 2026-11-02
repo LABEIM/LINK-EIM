@@ -114,7 +114,7 @@ Content is managed with Keystatic. Use either route:
 - **Keystatic admin** — open `http://localhost:4321/keystatic`, sign in with Keystatic Cloud, and edit "Site settings" or "Link groups". Saving commits the YAML to this repository through Keystatic Cloud's GitHub App. Set `PUBLIC_KEYSTATIC_CLOUD_PROJECT=team/project` in `.env` (see `.env.example`).
 - **Directly** — site settings are in `src/content/site.yaml`; each link group is `src/content/groups/<slug>.yaml`. A group's filename is its slug; do not add a `slug:` key. Groups render by the `order` field. Icons must be one of the values in `src/data/icons.ts`.
 
-The highlighted link under the tagline is the single accent action. A link may set `image` (a path served from `public/images/links/`) and `imageAlt`; it then renders as a 16:9 media card. A group may set `layout: scroll` for a horizontal, swipeable row — every link in that group must have an image, or the build stops with a clear error.
+The highlighted link under the tagline is the single accent action. A link may set `image` (a path served from `public/images/links/`) and `imageAlt`; it then renders as a 16:9 media card. A group may set `layout: scroll` for a horizontal, swipeable row — every link in that group must have an image, or the build stops with a clear error. The header's social icon row comes from the Site settings social URLs plus the contact email; the top-right three-dot menu shares the page natively or copies its URL.
 
 `src/data/site.ts` parses and validates the YAML at build time, so a missing required field or unknown icon fails the build with a clear message. The page itself lives in `src/pages/index.astro`.
 

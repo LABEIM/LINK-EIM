@@ -14,6 +14,7 @@
 - **Framework:** Astro 7, TypeScript strict. The public page is prerendered; CMS admin/API routes are server-rendered.
 - **Styling:** Tailwind CSS v4 with semantic design tokens (centered rounded card on the lab's deep teal-black canvas, warm bone text, single teal accent from the emblem, drifting binary field, self-hosted Instrument Serif + IBM Plex Sans/Mono).
 - **Content:** Keystatic CMS (Cloud storage). Site settings and link groups are YAML in `src/content/`, loaded at build time by `src/data/site.ts`; links may use optional 16:9 images and groups may use a list or horizontal-scroll layout.
+- **Interface:** Social profile icons (Instagram, LinkedIn, GitHub, contact email) render under the tagline; the card's top-right three-dot menu shares or copies the page. Horizontal groups show translucent overlay arrows on pointer devices and swipe on touch.
 - **Deployment:** Cloudflare Worker with static assets, served at `link.eimlab.org` (`dist/client` + `dist/server`).
 - **CI/CD:** LABEIM shared CI/CD workflow (`.github/workflows/ci-cd.yml`); the Worker cutover is still required for this layout.
 

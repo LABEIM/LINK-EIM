@@ -4,9 +4,10 @@ import Icon from './Icon.astro';
 
 interface Props {
   link: LinkItem;
+  priority?: boolean;
 }
 
-const { link } = Astro.props;
+const { link, priority = false } = Astro.props;
 const image = link.image;
 const isExternal = link.href.startsWith('http');
 
@@ -33,7 +34,8 @@ const motion = 'transition-[background-color,border-color,transform] duration-15
           alt={image.alt}
           width="1200"
           height="675"
-          loading="lazy"
+          loading={priority ? 'eager' : 'lazy'}
+          fetchpriority={priority ? 'high' : undefined}
           decoding="async"
           class="h-full w-full object-cover transition-transform duration-300 group-hover:scale-[1.03] motion-reduce:transition-none"
         />

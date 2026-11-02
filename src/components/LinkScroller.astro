@@ -6,9 +6,10 @@ import type { LinkGroup } from '../data/site';
 interface Props {
   group: LinkGroup;
   labelledBy: string;
+  priorityFirst?: boolean;
 }
 
-const { group, labelledBy } = Astro.props;
+const { group, labelledBy, priorityFirst = false } = Astro.props;
 ---
 
 <div class="relative mt-3" data-scroller>
@@ -19,30 +20,30 @@ const { group, labelledBy } = Astro.props;
     class="flex snap-x snap-mandatory gap-3 overflow-x-auto pb-2 [scrollbar-width:none] focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-card focus-visible:outline-none [&::-webkit-scrollbar]:hidden"
   >
     {
-      group.links.map((link) => (
+      group.links.map((link, index) => (
         <li class="w-[78%] shrink-0 snap-start sm:w-[56%]">
-          <LinkCard link={link} />
+          <LinkCard link={link} priority={priorityFirst && index === 0} />
         </li>
       ))
     }
   </ul>
 
-  <div data-scroll-controls hidden class="mt-1 text-right">
+  <div data-scroll-controls hidden class="pointer-events-none absolute inset-0">
     <button
       type="button"
       data-scroll-prev
       aria-label={`Scroll ${group.title} left`}
-      class="inline-flex size-12 items-center justify-center rounded-full border border-line bg-surface text-ink-muted transition-colors duration-150 hover:border-accent/40 hover:text-accent focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-card focus-visible:outline-none disabled:pointer-events-none disabled:opacity-35 motion-reduce:transition-none"
+      class="pointer-events-auto absolute top-[32%] left-1 inline-flex size-12 -translate-y-1/2 items-center justify-center rounded-full bg-canvas/55 text-ink transition-[background-color,opacity] duration-150 hover:bg-canvas/80 focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-card focus-visible:outline-none disabled:pointer-events-none disabled:opacity-0 motion-reduce:transition-none"
     >
-      <Icon name="chevron-left" class="size-4" />
+      <Icon name="chevron-left" class="size-5" />
     </button>
     <button
       type="button"
       data-scroll-next
       aria-label={`Scroll ${group.title} right`}
-      class="ml-2 inline-flex size-12 items-center justify-center rounded-full border border-line bg-surface text-ink-muted transition-colors duration-150 hover:border-accent/40 hover:text-accent focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-card focus-visible:outline-none disabled:pointer-events-none disabled:opacity-35 motion-reduce:transition-none"
+      class="pointer-events-auto absolute top-[32%] right-1 inline-flex size-12 -translate-y-1/2 items-center justify-center rounded-full bg-canvas/55 text-ink transition-[background-color,opacity] duration-150 hover:bg-canvas/80 focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-card focus-visible:outline-none disabled:pointer-events-none disabled:opacity-0 motion-reduce:transition-none"
     >
-      <Icon name="chevron-right" class="size-4" />
+      <Icon name="chevron-right" class="size-5" />
     </button>
   </div>
 </div>
