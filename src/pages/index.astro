@@ -43,7 +43,7 @@ const jsonLd = {
     <link rel="icon" href="/assets/favicon.png" type="image/png" sizes="64x64" />
     <link rel="apple-touch-icon" href="/assets/favicon.png" />
     <link rel="manifest" href="/manifest.webmanifest" />
-    <meta name="theme-color" content="#0a0a0b" />
+    <meta name="theme-color" content="#071312" />
 
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content="EIM Lab" />
@@ -60,9 +60,14 @@ const jsonLd = {
   </head>
 
   <body class="min-h-dvh">
-    <main class="relative z-10 mx-auto w-full max-w-md px-4 py-6 sm:py-10">
+    <canvas
+      id="binary-field"
+      class="pointer-events-none fixed inset-0 z-0 h-full w-full"
+      aria-hidden="true"></canvas>
+
+    <main class="relative z-10 mx-auto w-full max-w-xl px-4 py-6 sm:py-10">
       <article
-        class="rounded-[28px] border border-white/[0.07] bg-card px-4 pt-8 pb-7 shadow-[0_40px_90px_-50px_#000] sm:px-7"
+        class="rounded-[28px] border border-white/[0.07] bg-card px-4 pt-8 pb-7 shadow-[0_40px_90px_-50px_#000] sm:px-9 sm:pt-10 sm:pb-9"
       >
         <header class="flex flex-col items-center text-center">
           <div class="rounded-full border border-white/10 p-1">
@@ -76,14 +81,14 @@ const jsonLd = {
             />
           </div>
 
-          <h1 class="mt-5 font-serif text-[2.75rem] leading-none text-ink">EIM Lab</h1>
+          <h1 class="mt-5 font-serif text-[2.75rem] leading-none text-ink sm:text-5xl">EIM Lab</h1>
           <p
             class="mt-2 max-w-[18rem] font-mono text-[10px] leading-relaxed tracking-[0.18em] text-ink-muted uppercase"
           >
             {site.fullName}
           </p>
 
-          <p class="mt-4 max-w-[19rem] text-pretty text-[15px] leading-relaxed text-ink-muted">
+          <p class="mt-4 max-w-[21rem] text-pretty text-[15px] leading-relaxed text-ink-muted">
             {site.tagline}
           </p>
 
@@ -108,15 +113,15 @@ const jsonLd = {
           href={site.featuredLink.href}
           target="_blank"
           rel="noopener noreferrer"
-          class="group mt-7 grid min-h-14 grid-cols-[1.25rem_1fr_1.25rem] items-center gap-3 rounded-xl bg-accent px-4 py-2.5 text-accent-ink transition-colors duration-150 hover:bg-accent-bright focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-card focus-visible:outline-none motion-reduce:transition-none"
+          class="group mt-7 grid min-h-15 grid-cols-[1.5rem_1fr_1.5rem] items-center gap-3 rounded-xl bg-accent px-4 py-2.5 text-accent-ink transition-colors duration-150 hover:bg-accent-bright focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-card focus-visible:outline-none motion-reduce:transition-none sm:px-5"
         >
-          <Icon name="globe" class="size-[18px]" />
-          <span class="truncate text-center text-[15px] font-semibold">
+          <Icon name="globe" class="size-5" />
+          <span class="truncate text-center text-base font-semibold">
             {site.featuredLink.label}
           </span>
           <Icon
             name="arrow-up-right"
-            class="size-4 justify-self-end transition-transform duration-150 group-hover:-translate-y-0.5 group-hover:translate-x-0.5 motion-reduce:transition-none"
+            class="size-[18px] justify-self-end transition-transform duration-150 group-hover:-translate-y-0.5 group-hover:translate-x-0.5 motion-reduce:transition-none"
           />
           <span class="sr-only">(opens in a new tab)</span>
         </a>
@@ -129,7 +134,7 @@ const jsonLd = {
                 <section aria-labelledby={id}>
                   <h2
                     id={id}
-                    class="flex items-center gap-3 font-mono text-[10px] tracking-[0.18em] text-ink-muted uppercase"
+                    class="flex items-center gap-3 font-mono text-[11px] tracking-[0.16em] text-ink-muted uppercase"
                   >
                     <span class="h-px flex-1 bg-line" aria-hidden="true" />
                     <span class="whitespace-nowrap">{group.title}</span>
@@ -146,7 +151,7 @@ const jsonLd = {
           }
         </nav>
 
-        <footer class="mt-9 border-t border-line pt-6 text-center text-[11px] leading-relaxed text-ink-muted">
+        <footer class="mt-9 border-t border-line pt-6 text-center text-[12px] leading-relaxed text-ink-muted">
           <p>{site.address}</p>
           <p class="mt-1">{site.hours}</p>
           <p class="mt-4">{site.faculty}</p>
@@ -155,5 +160,101 @@ const jsonLd = {
         </footer>
       </article>
     </main>
+
+    <script>
+      const field = document.getElementById('binary-field');
+      const surface = field instanceof HTMLCanvasElement ? field : null;
+      const context = surface?.getContext('2d') ?? null;
+      const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+
+      if (surface && context) {
+        const canvas = surface;
+        const ctx = context;
+        type Bit = {
+          x: number;
+          y: number;
+          char: '0' | '1';
+          speed: number;
+          sway: number;
+          phase: number;
+          fill: string;
+        };
+
+        let bits: Bit[] = [];
+        let width = 0;
+        let height = 0;
+        let frameId = 0;
+        let last = 0;
+
+        const seed = (count: number): Bit[] =>
+          Array.from({ length: count }, () => {
+            const teal = Math.random() > 0.22;
+            const alpha = (teal ? 0.06 + Math.random() * 0.13 : 0.04 + Math.random() * 0.08).toFixed(3);
+            return {
+              x: Math.random() * width,
+              y: Math.random() * height,
+              char: Math.random() > 0.5 ? '1' : '0',
+              speed: 4 + Math.random() * 10,
+              sway: 0.2 + Math.random() * 0.8,
+              phase: Math.random() * Math.PI * 2,
+              fill: teal ? `rgba(61, 214, 195, ${alpha})` : `rgba(242, 240, 234, ${alpha})`,
+            };
+          });
+
+        function paint(time: number) {
+          ctx.clearRect(0, 0, width, height);
+          ctx.font = '13px "IBM Plex Mono", ui-monospace, monospace';
+          ctx.textAlign = 'center';
+          for (const bit of bits) {
+            const x = bit.x + Math.sin(time * 0.00035 + bit.phase) * 9 * bit.sway;
+            ctx.fillStyle = bit.fill;
+            ctx.fillText(bit.char, x, bit.y);
+          }
+        }
+
+        function frame(now: number) {
+          const dt = last ? Math.min((now - last) / 1000, 0.05) : 0;
+          last = now;
+          for (const bit of bits) {
+            bit.y -= bit.speed * dt;
+            if (bit.y < -20) {
+              bit.y = height + 20;
+              bit.x = Math.random() * width;
+            }
+          }
+          paint(now);
+          frameId = requestAnimationFrame(frame);
+        }
+
+        function resize() {
+          width = window.innerWidth;
+          height = window.innerHeight;
+          const dpr = Math.min(window.devicePixelRatio || 1, 2);
+          canvas.width = Math.round(width * dpr);
+          canvas.height = Math.round(height * dpr);
+          ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+          bits = seed(Math.min(150, Math.max(36, Math.round((width * height) / 9000))));
+          if (reduceMotion.matches) paint(0);
+        }
+
+        function sync() {
+          cancelAnimationFrame(frameId);
+          last = 0;
+          if (reduceMotion.matches) {
+            paint(0);
+          } else {
+            frameId = requestAnimationFrame(frame);
+          }
+        }
+
+        resize();
+        sync();
+        window.addEventListener('resize', () => {
+          resize();
+          sync();
+        });
+        reduceMotion.addEventListener('change', sync);
+      }
+    </script>
   </body>
 </html>

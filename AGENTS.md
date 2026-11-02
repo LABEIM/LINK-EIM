@@ -48,7 +48,7 @@ Before ending a session, the agent must perform these tasks:
 - **Framework**: Astro 7 with static output.
 - **Language**: TypeScript (strict) for data and config; Astro components for markup.
 - **UI Components & Library**: Semantic Tailwind design tokens; accessible Astro components (no React runtime).
-- **Styling**: Tailwind CSS v4 via `@tailwindcss/vite`; a centered rounded card on a near-black canvas, warm bone text, solid surfaces, a single teal accent, and a fine film grain.
+- **Styling**: Tailwind CSS v4 via `@tailwindcss/vite`; a centered rounded card on the lab's deep teal-black canvas, warm bone text, a single teal accent sampled from the emblem, a drifting binary field, and fine film grain.
 - **State Management & Data Fetching**: None — the link hub is static content.
 - **Database / CMS / ORM**: None — link data lives in Keystatic-friendly arrays in `src/data/site.ts`.
 - **Typography & Icons**: Self-hosted Instrument Serif (display) plus IBM Plex Sans/Mono via Fontsource; inline Lucide SVG icons; brand assets sourced from `eimlab.org`.
