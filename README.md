@@ -66,9 +66,9 @@ npm run build
 npx wrangler deploy --config dist/server/wrangler.json
 ```
 
-The generated config serves `dist/client` through the `ASSETS` binding, provisions the `SESSION` KV namespace on deploy, and declares the `IMAGES` binding. The Cloudflare custom domain for `link.eimlab.org` must point at this Worker.
+The generated config serves `dist/client` through the `ASSETS` binding, provisions the `SESSION` KV namespace on deploy, and declares the `IMAGES` binding.
 
-Until that cutover is done, the shared Pages workflow in `.github/workflows/ci-cd.yml` deploys `dist/client` so the prerendered public page is live. That deployment serves the link hub, metadata, and share dialog, but `/keystatic` and `/api/keystatic/*` return 404 because Pages cannot run the Worker's server routes. Use a local dev server (`npm run dev`) for CMS editing until the Worker deployment and domain move are complete.
+Until the domain cutover, the shared Pages workflow still deploys `dist/client` so the prerendered public page stays live. The `deploy-worker` job in `.github/workflows/ci-cd.yml` builds and deploys the Worker on every push to `main` as well, so the server-rendered CMS routes exist. To serve them from `link.eimlab.org`, remove that custom domain from the Pages project and add it to the `link-eim` Worker in the Cloudflare dashboard (Workers & Pages → the Worker → Settings → Domains & Routes). Pages cannot run the Worker's server routes, so `/keystatic` and `/api/keystatic/*` only work after that cutover.
 
 ---
 

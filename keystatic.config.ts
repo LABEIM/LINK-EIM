@@ -6,7 +6,7 @@ import { iconOptions, socialLabels, socialOptions } from './src/data/icons';
  * the Keystatic Cloud GitHub App. Create the project at https://keystatic.cloud,
  * then set PUBLIC_KEYSTATIC_CLOUD_PROJECT (team/project) or edit the fallback.
  */
-const cloudProject = import.meta.env?.PUBLIC_KEYSTATIC_CLOUD_PROJECT || 'eim-lab/links';
+const cloudProject = import.meta.env?.PUBLIC_KEYSTATIC_CLOUD_PROJECT || 'eimlab/link-eim';
 
 export default config({
   storage: { kind: 'cloud' },
