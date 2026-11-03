@@ -1,5 +1,5 @@
 name: EIM Lab
-fullName: Enterprise Infrastructure Management
+fullName: Enterprise Infrastructure Management (EIM) Research Laboratory
 tagline: Research lab at Telkom University for enterprise networks, cybersecurity, cloud, and enterprise systems.
 institution: Telkom University
 faculty: S1 Information Systems, School of Industrial Engineering (FRI)
@@ -17,7 +17,7 @@ socials:
     url: https://github.com/LABEIM
   - platform: mail
     url: mailto:lab@eimlab.org
-featuredLink:
-  label: Visit the lab website
-  href: https://eimlab.org
-  icon: globe
+featuredLinks:
+  - label: Visit the lab website
+    href: https://eimlab.org
+    icon: globe

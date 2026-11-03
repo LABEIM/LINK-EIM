@@ -2,6 +2,17 @@
  * Shared icon registry for the Keystatic select field and the build-time loader.
  * Keep this list in sync with the paths available in `Icon.astro`.
  */
+
+/** Select value for an editor-supplied 24×24 SVG path. */
+export const customIconValue = 'custom' as const;
+
+const iconPathPattern = /^[MmLlHhVvCcSsQqTtAaZz0-9eE.,+\-\s]+$/;
+
+/** Accepts only SVG path data: `d` attributes cannot carry markup or handlers. */
+export function isValidIconPath(value: string): boolean {
+  return value.length > 0 && value.length <= 2000 && iconPathPattern.test(value);
+}
+
 export const iconOptions = [
   { label: 'Book', value: 'book-open' },
   { label: 'Calendar', value: 'calendar' },
@@ -18,6 +29,7 @@ export const iconOptions = [
   { label: 'Map pin', value: 'map-pin' },
   { label: 'Newspaper', value: 'newspaper' },
   { label: 'People', value: 'users' },
+  { label: 'Custom SVG path', value: customIconValue },
 ] as const;
 
 export type LinkIcon = (typeof iconOptions)[number]['value'];
@@ -32,6 +44,7 @@ export const socialOptions = [
   { label: 'Facebook', value: 'facebook' },
   { label: 'Email', value: 'mail' },
   { label: 'Website', value: 'globe' },
+  { label: 'Custom', value: customIconValue },
 ] as const;
 
 export type SocialIcon = (typeof socialOptions)[number]['value'];
@@ -45,6 +58,7 @@ export const socialLabels: Record<SocialIcon, string> = {
   facebook: 'Facebook',
   mail: 'Email the lab',
   globe: 'Website',
+  custom: 'Custom link',
 };
 
 export const socialIcons: ReadonlySet<string> = new Set(

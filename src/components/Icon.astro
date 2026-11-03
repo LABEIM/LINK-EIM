@@ -3,6 +3,8 @@ import type { IconName } from '../data/site';
 
 interface Props {
   name: IconName;
+  /** 24×24 SVG path data, used when `name` is `custom`. */
+  path?: string;
   class?: string;
 }
 
@@ -52,9 +54,10 @@ const icons: Record<IconName, string> = {
     '<path d="M4 22h16a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v16a2 2 0 0 1-2 2Zm0 0a2 2 0 0 1-2-2v-9c0-1.1.9-2 2-2h2"/><path d="M18 14h-8"/><path d="M15 18h-5"/><path d="M10 6h8v4h-8V6Z"/>',
   users:
     '<path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>',
+  custom: '',
 };
 
-const { name, class: className = 'size-5' } = Astro.props;
+const { name, path, class: className = 'size-5' } = Astro.props;
 ---
 
 <svg
@@ -67,5 +70,6 @@ const { name, class: className = 'size-5' } = Astro.props;
   stroke-linejoin="round"
   class={className}
   aria-hidden="true"
-  set:html={icons[name]}
-/>
+>
+  {name === 'custom' ? path ? <path d={path} /> : null : <Fragment set:html={icons[name]} />}
+</svg>

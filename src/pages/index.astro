@@ -20,7 +20,7 @@ const shareHost = new URL(site.url).host;
 const jsonLd = {
   '@context': 'https://schema.org',
   '@type': 'Organization',
-  name: 'Enterprise Infrastructure Management (EIM) Research Laboratory',
+  name: site.fullName,
   alternateName: site.name,
   url: site.labUrl,
   logo: ogImage,
@@ -42,7 +42,7 @@ const jsonLd = {
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>EIM Lab · Links | Telkom University</title>
+    <title>{site.name} · Links | {site.institution}</title>
     <meta name="description" content={site.tagline} />
     <link rel="canonical" href={canonical} />
     <link rel="icon" href="/assets/favicon.png" type="image/png" sizes="64x64" />
@@ -51,13 +51,13 @@ const jsonLd = {
     <meta name="theme-color" content="#071312" />
 
     <meta property="og:type" content="website" />
-    <meta property="og:site_name" content="EIM Lab" />
-    <meta property="og:title" content="EIM Lab · Links | Telkom University" />
+    <meta property="og:site_name" content={site.name} />
+    <meta property="og:title" content={`${site.name} · Links | ${site.institution}`} />
     <meta property="og:description" content={site.tagline} />
     <meta property="og:url" content={canonical} />
     <meta property="og:image" content={ogImage} />
     <meta name="twitter:card" content="summary" />
-    <meta name="twitter:title" content="EIM Lab · Links | Telkom University" />
+    <meta name="twitter:title" content={`${site.name} · Links | ${site.institution}`} />
     <meta name="twitter:description" content={site.tagline} />
     <meta name="twitter:image" content={ogImage} />
 
@@ -97,7 +97,9 @@ const jsonLd = {
             />
           </div>
 
-          <h1 class="mt-5 font-serif text-[2.75rem] leading-none text-ink sm:text-5xl">EIM Lab</h1>
+          <h1 class="mt-5 font-serif text-[2.75rem] leading-none text-ink sm:text-5xl">
+            {site.name}
+          </h1>
           <p
             class="mt-2 max-w-[18rem] font-mono text-[10px] leading-relaxed tracking-[0.18em] text-ink-muted uppercase"
           >
@@ -115,12 +117,12 @@ const jsonLd = {
           {
             site.socials.length > 0 && (
               <nav
-                aria-label="EIM Lab social profiles"
+                aria-label={`${site.name} social profiles`}
                 class="mt-4 flex flex-wrap items-center justify-center gap-1"
               >
                 {site.socials.map((social) => {
                   const isExternal = social.url.startsWith('http');
-                  const label = socialLabels[social.platform];
+                  const label = social.label ?? socialLabels[social.platform];
                   return (
                     <a
                       href={social.url}
@@ -131,7 +133,17 @@ const jsonLd = {
                       }
                       class="inline-flex size-12 items-center justify-center rounded-full text-ink-muted transition-colors duration-150 hover:bg-surface hover:text-accent focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-card focus-visible:outline-none motion-reduce:transition-none"
                     >
-                      <Icon name={social.platform} class="size-5" />
+                      {social.platform === 'custom' ? (
+                        social.customIcon ? (
+                          <Icon name="custom" path={social.customIcon} class="size-5" />
+                        ) : (
+                          <span aria-hidden="true" class="text-[13px] font-medium">
+                            {label.slice(0, 1).toUpperCase()}
+                          </span>
+                        )
+                      ) : (
+                        <Icon name={social.platform} class="size-5" />
+                      )}
                     </a>
                   );
                 })}
@@ -140,22 +152,45 @@ const jsonLd = {
           }
         </header>
 
-        <a
-          href={site.featuredLink.href}
-          target="_blank"
-          rel="noopener noreferrer"
-          class="group mt-7 grid min-h-15 grid-cols-[1.5rem_1fr_1.5rem] items-center gap-3 rounded-xl bg-accent px-4 py-2.5 text-accent-ink transition-colors duration-150 hover:bg-accent-bright focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-card focus-visible:outline-none motion-reduce:transition-none sm:px-5"
-        >
-          <Icon name={site.featuredLink.icon} class="size-5" />
-          <span class="truncate text-center text-base font-semibold">
-            {site.featuredLink.label}
-          </span>
-          <Icon
-            name="arrow-up-right"
-            class="size-[18px] justify-self-end transition-transform duration-150 group-hover:-translate-y-0.5 group-hover:translate-x-0.5 motion-reduce:transition-none"
-          />
-          <span class="sr-only">(opens in a new tab)</span>
-        </a>
+        {
+          site.featuredLinks.length > 0 && (
+            <div class="mt-7 space-y-2.5">
+              {site.featuredLinks.map((featured, index) => {
+                const primary = index === 0;
+                return (
+                  <a
+                    href={featured.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class:list={[
+                      'group grid min-h-15 grid-cols-[1.5rem_1fr_1.5rem] items-center gap-3 rounded-xl px-4 py-2.5 transition-colors duration-150 focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-card focus-visible:outline-none motion-reduce:transition-none sm:px-5',
+                      primary
+                        ? 'bg-accent text-accent-ink hover:bg-accent-bright'
+                        : 'bg-surface text-ink hover:bg-surface-hover',
+                    ]}
+                  >
+                    <Icon
+                      name={featured.icon}
+                      path={featured.customIcon}
+                      class:list={['size-5', !primary && 'text-accent']}
+                    />
+                    <span class="truncate text-center text-base font-semibold">
+                      {featured.label}
+                    </span>
+                    <Icon
+                      name="arrow-up-right"
+                      class:list={[
+                        'size-[18px] justify-self-end transition-transform duration-150 group-hover:-translate-y-0.5 group-hover:translate-x-0.5 motion-reduce:transition-none',
+                        !primary && 'text-accent',
+                      ]}
+                    />
+                    <span class="sr-only">(opens in a new tab)</span>
+                  </a>
+                );
+              })}
+            </div>
+          )
+        }
 
         <nav aria-label="EIM Lab destinations" class="mt-9 space-y-7">
           {
@@ -191,7 +226,7 @@ const jsonLd = {
           <p class="mt-1">{site.hours}</p>
           <p class="mt-4">{site.faculty}</p>
           <p>{site.institution}</p>
-          <p class="mt-4">© 2026 EIM Lab. All rights reserved.</p>
+          <p class="mt-4">© {new Date().getFullYear()} {site.name}. All rights reserved.</p>
         </footer>
       </article>
 

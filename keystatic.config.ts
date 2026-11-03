@@ -69,21 +69,32 @@ export default config({
               options: socialOptions,
               defaultValue: 'instagram',
             }),
+            label: fields.text({
+              label: 'Label',
+              description:
+                'Read by screen readers. Required for Custom; built-in platforms default to the platform name.',
+            }),
             url: fields.text({
               label: 'Link',
               description: 'Use https://… for a web profile, or mailto:… for email.',
               validation: { isRequired: true },
+            }),
+            customIcon: fields.text({
+              label: 'Custom SVG path',
+              description:
+                'Optional 24×24 path for a Custom platform. Without it the first letter is shown.',
             }),
           }),
           {
             label: 'Social links',
             description:
               'Icons under the institution line. Drag to reorder; remove all to hide the row.',
-            itemLabel: (props) => socialLabels[props.fields.platform.value],
+            itemLabel: (props) =>
+              props.fields.label.value || socialLabels[props.fields.platform.value],
           }
         ),
-        featuredLink: fields.object(
-          {
+        featuredLinks: fields.array(
+          fields.object({
             label: fields.text({
               label: 'Label',
               validation: { isRequired: true },
@@ -97,11 +108,17 @@ export default config({
               options: iconOptions,
               defaultValue: 'globe',
             }),
-          },
+            customIcon: fields.text({
+              label: 'Custom SVG path',
+              description:
+                'Only used when Icon is "Custom SVG path". Paste the d attribute of a 24×24 icon, e.g. from lucide.dev.',
+            }),
+          }),
           {
-            label: 'Highlighted link',
+            label: 'Highlighted links',
             description:
-              'The single accent action under the tagline. Use it for recruitment, announcements, or the most important destination.',
+              'Accent actions under the tagline. The first renders solid; the rest sit below it. Drag to reorder.',
+            itemLabel: (props) => props.fields.label.value || 'Highlighted link',
           }
         ),
       },
@@ -129,7 +146,7 @@ export default config({
         layout: fields.select({
           label: 'Layout',
           description:
-            'Horizontal scroll shows the group as swipeable image cards. It requires an image on every link.',
+            'Horizontal scroll shows the group as swipeable image cards. Every link in a scroll group needs an image; the build rejects the group otherwise.',
           options: [
             { label: 'Vertical list', value: 'list' },
             { label: 'Horizontal scroll', value: 'scroll' },
@@ -154,7 +171,7 @@ export default config({
             image: fields.image({
               label: 'Image',
               description:
-                'Optional 16:9 image shown above the label, for posters, banners, or covers.',
+                'Optional 16:9 image shown above the label. Required when the group layout is Horizontal scroll.',
               directory: 'public/images/links',
               publicPath: '/images/links/',
             }),
@@ -166,6 +183,11 @@ export default config({
               label: 'Icon',
               options: iconOptions,
               defaultValue: 'globe',
+            }),
+            customIcon: fields.text({
+              label: 'Custom SVG path',
+              description:
+                'Only used when Icon is "Custom SVG path". Paste the d attribute of a 24×24 icon, e.g. from lucide.dev.',
             }),
           }),
           {

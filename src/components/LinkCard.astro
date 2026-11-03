@@ -44,6 +44,7 @@ const motion = 'transition-[background-color,border-color,transform] duration-15
         <div class="grid min-h-6 grid-cols-[1.25rem_1fr_1.25rem] items-center gap-2.5">
           <Icon
             name={link.icon}
+            path={link.customIcon}
             class="size-4 text-ink-muted transition-colors duration-150 group-hover:text-accent motion-reduce:transition-none"
           />
           <span class="line-clamp-2 text-center text-[15px] leading-snug font-medium text-ink">
@@ -75,6 +76,7 @@ const motion = 'transition-[background-color,border-color,transform] duration-15
     >
       <Icon
         name={link.icon}
+        path={link.customIcon}
         class="size-5 text-ink-muted transition-colors duration-150 group-hover:text-accent motion-reduce:transition-none"
       />
       <span class="truncate text-center text-base font-medium text-ink">{link.label}</span>

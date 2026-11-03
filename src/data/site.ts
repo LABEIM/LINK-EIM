@@ -9,6 +9,7 @@
 
 import { parse } from 'yaml';
 import {
+  isValidIconPath,
   linkIcons,
   socialIcons,
   type LinkIcon,
@@ -30,6 +31,8 @@ export interface LinkItem {
   description?: string;
   href: string;
   icon: LinkIcon;
+  /** 24×24 SVG path data when `icon` is `custom`. */
+  customIcon?: string;
   image?: LinkImage;
 }
 
@@ -42,6 +45,16 @@ export interface LinkGroup {
 export interface SocialLink {
   platform: SocialIcon;
   url: string;
+  /** Optional accessible-name override; required for a custom platform. */
+  label?: string;
+  customIcon?: string;
+}
+
+export interface FeaturedLink {
+  label: string;
+  href: string;
+  icon: LinkIcon;
+  customIcon?: string;
 }
 
 export interface SiteSettings {
@@ -56,11 +69,7 @@ export interface SiteSettings {
   address: string;
   hours: string;
   socials: SocialLink[];
-  featuredLink: {
-    label: string;
-    href: string;
-    icon: LinkIcon;
-  };
+  featuredLinks: FeaturedLink[];
 }
 
 function isRecord(value: unknown): value is Record<string, unknown> {
@@ -89,6 +98,35 @@ function readIcon(value: unknown, field: string): LinkIcon {
   return icon as LinkIcon;
 }
 
+function readIconPath(value: unknown, field: string): string | undefined {
+  if (value === undefined || value === null || (typeof value === 'string' && value.trim() === '')) {
+    return undefined;
+  }
+  const path = readString(value, field);
+  if (!isValidIconPath(path)) {
+    throw new Error(
+      `Keystatic content error: ${field} must be a 24×24 SVG path (the "d" attribute), up to 2000 characters`,
+    );
+  }
+  return path;
+}
+
+function readLinkIcon(
+  record: Record<string, unknown>,
+  field: string,
+): { icon: LinkIcon; customIcon?: string } {
+  const icon = readIcon(record.icon, `${field}.icon`);
+  if (icon !== 'custom') return { icon };
+
+  const customIcon = readIconPath(record.customIcon, `${field}.customIcon`);
+  if (!customIcon) {
+    throw new Error(
+      `Keystatic content error: ${field}.customIcon is required when the icon is "custom"`,
+    );
+  }
+  return { icon, customIcon };
+}
+
 function readSocials(value: unknown, field: string): SocialLink[] {
   if (!Array.isArray(value)) {
     throw new Error(`Keystatic content error: ${field} must be a list`);
@@ -101,16 +139,41 @@ function readSocials(value: unknown, field: string): SocialLink[] {
         `Keystatic content error: ${field} ${index + 1}.platform has unknown platform "${platform}"`,
       );
     }
+    const label =
+      typeof item.label === 'string' && item.label.trim() !== '' ? item.label : undefined;
+    if (platform === 'custom' && !label) {
+      throw new Error(
+        `Keystatic content error: ${field} ${index + 1}.label is required for a custom platform`,
+      );
+    }
+    const customIcon = readIconPath(item.customIcon, `${field} ${index + 1}.customIcon`);
     return {
       platform: platform as SocialIcon,
       url: readString(item.url, `${field} ${index + 1}.url`),
+      ...(label ? { label } : {}),
+      ...(customIcon ? { customIcon } : {}),
+    };
+  });
+}
+
+function readFeaturedLinks(value: unknown, field: string): FeaturedLink[] {
+  if (!Array.isArray(value)) {
+    throw new Error(`Keystatic content error: ${field} must be a list`);
+  }
+  return value.map((entry, index) => {
+    const item = readRecord(entry, `${field} ${index + 1}`);
+    const { icon, customIcon } = readLinkIcon(item, `${field} ${index + 1}`);
+    return {
+      label: readString(item.label, `${field} ${index + 1}.label`),
+      href: readString(item.href, `${field} ${index + 1}.href`),
+      icon,
+      ...(customIcon ? { customIcon } : {}),
     };
   });
 }
 
 function parseSite(source: string): SiteSettings {
   const data = readRecord(parse(source), 'src/content/site.yaml');
-  const featuredLink = readRecord(data.featuredLink, 'featuredLink');
 
   return {
     name: readString(data.name, 'name'),
@@ -124,11 +187,7 @@ function parseSite(source: string): SiteSettings {
     address: readString(data.address, 'address'),
     hours: readString(data.hours, 'hours'),
     socials: readSocials(data.socials, 'socials'),
-    featuredLink: {
-      label: readString(featuredLink.label, 'featuredLink.label'),
-      href: readString(featuredLink.href, 'featuredLink.href'),
-      icon: readIcon(featuredLink.icon, 'featuredLink.icon'),
-    },
+    featuredLinks: readFeaturedLinks(data.featuredLinks, 'featuredLinks'),
   };
 }
 
@@ -144,11 +203,14 @@ function parseLink(entry: unknown, field: string): LinkItem {
     ? { src: imageSrc, alt: readString(link.imageAlt, `${field}.imageAlt`) }
     : undefined;
 
+  const { icon, customIcon } = readLinkIcon(link, field);
+
   return {
     label: readString(link.label, `${field}.label`),
     ...(description ? { description } : {}),
     href: readString(link.href, `${field}.href`),
-    icon: readIcon(link.icon, `${field}.icon`),
+    icon,
+    ...(customIcon ? { customIcon } : {}),
     ...(image ? { image } : {}),
   };
 }
