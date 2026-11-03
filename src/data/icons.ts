@@ -6,6 +6,9 @@
 /** Select value for an editor-supplied 24×24 SVG path. */
 export const customIconValue = 'custom' as const;
 
+/** Select value that renders no icon. */
+export const noneIconValue = 'none' as const;
+
 const iconPathPattern = /^[MmLlHhVvCcSsQqTtAaZz0-9eE.,+\-\s]+$/;
 
 /** Accepts only SVG path data: `d` attributes cannot carry markup or handlers. */
@@ -14,6 +17,7 @@ export function isValidIconPath(value: string): boolean {
 }
 
 export const iconOptions = [
+  { label: 'None', value: noneIconValue },
   { label: 'Book', value: 'book-open' },
   { label: 'Calendar', value: 'calendar' },
   { label: 'Clipboard check', value: 'clipboard-check' },
@@ -32,7 +36,7 @@ export const iconOptions = [
   { label: 'Custom SVG path', value: customIconValue },
 ] as const;
 
-export type LinkIcon = (typeof iconOptions)[number]['value'];
+export type LinkIcon = Exclude<(typeof iconOptions)[number]['value'], typeof noneIconValue>;
 
 /** Social platforms offered by the editable Site settings row. */
 export const socialOptions = [
@@ -78,4 +82,6 @@ export type IconName =
   | 'x'
   | 'message-circle';
 
-export const linkIcons: ReadonlySet<string> = new Set(iconOptions.map((option) => option.value));
+export const linkIcons: ReadonlySet<string> = new Set(
+  iconOptions.filter((option) => option.value !== noneIconValue).map((option) => option.value),
+);

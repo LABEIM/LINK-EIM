@@ -1,5 +1,5 @@
 import { collection, config, fields, singleton } from '@keystatic/core';
-import { iconOptions, socialLabels, socialOptions } from './src/data/icons';
+import { iconOptions, noneIconValue, socialLabels, socialOptions } from './src/data/icons';
 
 /**
  * Keystatic Cloud storage: content is committed to the GitHub repository through
@@ -106,7 +106,8 @@ export default config({
             icon: fields.select({
               label: 'Icon',
               options: iconOptions,
-              defaultValue: 'globe',
+              description: 'Optional. Choose "None" to render no icon.',
+              defaultValue: noneIconValue,
             }),
             customIcon: fields.text({
               label: 'Custom SVG path',
@@ -182,7 +183,8 @@ export default config({
             icon: fields.select({
               label: 'Icon',
               options: iconOptions,
-              defaultValue: 'globe',
+              description: 'Optional. Choose "None" to render no icon.',
+              defaultValue: noneIconValue,
             }),
             customIcon: fields.text({
               label: 'Custom SVG path',

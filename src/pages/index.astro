@@ -169,11 +169,15 @@ const jsonLd = {
                         : 'bg-surface text-ink hover:bg-surface-hover',
                     ]}
                   >
-                    <Icon
-                      name={featured.icon}
-                      path={featured.customIcon}
-                      class:list={['size-5', !primary && 'text-accent']}
-                    />
+                    {featured.icon ? (
+                      <Icon
+                        name={featured.icon}
+                        path={featured.customIcon}
+                        class:list={['size-5', !primary && 'text-accent']}
+                      />
+                    ) : (
+                      <span aria-hidden="true" />
+                    )}
                     <span class="truncate text-center text-base font-semibold">
                       {featured.label}
                     </span>

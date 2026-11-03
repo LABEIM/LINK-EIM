@@ -11,6 +11,7 @@ import { parse } from 'yaml';
 import {
   isValidIconPath,
   linkIcons,
+  noneIconValue,
   socialIcons,
   type LinkIcon,
   type SocialIcon,
@@ -30,7 +31,7 @@ export interface LinkItem {
   label: string;
   description?: string;
   href: string;
-  icon: LinkIcon;
+  icon?: LinkIcon;
   /** 24×24 SVG path data when `icon` is `custom`. */
   customIcon?: string;
   image?: LinkImage;
@@ -53,7 +54,7 @@ export interface SocialLink {
 export interface FeaturedLink {
   label: string;
   href: string;
-  icon: LinkIcon;
+  icon?: LinkIcon;
   customIcon?: string;
 }
 
@@ -114,7 +115,10 @@ function readIconPath(value: unknown, field: string): string | undefined {
 function readLinkIcon(
   record: Record<string, unknown>,
   field: string,
-): { icon: LinkIcon; customIcon?: string } {
+): { icon?: LinkIcon; customIcon?: string } {
+  if (record.icon === undefined || record.icon === null) return {};
+  if (typeof record.icon === 'string' && record.icon.trim() === '') return {};
+  if (record.icon === noneIconValue) return {};
   const icon = readIcon(record.icon, `${field}.icon`);
   if (icon !== 'custom') return { icon };
 
