@@ -34,7 +34,7 @@ export interface LinkItem {
   icon?: LinkIcon;
   /** 24×24 SVG path data when `icon` is `custom`. */
   customIcon?: string;
-  /** Uploaded square logo that renders instead of `icon`. */
+  /** Uploaded square icon image that renders instead of `icon`. */
   iconImage?: string;
   image?: LinkImage;
 }
@@ -65,6 +65,8 @@ export interface FeaturedLink {
 export interface SiteSettings {
   name: string;
   fullName: string;
+  /** Public path of the logo shown above the page title. */
+  logo: string;
   tagline: string;
   institution: string;
   faculty: string;
@@ -114,6 +116,18 @@ function readIconPath(value: unknown, field: string): string | undefined {
     );
   }
   return path;
+}
+
+const defaultLogo = '/images/brand/logo-icon.png';
+
+function readLogo(value: unknown, field: string): string {
+  if (value === undefined || value === null) return defaultLogo;
+  if (typeof value !== 'string' || value.trim() === '') return defaultLogo;
+  const src = readString(value, field);
+  if (!src.startsWith('/')) {
+    throw new Error(`Keystatic content error: ${field} must be a site-relative path`);
+  }
+  return src;
 }
 
 function readIconImage(value: unknown, field: string): string | undefined {
@@ -200,6 +214,7 @@ function parseSite(source: string): SiteSettings {
   return {
     name: readString(data.name, 'name'),
     fullName: readString(data.fullName, 'fullName'),
+    logo: readLogo(data.logo, 'logo'),
     tagline: readString(data.tagline, 'tagline'),
     institution: readString(data.institution, 'institution'),
     faculty: readString(data.faculty, 'faculty'),

@@ -28,6 +28,13 @@ export default config({
           label: 'Full lab name',
           validation: { isRequired: true },
         }),
+        logo: fields.image({
+          label: 'Lab logo',
+          description:
+            'Square logo shown above the page title. Rendered at 76×76 — upload at least 152×152. Remove it to use the default emblem.',
+          directory: 'public/images/brand',
+          publicPath: '/images/brand/',
+        }),
         tagline: fields.text({
           label: 'Tagline',
           multiline: true,

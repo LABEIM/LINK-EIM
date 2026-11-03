@@ -15,7 +15,7 @@ import { socialLabels } from '../data/icons';
 
 const siteUrl = Astro.site ?? new URL('https://link.eimlab.org');
 const canonical = new URL(Astro.url.pathname, siteUrl).href;
-const ogImage = new URL('/assets/logo-icon.png', siteUrl).href;
+const ogImage = new URL(site.logo, siteUrl).href;
 const shareHost = new URL(site.url).host;
 
 const jsonLd = {
@@ -89,8 +89,8 @@ const jsonLd = {
         <header class="flex flex-col items-center text-center">
           <div class="rounded-full border border-white/10 p-1">
             <img
-              src="/assets/logo-icon.png"
-              alt="EIM Lab emblem"
+              src={site.logo}
+              alt={`${site.name} emblem`}
               width="76"
               height="76"
               fetchpriority="high"
@@ -264,13 +264,13 @@ const jsonLd = {
           class="mx-4 mt-3 flex flex-col items-center rounded-xl bg-accent px-6 py-6 text-center text-accent-ink sm:mx-5"
         >
           <img
-            src="/assets/logo-icon.png"
+            src={site.logo}
             alt=""
             width="64"
             height="64"
             class="size-16 rounded-full bg-white object-contain p-1.5"
           />
-          <p class="mt-3 font-serif text-3xl leading-none">EIM Lab</p>
+          <p class="mt-3 font-serif text-3xl leading-none">{site.name}</p>
           <p class="mt-1.5 text-[12px] text-accent-ink/75">{shareHost}</p>
         </div>
 
