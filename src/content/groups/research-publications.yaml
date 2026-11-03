@@ -2,7 +2,7 @@ title: Research & Publications
 order: 2
 layout: list
 links:
-  - label: Research Divisions
+  - label: Research Division
     description: Networks, security, and cloud
     href: https://eimlab.org/structure
     icon: none
