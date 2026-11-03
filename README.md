@@ -28,10 +28,6 @@ The page brings all of the lab's public destinations into a single, easy-to-shar
 
 The project is built around three priorities: **speed** (a prerendered public page and minimal client-side JavaScript), **accessibility** (semantic HTML, keyboard support, and WCAG AA contrast), and **privacy** (no third-party trackers, all assets self-hosted). It is designed to be deployable on the lab's own infrastructure and editable by the team without any proprietary dependency.
 
-- **Status:** In Active Development
-- **Maintained by:** Enterprise Infrastructure Management (EIM) Research Laboratory, Telkom University
-- **Target Launch:** Q4 2026
-
 ---
 
 ## Tech Stack & Development
