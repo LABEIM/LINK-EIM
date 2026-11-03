@@ -5,7 +5,7 @@ links:
   - label: Research Divisions
     description: Networks, security, and cloud
     href: https://eimlab.org/structure
-    icon: flask-conical
+    icon: none
     iconImage: /images/icons/research-publications/links/0/iconImage.avif
   - label: News & Publications
     description: Research output and announcements
