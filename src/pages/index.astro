@@ -7,6 +7,7 @@ import '@fontsource/ibm-plex-mono/latin-500.css';
 import '@fontsource/instrument-serif/latin-400.css';
 import '../styles/global.css';
 import Icon from '../components/Icon.astro';
+import IconView from '../components/IconView.astro';
 import LinkCard from '../components/LinkCard.astro';
 import LinkScroller from '../components/LinkScroller.astro';
 import { site, linkGroups } from '../data/site';
@@ -133,7 +134,17 @@ const jsonLd = {
                       }
                       class="inline-flex size-12 items-center justify-center rounded-full text-ink-muted transition-colors duration-150 hover:bg-surface hover:text-accent focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-card focus-visible:outline-none motion-reduce:transition-none"
                     >
-                      {social.platform === 'custom' ? (
+                      {social.iconImage ? (
+                        <img
+                          src={social.iconImage}
+                          alt=""
+                          width="40"
+                          height="40"
+                          loading="lazy"
+                          decoding="async"
+                          class="size-5 object-contain"
+                        />
+                      ) : social.platform === 'custom' ? (
                         social.customIcon ? (
                           <Icon name="custom" path={social.customIcon} class="size-5" />
                         ) : (
@@ -169,15 +180,12 @@ const jsonLd = {
                         : 'bg-surface text-ink hover:bg-surface-hover',
                     ]}
                   >
-                    {featured.icon ? (
-                      <Icon
-                        name={featured.icon}
-                        path={featured.customIcon}
-                        class:list={['size-5', !primary && 'text-accent']}
-                      />
-                    ) : (
-                      <span aria-hidden="true" />
-                    )}
+                    <IconView
+                      icon={featured.icon}
+                      customIcon={featured.customIcon}
+                      image={featured.iconImage}
+                      class:list={['size-5', !primary && 'text-accent']}
+                    />
                     <span class="truncate text-center text-base font-semibold">
                       {featured.label}
                     </span>

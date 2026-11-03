@@ -34,6 +34,8 @@ export interface LinkItem {
   icon?: LinkIcon;
   /** 24×24 SVG path data when `icon` is `custom`. */
   customIcon?: string;
+  /** Uploaded square logo that renders instead of `icon`. */
+  iconImage?: string;
   image?: LinkImage;
 }
 
@@ -49,6 +51,7 @@ export interface SocialLink {
   /** Optional accessible-name override; required for a custom platform. */
   label?: string;
   customIcon?: string;
+  iconImage?: string;
 }
 
 export interface FeaturedLink {
@@ -56,6 +59,7 @@ export interface FeaturedLink {
   href: string;
   icon?: LinkIcon;
   customIcon?: string;
+  iconImage?: string;
 }
 
 export interface SiteSettings {
@@ -112,15 +116,26 @@ function readIconPath(value: unknown, field: string): string | undefined {
   return path;
 }
 
+function readIconImage(value: unknown, field: string): string | undefined {
+  if (value === undefined || value === null) return undefined;
+  if (typeof value !== 'string' || value.trim() === '') return undefined;
+  const src = readString(value, field);
+  if (!src.startsWith('/images/icons/')) {
+    throw new Error(`Keystatic content error: ${field} must be a path under /images/icons/`);
+  }
+  return src;
+}
+
 function readLinkIcon(
   record: Record<string, unknown>,
   field: string,
-): { icon?: LinkIcon; customIcon?: string } {
-  if (record.icon === undefined || record.icon === null) return {};
-  if (typeof record.icon === 'string' && record.icon.trim() === '') return {};
-  if (record.icon === noneIconValue) return {};
+): { icon?: LinkIcon; customIcon?: string; iconImage?: string } {
+  const iconImage = readIconImage(record.iconImage, `${field}.iconImage`);
+  if (record.icon === undefined || record.icon === null) return { iconImage };
+  if (typeof record.icon === 'string' && record.icon.trim() === '') return { iconImage };
+  if (record.icon === noneIconValue) return { iconImage };
   const icon = readIcon(record.icon, `${field}.icon`);
-  if (icon !== 'custom') return { icon };
+  if (icon !== 'custom') return { icon, iconImage };
 
   const customIcon = readIconPath(record.customIcon, `${field}.customIcon`);
   if (!customIcon) {
@@ -128,7 +143,7 @@ function readLinkIcon(
       `Keystatic content error: ${field}.customIcon is required when the icon is "custom"`,
     );
   }
-  return { icon, customIcon };
+  return { icon, customIcon, iconImage };
 }
 
 function readSocials(value: unknown, field: string): SocialLink[] {
@@ -151,11 +166,13 @@ function readSocials(value: unknown, field: string): SocialLink[] {
       );
     }
     const customIcon = readIconPath(item.customIcon, `${field} ${index + 1}.customIcon`);
+    const iconImage = readIconImage(item.iconImage, `${field} ${index + 1}.iconImage`);
     return {
       platform: platform as SocialIcon,
       url: readString(item.url, `${field} ${index + 1}.url`),
       ...(label ? { label } : {}),
       ...(customIcon ? { customIcon } : {}),
+      ...(iconImage ? { iconImage } : {}),
     };
   });
 }
@@ -166,12 +183,13 @@ function readFeaturedLinks(value: unknown, field: string): FeaturedLink[] {
   }
   return value.map((entry, index) => {
     const item = readRecord(entry, `${field} ${index + 1}`);
-    const { icon, customIcon } = readLinkIcon(item, `${field} ${index + 1}`);
+    const { icon, customIcon, iconImage } = readLinkIcon(item, `${field} ${index + 1}`);
     return {
       label: readString(item.label, `${field} ${index + 1}.label`),
       href: readString(item.href, `${field} ${index + 1}.href`),
       icon,
       ...(customIcon ? { customIcon } : {}),
+      ...(iconImage ? { iconImage } : {}),
     };
   });
 }
@@ -207,7 +225,7 @@ function parseLink(entry: unknown, field: string): LinkItem {
     ? { src: imageSrc, alt: readString(link.imageAlt, `${field}.imageAlt`) }
     : undefined;
 
-  const { icon, customIcon } = readLinkIcon(link, field);
+  const { icon, customIcon, iconImage } = readLinkIcon(link, field);
 
   return {
     label: readString(link.label, `${field}.label`),
@@ -215,6 +233,7 @@ function parseLink(entry: unknown, field: string): LinkItem {
     href: readString(link.href, `${field}.href`),
     icon,
     ...(customIcon ? { customIcon } : {}),
+    ...(iconImage ? { iconImage } : {}),
     ...(image ? { image } : {}),
   };
 }

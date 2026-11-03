@@ -84,6 +84,13 @@ export default config({
               description:
                 'Optional 24×24 path for a Custom platform. Without it the first letter is shown.',
             }),
+            iconImage: fields.image({
+              label: 'Logo image',
+              description:
+                'Optional square PNG, WebP, or SVG. It renders instead of the platform icon — upload at least 40×40.',
+              directory: 'public/images/icons',
+              publicPath: '/images/icons/',
+            }),
           }),
           {
             label: 'Social links',
@@ -113,6 +120,13 @@ export default config({
               label: 'Custom SVG path',
               description:
                 'Only used when Icon is "Custom SVG path". Paste the d attribute of a 24×24 icon, e.g. from lucide.dev.',
+            }),
+            iconImage: fields.image({
+              label: 'Logo image',
+              description:
+                'Optional square PNG, WebP, or SVG. It renders instead of the icon — upload at least 40×40.',
+              directory: 'public/images/icons',
+              publicPath: '/images/icons/',
             }),
           }),
           {
@@ -190,6 +204,13 @@ export default config({
               label: 'Custom SVG path',
               description:
                 'Only used when Icon is "Custom SVG path". Paste the d attribute of a 24×24 icon, e.g. from lucide.dev.',
+            }),
+            iconImage: fields.image({
+              label: 'Logo image',
+              description:
+                'Optional square PNG, WebP, or SVG. It renders instead of the icon — upload at least 40×40.',
+              directory: 'public/images/icons',
+              publicPath: '/images/icons/',
             }),
           }),
           {

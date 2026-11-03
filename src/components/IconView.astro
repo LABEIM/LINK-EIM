@@ -1,0 +1,32 @@
+---
+import type { LinkIcon } from '../data/icons';
+import Icon from './Icon.astro';
+
+interface Props {
+  icon?: LinkIcon;
+  customIcon?: string;
+  /** Uploaded square logo; renders instead of the SVG icon. */
+  image?: string;
+  class?: string;
+}
+
+const { icon, customIcon, image, class: className = 'size-5' } = Astro.props;
+---
+
+{
+  image ? (
+    <img
+      src={image}
+      alt=""
+      width="48"
+      height="48"
+      loading="lazy"
+      decoding="async"
+      class:list={[className, 'object-contain']}
+    />
+  ) : icon ? (
+    <Icon name={icon} path={customIcon} class={className} />
+  ) : (
+    <span aria-hidden="true" class={className} />
+  )
+}

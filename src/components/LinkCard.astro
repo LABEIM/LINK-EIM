@@ -1,6 +1,7 @@
 ---
 import type { LinkItem } from '../data/site';
 import Icon from './Icon.astro';
+import IconView from './IconView.astro';
 
 interface Props {
   link: LinkItem;
@@ -42,15 +43,12 @@ const motion = 'transition-[background-color,border-color,transform] duration-15
       </div>
       <div class="flex flex-1 flex-col px-4 pt-3 pb-3.5">
         <div class="grid min-h-6 grid-cols-[1.25rem_1fr_1.25rem] items-center gap-2.5">
-          {link.icon ? (
-            <Icon
-              name={link.icon}
-              path={link.customIcon}
-              class="size-4 text-ink-muted transition-colors duration-150 group-hover:text-accent motion-reduce:transition-none"
-            />
-          ) : (
-            <span aria-hidden="true" />
-          )}
+          <IconView
+            icon={link.icon}
+            customIcon={link.customIcon}
+            image={link.iconImage}
+            class="size-4 text-ink-muted transition-colors duration-150 group-hover:text-accent motion-reduce:transition-none"
+          />
           <span class="line-clamp-2 text-center text-[15px] leading-snug font-medium text-ink">
             {link.label}
           </span>
@@ -78,15 +76,12 @@ const motion = 'transition-[background-color,border-color,transform] duration-15
         motion,
       ]}
     >
-      {link.icon ? (
-        <Icon
-          name={link.icon}
-          path={link.customIcon}
-          class="size-5 text-ink-muted transition-colors duration-150 group-hover:text-accent motion-reduce:transition-none"
-        />
-      ) : (
-        <span aria-hidden="true" />
-      )}
+      <IconView
+        icon={link.icon}
+        customIcon={link.customIcon}
+        image={link.iconImage}
+        class="size-5 text-ink-muted transition-colors duration-150 group-hover:text-accent motion-reduce:transition-none"
+      />
       <span class="truncate text-center text-base font-medium text-ink">{link.label}</span>
       <Icon
         name="arrow-up-right"
