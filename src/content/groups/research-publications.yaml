@@ -1,16 +1,17 @@
 title: Research & Publications
 order: 2
+layout: list
 links:
   - label: Research Divisions
     description: Networks, security, and cloud
     href: https://eimlab.org/structure
     icon: flask-conical
+    iconImage: /images/icons/research-publications/links/0/iconImage.avif
   - label: News & Publications
     description: Research output and announcements
     href: https://eimlab.org/news
-    icon: newspaper
-    image: /images/links/publications-2026.webp
     imageAlt: News and publications poster listing recent lab output
+    icon: newspaper
   - label: GitHub Organization
     description: Open-source lab projects
     href: https://github.com/LABEIM
