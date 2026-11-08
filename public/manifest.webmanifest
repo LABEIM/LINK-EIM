@@ -4,10 +4,9 @@
   "description": "Official link hub for the Enterprise Infrastructure Management (EIM) Research Laboratory at Telkom University.",
   "start_url": "/",
   "scope": "/",
-  "display": "standalone",
+  "display": "browser",
   "background_color": "#ffffff",
   "theme_color": "#ffffff",
-  "orientation": "portrait-primary",
   "icons": [
     {
       "src": "/assets/favicon.png",

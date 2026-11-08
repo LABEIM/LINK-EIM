@@ -10,6 +10,7 @@ links:
   - label: News & Publications
     description: Research output and announcements
     href: https://eimlab.org/news
+    image: /images/links/publications-2026.webp
     imageAlt: News and publications poster listing recent lab output
     icon: newspaper
   - label: GitHub Organization

@@ -3,7 +3,6 @@ import '@fontsource/ibm-plex-sans/latin-400.css';
 import '@fontsource/ibm-plex-sans/latin-500.css';
 import '@fontsource/ibm-plex-sans/latin-600.css';
 import '@fontsource/ibm-plex-mono/latin-400.css';
-import '@fontsource/ibm-plex-mono/latin-500.css';
 import '@fontsource/instrument-serif/latin-400.css';
 import '../styles/global.css';
 import Icon from '../components/Icon.astro';
@@ -16,7 +15,9 @@ import { socialLabels } from '../data/icons';
 const siteUrl = Astro.site ?? new URL('https://link.eimlab.org');
 const canonical = new URL(Astro.url.pathname, siteUrl).href;
 const shareTitle = `${site.name} · Links | ${site.institution}`;
-const ogImage = new URL(site.logo, siteUrl).href;
+const shareAlt = `${site.name} link hub for ${site.institution}`;
+const ogImage = new URL('/images/brand/og.png', siteUrl).href;
+const logoUrl = new URL(site.logo, siteUrl).href;
 const shareHost = new URL(site.url).host;
 
 const jsonLd = {
@@ -25,7 +26,7 @@ const jsonLd = {
   name: site.fullName,
   alternateName: site.name,
   url: site.labUrl,
-  logo: ogImage,
+  logo: logoUrl,
   email: site.email,
   address: {
     '@type': 'PostalAddress',
@@ -58,10 +59,15 @@ const jsonLd = {
     <meta property="og:description" content={site.tagline} />
     <meta property="og:url" content={canonical} />
     <meta property="og:image" content={ogImage} />
-    <meta name="twitter:card" content="summary" />
+    <meta property="og:image:type" content="image/png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content={shareAlt} />
+    <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content={`${site.name} · Links | ${site.institution}`} />
     <meta name="twitter:description" content={site.tagline} />
     <meta name="twitter:image" content={ogImage} />
+    <meta name="twitter:image:alt" content={shareAlt} />
 
     <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
   </head>
@@ -76,17 +82,6 @@ const jsonLd = {
       <article
         class="relative rounded-[28px] bg-card px-4 pt-8 pb-7 sm:px-9 sm:pt-10 sm:pb-9"
       >
-        <button
-          type="button"
-          data-share-open
-          aria-haspopup="dialog"
-          aria-controls="share-dialog"
-          aria-label="Share this page"
-          class="absolute top-2 right-2 z-20 inline-flex size-12 cursor-pointer items-center justify-center rounded-full text-ink-muted transition-colors duration-150 hover:bg-surface hover:text-ink focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-card focus-visible:outline-none motion-reduce:transition-none sm:top-3 sm:right-3"
-        >
-          <Icon name="share" class="size-5" />
-        </button>
-
         <header class="flex flex-col items-center text-center">
           <div class="rounded-full p-1">
             <img
@@ -95,7 +90,7 @@ const jsonLd = {
               width="76"
               height="76"
               fetchpriority="high"
-              class="size-[76px] rounded-full bg-white object-contain p-2"
+              class="size-[76px] rounded-full bg-canvas object-contain p-2"
             />
           </div>
 
@@ -103,7 +98,7 @@ const jsonLd = {
             {site.name}
           </h1>
           <p
-            class="mt-2 max-w-[18rem] font-mono text-[12px] leading-relaxed tracking-[0.12em] text-ink-muted uppercase"
+            class="mt-2 max-w-[18rem] font-mono text-[13px] leading-relaxed tracking-[0.08em] text-ink-muted uppercase"
           >
             {site.fullName}
           </p>
@@ -169,11 +164,12 @@ const jsonLd = {
             <div class="mt-7 space-y-2.5">
               {site.featuredLinks.map((featured, index) => {
                 const primary = index === 0;
+                const isExternal = featured.href.startsWith('http');
                 return (
                   <a
                     href={featured.href}
-                    target="_blank"
-                    rel="noopener noreferrer"
+                    target={isExternal ? '_blank' : undefined}
+                    rel={isExternal ? 'noopener noreferrer' : undefined}
                     class:list={[
                       'group grid min-h-15 grid-cols-[1.5rem_1fr_1.5rem] items-center gap-3 rounded-xl px-4 py-2.5 transition-colors duration-150 focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-card focus-visible:outline-none motion-reduce:transition-none sm:px-5',
                       primary
@@ -190,14 +186,16 @@ const jsonLd = {
                     <span class="line-clamp-2 text-balance text-center text-base font-semibold leading-snug">
                       {featured.label}
                     </span>
-                    <Icon
-                      name="arrow-up-right"
-                      class:list={[
-                        'size-[18px] justify-self-end transition-transform duration-150 group-hover:-translate-y-0.5 group-hover:translate-x-0.5 motion-reduce:transition-none',
-                        !primary && 'text-accent',
-                      ]}
-                    />
-                    <span class="sr-only">(opens in a new tab)</span>
+                    {isExternal && (
+                      <Icon
+                        name="arrow-up-right"
+                        class:list={[
+                          'size-[18px] justify-self-end transition-transform duration-150 group-hover:-translate-y-0.5 group-hover:translate-x-0.5 motion-reduce:transition-none',
+                          !primary && 'text-accent',
+                        ]}
+                      />
+                    )}
+                    {isExternal && <span class="sr-only">(opens in a new tab)</span>}
                   </a>
                 );
               })}
@@ -213,7 +211,7 @@ const jsonLd = {
                 <section aria-labelledby={id}>
                   <h2
                     id={id}
-                    class="flex items-center gap-3 font-mono text-[11px] tracking-[0.16em] text-ink-muted uppercase"
+                    class="flex items-center gap-3 font-mono text-[12px] tracking-[0.16em] text-ink-muted uppercase"
                   >
                     <span class="h-px flex-1 bg-line" aria-hidden="true" />
                     <span class="whitespace-nowrap">{group.title}</span>
@@ -234,7 +232,20 @@ const jsonLd = {
           }
         </nav>
 
-        <footer class="mt-9 border-t border-line pt-6 text-center text-[12px] leading-relaxed text-ink-muted">
+        <div class="mt-9 flex justify-center">
+          <button
+            type="button"
+            data-share-open
+            aria-haspopup="dialog"
+            aria-controls="share-dialog"
+            class="inline-flex min-h-12 cursor-pointer items-center gap-2 rounded-full bg-surface px-5 text-sm font-medium text-ink transition-colors duration-150 hover:bg-surface-hover hover:text-accent focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-card focus-visible:outline-none motion-reduce:transition-none"
+          >
+            <Icon name="share" class="size-4" />
+            Share this page
+          </button>
+        </div>
+
+        <footer class="mt-6 border-t border-line pt-6 text-center text-[12px] leading-relaxed text-ink-muted">
           <p>{site.address}</p>
           <p class="mt-1">{site.hours}</p>
           <p class="mt-4">{site.faculty}</p>
@@ -247,7 +258,7 @@ const jsonLd = {
         id="share-dialog"
         data-share-dialog
         aria-labelledby="share-dialog-title"
-        class="m-auto w-[calc(100%-2rem)] max-w-md overflow-hidden rounded-2xl bg-card p-0 text-ink shadow-[0_30px_80px_-20px_#0c535d66]"
+        class="m-auto w-[calc(100%-2rem)] max-w-md overflow-hidden rounded-2xl bg-card p-0 text-ink shadow-dialog"
       >
         <header class="flex items-center justify-between gap-3 px-4 pt-4 sm:px-5">
           <h2 id="share-dialog-title" class="font-serif text-2xl leading-none">Share this page</h2>
@@ -255,7 +266,7 @@ const jsonLd = {
             type="button"
             data-share-close
             aria-label="Close share dialog"
-            class="-my-1 -mr-1 inline-flex size-12 items-center justify-center rounded-full text-ink-muted transition-colors duration-150 hover:bg-surface hover:text-ink focus-visible:ring-2 focus-visible:ring-accent focus-visible:outline-none motion-reduce:transition-none"
+            class="-my-1 -mr-1 inline-flex size-12 cursor-pointer items-center justify-center rounded-full text-ink-muted transition-colors duration-150 hover:bg-surface hover:text-ink focus-visible:ring-2 focus-visible:ring-accent focus-visible:outline-none motion-reduce:transition-none"
           >
             <Icon name="x" class="size-5" />
           </button>
@@ -269,7 +280,7 @@ const jsonLd = {
             alt=""
             width="64"
             height="64"
-            class="size-16 rounded-full bg-white object-contain p-1.5"
+            class="size-16 rounded-full bg-canvas object-contain p-1.5"
           />
           <p class="mt-3 font-serif text-3xl leading-none">{site.name}</p>
           <p class="mt-1.5 text-[12px] text-accent-ink/75">{shareHost}</p>
@@ -279,14 +290,14 @@ const jsonLd = {
           <button
             type="button"
             data-copy-action
-            class="group flex w-1/3 flex-col items-center gap-1.5 rounded-lg py-0.5 text-center focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-card focus-visible:outline-none sm:w-1/6"
+            class="group flex w-1/3 cursor-pointer flex-col items-center gap-1.5 rounded-lg py-0.5 text-center focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-card focus-visible:outline-none sm:w-1/6"
           >
             <span
               class="inline-flex size-12 items-center justify-center rounded-full bg-surface text-ink-muted transition-colors duration-150 group-hover:bg-surface-hover group-hover:text-accent group-focus-visible:text-accent motion-reduce:transition-none"
             >
               <Icon name="link" class="size-5" />
             </span>
-            <span data-copy-label class="text-[11px] leading-tight text-ink-muted">Copy link</span>
+            <span data-copy-label class="text-[12px] leading-tight text-ink-muted">Copy link</span>
           </button>
 
           <a
@@ -300,7 +311,7 @@ const jsonLd = {
             >
               <Icon name="mail" class="size-5" />
             </span>
-            <span class="text-[11px] leading-tight text-ink-muted">Email</span>
+            <span class="text-[12px] leading-tight text-ink-muted">Email</span>
           </a>
 
           <details class="group/details w-full">
@@ -335,7 +346,7 @@ const jsonLd = {
                 >
                   <Icon name="message-circle" class="size-5" />
                 </span>
-                <span class="text-[11px] leading-tight text-ink-muted">WhatsApp</span>
+                <span class="text-[12px] leading-tight text-ink-muted">WhatsApp</span>
               </a>
 
               <a
@@ -350,7 +361,7 @@ const jsonLd = {
                 >
                   <Icon name="x-twitter" class="size-5" />
                 </span>
-                <span class="text-[11px] leading-tight text-ink-muted">X</span>
+                <span class="text-[12px] leading-tight text-ink-muted">X</span>
               </a>
 
               <a
@@ -365,7 +376,7 @@ const jsonLd = {
                 >
                   <Icon name="linkedin" class="size-5" />
                 </span>
-                <span class="text-[11px] leading-tight text-ink-muted">LinkedIn</span>
+                <span class="text-[12px] leading-tight text-ink-muted">LinkedIn</span>
               </a>
             </div>
           </details>
@@ -374,14 +385,14 @@ const jsonLd = {
             type="button"
             data-share-native
             hidden
-            class="group w-1/3 flex-col items-center gap-1.5 rounded-lg py-0.5 text-center focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-card focus-visible:outline-none sm:w-1/6"
+            class="group w-1/3 cursor-pointer flex-col items-center gap-1.5 rounded-lg py-0.5 text-center focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-card focus-visible:outline-none sm:w-1/6"
           >
             <span
               class="inline-flex size-12 items-center justify-center rounded-full bg-surface text-ink-muted transition-colors duration-150 group-hover:bg-surface-hover group-hover:text-accent motion-reduce:transition-none"
             >
               <Icon name="share" class="size-5" />
             </span>
-            <span class="text-[11px] leading-tight text-ink-muted">More</span>
+            <span class="text-[12px] leading-tight text-ink-muted">More</span>
           </button>
         </div>
 
@@ -417,18 +428,22 @@ const jsonLd = {
 
         const close = () => shareDialog.close();
 
+        const flashLabel = (message: string) => {
+          if (!copyLabel) return;
+          copyLabel.textContent = message;
+          window.setTimeout(() => {
+            copyLabel.textContent = 'Copy link';
+          }, 1600);
+        };
+
         const copyLink = async () => {
           try {
             await navigator.clipboard.writeText(pageUrl);
             announce('Link copied to clipboard');
-            if (copyLabel) {
-              copyLabel.textContent = 'Copied';
-              window.setTimeout(() => {
-                copyLabel.textContent = 'Copy link';
-              }, 1600);
-            }
+            flashLabel('Copied');
           } catch {
             announce('Could not copy the link');
+            flashLabel('Copy failed');
           }
         };
 
@@ -487,6 +502,9 @@ const jsonLd = {
       if (surface && context && fieldVisible) {
         const canvas = surface;
         const ctx = context;
+        const tokens = getComputedStyle(document.documentElement);
+        const accent = tokens.getPropertyValue('--color-accent').trim();
+        const accentBright = tokens.getPropertyValue('--color-accent-bright').trim();
         type Bit = {
           x: number;
           y: number;
@@ -494,6 +512,7 @@ const jsonLd = {
           speed: number;
           sway: number;
           phase: number;
+          alpha: number;
           fill: string;
         };
 
@@ -506,7 +525,7 @@ const jsonLd = {
         const seed = (count: number): Bit[] =>
           Array.from({ length: count }, () => {
             const teal = Math.random() > 0.22;
-            const alpha = (teal ? 0.07 + Math.random() * 0.14 : 0.05 + Math.random() * 0.08).toFixed(3);
+            const alpha = teal ? 0.07 + Math.random() * 0.14 : 0.05 + Math.random() * 0.08;
             return {
               x: Math.random() * width,
               y: Math.random() * height,
@@ -514,7 +533,8 @@ const jsonLd = {
               speed: 4 + Math.random() * 10,
               sway: 0.2 + Math.random() * 0.8,
               phase: Math.random() * Math.PI * 2,
-              fill: teal ? `rgba(15, 131, 136, ${alpha})` : `rgba(12, 83, 93, ${alpha})`,
+              alpha,
+              fill: teal ? accentBright : accent,
             };
           });
 
@@ -524,9 +544,11 @@ const jsonLd = {
           ctx.textAlign = 'center';
           for (const bit of bits) {
             const x = bit.x + Math.sin(time * 0.00035 + bit.phase) * 9 * bit.sway;
+            ctx.globalAlpha = bit.alpha;
             ctx.fillStyle = bit.fill;
             ctx.fillText(bit.char, x, bit.y);
           }
+          ctx.globalAlpha = 1;
         }
 
         function frame(now: number) {

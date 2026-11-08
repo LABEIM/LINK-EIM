@@ -52,10 +52,12 @@ const motion = 'transition-[background-color,transform] duration-150 motion-redu
           <span class="line-clamp-2 text-center text-[15px] leading-snug font-medium text-ink">
             {link.label}
           </span>
-          <Icon
-            name="arrow-up-right"
-            class="size-4 justify-self-end text-ink-muted transition-[color,transform] duration-150 group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:text-accent motion-reduce:transition-none"
-          />
+          {isExternal && (
+            <Icon
+              name="arrow-up-right"
+              class="size-4 justify-self-end text-ink-muted transition-[color,transform] duration-150 group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:text-accent motion-reduce:transition-none"
+            />
+          )}
         </div>
         {link.description && (
           <p class="mt-1.5 line-clamp-2 text-center text-[13px] leading-snug text-ink-muted">
@@ -103,13 +105,15 @@ const motion = 'transition-[background-color,transform] duration-150 motion-redu
           </span>
         )}
       </span>
-      <Icon
-        name="arrow-up-right"
-        class:list={[
-          'size-[18px] justify-self-end transition-[color,transform] duration-150 group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:text-accent motion-reduce:transition-none',
-          link.highlight ? 'text-accent' : 'text-ink-muted',
-        ]}
-      />
+      {isExternal && (
+        <Icon
+          name="arrow-up-right"
+          class:list={[
+            'size-[18px] justify-self-end transition-[color,transform] duration-150 group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:text-accent motion-reduce:transition-none',
+            link.highlight ? 'text-accent' : 'text-ink-muted',
+          ]}
+        />
+      )}
       {isExternal && <span class="sr-only">(opens in a new tab)</span>}
     </a>
   )

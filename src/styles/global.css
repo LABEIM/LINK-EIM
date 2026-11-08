@@ -17,15 +17,19 @@
   --color-surface-strong: #d2dcdc;
   --color-line: #d7e0e0;
   --color-ink: #0a3034;
-  --color-ink-muted: #52696d;
+  --color-ink-muted: #4a6165;
   --color-accent: #0c535d;
-  --color-accent-bright: #0f8388;
+  --color-accent-bright: #0d7176;
   --color-accent-ink: #ffffff;
+
+  --shadow-dialog: 0 30px 80px -20px #0c535d66;
 }
 
 @layer base {
   html {
     color-scheme: light;
+    /* Keep the centered card steady when the share dialog hides the scrollbar. */
+    scrollbar-gutter: stable;
     /* The scroll-snap deck must swipe inside its own track, never pan the page. */
     overflow-x: clip;
   }
