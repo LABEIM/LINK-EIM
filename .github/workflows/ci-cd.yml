@@ -18,7 +18,7 @@ permissions:
 
 jobs:
   deploy:
-    uses: LABEIM/Shared-CICD/.github/workflows/deploy-app.yml@main
+    uses: LABEIM/Shared-CICD/.github/workflows/deploy-app.yml@v1
     with:
       enable_cloudflare: true
       # [REQUIRED] Update with target Cloudflare Pages project name (e.g., 'project-comingsoon')
@@ -27,6 +27,7 @@ jobs:
       # (dist/_worker.js, dist/_routes.json) into dist/. Pages serves the static files and runs
       # /keystatic and /api/keystatic/* through the worker, as on eimlab.org.
       dist_dir: 'dist'
+      check_command: 'npm run check'
       enable_lighthouse: true
       lighthouse_routes: |
         /
