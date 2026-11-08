@@ -21,7 +21,7 @@ const { group, labelledBy, priorityFirst = false } = Astro.props;
   >
     {
       group.links.map((link, index) => (
-        <li class="w-[78%] shrink-0 snap-start sm:w-[56%]">
+        <li class="w-[70%] shrink-0 snap-start sm:w-[47%]">
           <LinkCard link={link} priority={priorityFirst && index === 0} />
         </li>
       ))
@@ -33,7 +33,7 @@ const { group, labelledBy, priorityFirst = false } = Astro.props;
       type="button"
       data-scroll-prev
       aria-label={`Scroll ${group.title} left`}
-      class="pointer-events-auto absolute top-1/2 left-1 inline-flex size-12 -translate-y-1/2 items-center justify-center rounded-full bg-canvas/55 text-ink transition-[background-color,opacity] duration-150 hover:bg-canvas/80 focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-card focus-visible:outline-none disabled:pointer-events-none disabled:opacity-0 motion-reduce:transition-none"
+      class="pointer-events-auto absolute top-1/2 left-1 inline-flex size-12 -translate-y-1/2 items-center justify-center rounded-full bg-canvas/90 text-ink transition-[background-color,opacity] duration-150 hover:bg-canvas/80 focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-card focus-visible:outline-none disabled:pointer-events-none disabled:opacity-0 motion-reduce:transition-none"
     >
       <Icon name="chevron-left" class="size-5" />
     </button>
@@ -41,7 +41,7 @@ const { group, labelledBy, priorityFirst = false } = Astro.props;
       type="button"
       data-scroll-next
       aria-label={`Scroll ${group.title} right`}
-      class="pointer-events-auto absolute top-1/2 right-1 inline-flex size-12 -translate-y-1/2 items-center justify-center rounded-full bg-canvas/55 text-ink transition-[background-color,opacity] duration-150 hover:bg-canvas/80 focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-card focus-visible:outline-none disabled:pointer-events-none disabled:opacity-0 motion-reduce:transition-none"
+      class="pointer-events-auto absolute top-1/2 right-1 inline-flex size-12 -translate-y-1/2 items-center justify-center rounded-full bg-canvas/90 text-ink transition-[background-color,opacity] duration-150 hover:bg-canvas/80 focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-card focus-visible:outline-none disabled:pointer-events-none disabled:opacity-0 motion-reduce:transition-none"
     >
       <Icon name="chevron-right" class="size-5" />
     </button>

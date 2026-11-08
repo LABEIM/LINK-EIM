@@ -58,7 +58,7 @@ const motion = 'transition-[background-color,transform] duration-150 motion-redu
           />
         </div>
         {link.description && (
-          <p class="mt-1.5 line-clamp-2 text-center text-[12px] leading-snug text-ink-muted">
+          <p class="mt-1.5 line-clamp-2 text-center text-[13px] leading-snug text-ink-muted">
             {link.description}
           </p>
         )}
@@ -71,7 +71,10 @@ const motion = 'transition-[background-color,transform] duration-150 motion-redu
       target={isExternal ? '_blank' : undefined}
       rel={isExternal ? 'noopener noreferrer' : undefined}
       class:list={[
-        'group grid min-h-15 grid-cols-[1.5rem_1fr_1.5rem] items-center gap-3 rounded-xl bg-surface px-4 py-2.5 hover:bg-surface-hover active:scale-[0.99] sm:px-5',
+        'group grid min-h-15 grid-cols-[1.5rem_1fr_1.5rem] items-center gap-3 rounded-xl px-4 py-2.5 active:scale-[0.99] sm:px-5',
+        link.highlight
+          ? 'bg-surface-hover hover:bg-surface-strong'
+          : 'bg-surface hover:bg-surface-hover',
         focus,
         motion,
       ]}
@@ -80,12 +83,32 @@ const motion = 'transition-[background-color,transform] duration-150 motion-redu
         icon={link.icon}
         customIcon={link.customIcon}
         image={link.iconImage}
-        class="size-5 text-ink-muted transition-colors duration-150 group-hover:text-accent motion-reduce:transition-none"
+        class:list={[
+          'size-5 transition-colors duration-150 group-hover:text-accent motion-reduce:transition-none',
+          link.highlight ? 'text-accent' : 'text-ink-muted',
+        ]}
       />
-      <span class="truncate text-center text-base font-medium text-ink">{link.label}</span>
+      <span class="flex min-w-0 flex-col items-center justify-center gap-0.5 text-center">
+        <span
+          class:list={[
+            'line-clamp-2 text-balance text-base leading-snug text-ink',
+            link.highlight ? 'font-semibold' : 'font-medium',
+          ]}
+        >
+          {link.label}
+        </span>
+        {link.description && (
+          <span class="line-clamp-2 text-[13px] leading-snug text-ink-muted">
+            {link.description}
+          </span>
+        )}
+      </span>
       <Icon
         name="arrow-up-right"
-        class="size-[18px] justify-self-end text-ink-muted transition-[color,transform] duration-150 group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:text-accent motion-reduce:transition-none"
+        class:list={[
+          'size-[18px] justify-self-end transition-[color,transform] duration-150 group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:text-accent motion-reduce:transition-none',
+          link.highlight ? 'text-accent' : 'text-ink-muted',
+        ]}
       />
       {isExternal && <span class="sr-only">(opens in a new tab)</span>}
     </a>

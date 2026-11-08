@@ -31,6 +31,8 @@ export interface LinkItem {
   label: string;
   description?: string;
   href: string;
+  /** Renders the row in the accent treatment to mark a priority link. */
+  highlight?: boolean;
   icon?: LinkIcon;
   /** 24×24 SVG path data when `icon` is `custom`. */
   customIcon?: string;
@@ -246,6 +248,7 @@ function parseLink(entry: unknown, field: string): LinkItem {
     label: readString(link.label, `${field}.label`),
     ...(description ? { description } : {}),
     href: readString(link.href, `${field}.href`),
+    ...(link.highlight === true ? { highlight: true } : {}),
     icon,
     ...(customIcon ? { customIcon } : {}),
     ...(iconImage ? { iconImage } : {}),

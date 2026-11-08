@@ -185,6 +185,12 @@ export default config({
               label: 'Description',
               multiline: true,
             }),
+            highlight: fields.checkbox({
+              label: 'Highlight',
+              description:
+                'Renders the row with the teal accent (icon, arrow, bold label) to mark a priority link.',
+              defaultValue: false,
+            }),
             href: fields.url({
               label: 'URL',
               description: 'Supports https:// links and mailto: addresses.',

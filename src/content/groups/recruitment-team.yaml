@@ -5,6 +5,7 @@ links:
     description: Join as a research assistant
     href: https://eimlab.org/registration
     icon: clipboard-check
+    highlight: true
   - label: Meet the Team
     description: Faculty, researchers, and members
     href: https://eimlab.org/structure
