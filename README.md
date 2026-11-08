@@ -33,7 +33,7 @@ The project is built around three priorities: **speed** (a prerendered public pa
 ## Tech Stack & Development
 
 - **Framework:** [Astro](https://astro.build) 7. The public page is prerendered; the Keystatic admin and API routes are server-rendered by the Cloudflare adapter.
-- **Styling:** Tailwind CSS v4 with semantic design tokens — a centered rounded card on the lab's deep teal-black canvas, warm bone text, a single teal accent, and self-hosted Instrument Serif plus IBM Plex Sans/Mono.
+- **Styling:** Tailwind CSS v4 with semantic design tokens — a centered neutral card on a white canvas, ink and a single AA-safe teal accent sampled from the emblem, and self-hosted Instrument Serif plus IBM Plex Sans/Mono.
 - **Content:** Managed with [Keystatic](https://keystatic.com). Site settings live in [`src/content/site.yaml`](src/content/site.yaml), link groups in [`src/content/groups/`](src/content/groups/); [`src/data/site.ts`](src/data/site.ts) validates and loads them at build time.
 
 ```bash

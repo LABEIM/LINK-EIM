@@ -12,7 +12,7 @@
 
 ## Tech Stack & Architecture
 - **Framework:** Astro 7, TypeScript strict. The public page is prerendered; CMS admin/API routes are server-rendered.
-- **Styling:** Tailwind CSS v4 with semantic design tokens (centered rounded card on the lab's deep teal-black canvas, warm bone text, single teal accent from the emblem, drifting binary field, self-hosted Instrument Serif + IBM Plex Sans/Mono).
+- **Styling:** Tailwind CSS v4 with semantic design tokens (centered neutral card on a white canvas, ink and single AA-safe teal accent from the emblem, drifting binary field, self-hosted Instrument Serif + IBM Plex Sans/Mono).
 - **Content:** Keystatic CMS (Cloud storage). Site settings and link groups are YAML in `src/content/`, loaded at build time by `src/data/site.ts`; links may use optional 16:9 images and groups may use a list or horizontal-scroll layout.
 - **Interface:** An editable lab logo above the title, a reorderable highlighted-links list (the first renders solid, the rest on a quiet surface), and an editable social links list (built-in platform or custom label, custom SVG path, or uploaded logo) render under the tagline; the card's top-right three-dot button opens a share dialog with a page preview and copy, WhatsApp, X, LinkedIn, email, and native-share actions. Horizontal groups show centered translucent overlay arrows on pointer devices and swipe on touch.
 - **Deployment:** Cloudflare Pages at `link.eimlab.org`. The build emits `dist/` with the prerendered page plus a Pages Functions worker (`_worker.js`, `_routes.json`) that runs `/keystatic` and `/api/keystatic/*`.
