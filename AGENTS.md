@@ -65,7 +65,7 @@ Before ending a session, the agent must perform these tasks:
   - `src/data/icons.ts`: Shared icon registry used by Keystatic fields and `Icon.astro`.
   - `src/styles/global.css`: Tailwind import, shadcn/ui tokens, background treatment.
   - `keystatic.config.ts`: CMS schema, Cloud project, admin branding.
-  - `src/env.d.ts`: `PUBLIC_KEYSTATIC_CLOUD_PROJECT` typing.
+  - `src/env.d.ts`: Astro/Vite client type references.
   - `.env.example`: Documented environment template (no secrets committed).
 - `public/`: Deployable static root — assets plus crawler and AI metadata (`llms.txt`, `llms-full.txt`, `sitemap.xml`, `robots.txt`, `manifest.webmanifest`).
 - `public/assets/`: Lab emblem and favicon (downloaded from `eimlab.org`).

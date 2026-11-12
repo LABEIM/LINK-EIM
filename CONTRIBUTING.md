@@ -111,7 +111,7 @@ Ensure you have the required runtimes and tools installed on your development ma
 
 Content is managed with Keystatic. Use either route:
 
-- **Keystatic admin** — open `http://localhost:4321/keystatic`, sign in with Keystatic Cloud, and edit "Site settings" or "Link groups". Saving commits the YAML to this repository through Keystatic Cloud's GitHub App. Set `PUBLIC_KEYSTATIC_CLOUD_PROJECT=team/project` in `.env` (see `.env.example`).
+- **Keystatic admin** — open `http://localhost:4321/keystatic`, sign in with Keystatic Cloud, and edit "Site settings" or "Link groups". Saving commits the YAML to this repository through Keystatic Cloud's GitHub App. The Cloud project is hardcoded in `keystatic.config.ts`.
 - **Directly** — site settings are in `src/content/site.yaml`; each link group is `src/content/groups/<slug>.yaml`. A group's filename is its slug; do not add a `slug:` key. Groups render by the `order` field. Icons must be one of the values in `src/data/icons.ts`.
 
 The highlighted link under the tagline is the single accent action. A link may set `image` (a path served from `public/images/links/`) and `imageAlt`; it then renders as a 16:9 media card. A group may set `layout: scroll` for a horizontal, swipeable row — every link in that group must have an image, or the build stops with a clear error. The header's social icon row is the Site settings **Social links** array — choose a platform and URL per item, drag to reorder, or remove every item to hide the row. The share button below the link groups opens a share dialog with a page preview, copy link, WhatsApp, X, LinkedIn, and email actions, plus the native share sheet where available.

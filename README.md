@@ -47,7 +47,7 @@ All public metadata (`llms.txt`, `llms-full.txt`, `sitemap.xml`, `robots.txt`, `
 
 ### Editing Content
 
-Open `/keystatic` on a running site and sign in with Keystatic Cloud. The Cloud project is read from `PUBLIC_KEYSTATIC_CLOUD_PROJECT` (`team/project`); set it in the build environment and locally in `.env`. Changes are committed to this repository through Keystatic Cloud's GitHub App. The YAML files under `src/content/` can also be edited directly — the build fails with a field-level error if a required value is missing, an icon is unknown, or a custom SVG path is malformed.
+Open `/keystatic` on a running site and sign in with Keystatic Cloud. The Cloud project (`eimlab/link-eim`) is set in `keystatic.config.ts`. Changes are committed to this repository through Keystatic Cloud's GitHub App. The YAML files under `src/content/` can also be edited directly — the build fails with a field-level error if a required value is missing, an icon is unknown, or a custom SVG path is malformed.
 
 The **lab logo** above the title is editable too: upload a square image in Site settings, or clear it to fall back to the default emblem.
 
