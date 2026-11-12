@@ -24,6 +24,8 @@ jobs:
       node_version: '24'
       # [REQUIRED] Target Cloudflare Worker name (Workers and Pages are separate namespaces).
       cloudflare_project_name: 'link-eim'
+      # Non-secret account identifier; the action falls back to the CLOUDFLARE_ACCOUNT_ID secret when empty.
+      cloudflare_account_id: ${{ vars.CLOUDFLARE_ACCOUNT_ID }}
       # @astrojs/cloudflare 14 writes a Worker + static assets layout to dist/
       # (dist/server/wrangler.json, dist/client/). The v2 pipeline deploys that Worker so
       # /keystatic and /api/keystatic/* stay server-rendered.
