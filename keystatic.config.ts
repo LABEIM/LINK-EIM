@@ -3,14 +3,12 @@ import { iconOptions, noneIconValue, socialLabels, socialOptions } from './src/d
 
 /**
  * Keystatic Cloud storage: content is committed to the GitHub repository through
- * the Keystatic Cloud GitHub App. Create the project at https://keystatic.cloud,
- * then set PUBLIC_KEYSTATIC_CLOUD_PROJECT (team/project) or edit the fallback.
+ * the Keystatic Cloud GitHub App. The project is the Cloud project created at
+ * https://keystatic.cloud for this repository.
  */
-const cloudProject = import.meta.env?.PUBLIC_KEYSTATIC_CLOUD_PROJECT || 'eimlab/link-eim';
-
 export default config({
   storage: { kind: 'cloud' },
-  cloud: { project: cloudProject },
+  cloud: { project: 'eimlab/link-eim' },
   ui: {
     brand: { name: 'EIM Lab Links' },
   },

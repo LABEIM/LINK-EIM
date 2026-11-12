@@ -39,7 +39,7 @@ The project is built around three priorities: **speed** (a prerendered public pa
 ```bash
 npm install      # install dependencies
 npm run dev      # dev server at http://localhost:4321/ (admin at /keystatic)
-npm run build    # build to dist/ (static assets + Pages Functions worker)
+npm run build    # build to dist/ (client assets + SSR Worker)
 npm run check    # Astro/TypeScript diagnostics
 ```
 
@@ -47,7 +47,7 @@ All public metadata (`llms.txt`, `llms-full.txt`, `sitemap.xml`, `robots.txt`, `
 
 ### Editing Content
 
-Open `/keystatic` on a running site and sign in with Keystatic Cloud. The Cloud project is read from `PUBLIC_KEYSTATIC_CLOUD_PROJECT` (`team/project`); set it in the build environment and locally in `.env`. Changes are committed to this repository through Keystatic Cloud's GitHub App. The YAML files under `src/content/` can also be edited directly — the build fails with a field-level error if a required value is missing, an icon is unknown, or a custom SVG path is malformed.
+Open `/keystatic` on a running site and sign in with Keystatic Cloud. The Cloud project (`eimlab/link-eim`) is set in `keystatic.config.ts`. Changes are committed to this repository through Keystatic Cloud's GitHub App. The YAML files under `src/content/` can also be edited directly — the build fails with a field-level error if a required value is missing, an icon is unknown, or a custom SVG path is malformed.
 
 The **lab logo** above the title is editable too: upload a square image in Site settings, or clear it to fall back to the default emblem.
 
@@ -57,9 +57,10 @@ The header renders the editable **Social links** list — each item pairs a plat
 
 ### Deployment
 
-The site deploys to Cloudflare Pages, matching `eimlab.org`. `@astrojs/cloudflare` v12 emits the prerendered page plus a Pages Functions worker (`dist/_worker.js`) and `dist/_routes.json` into `dist/`; Pages serves the static files and runs `/keystatic` and `/api/keystatic/*` through that worker. The shared CI workflow deploys `dist/`:
+The site deploys to Cloudflare Workers; the `link.eimlab.org` cutover from Pages is pending. `@astrojs/cloudflare` 14 emits the prerendered page and static assets into `dist/client/` plus the Worker bundle and generated config (`dist/server/wrangler.json`); the Worker runs `/keystatic` and `/api/keystatic/*`. The shared CI workflow (v2) deploys the whole `dist/` build as a Worker:
 
 ```yaml
+cloudflare_mode: 'ssr'
 dist_dir: 'dist'
 ```
 
@@ -67,10 +68,10 @@ To deploy manually:
 
 ```bash
 npm run build
-npx wrangler pages deploy dist
+npx wrangler deploy --config dist/server/wrangler.json
 ```
 
-No Worker deployment, KV namespace, or domain cutover is needed — the custom domain stays on the Pages project as it does for `eimlab.org`.
+The Worker is named `link-eim` and serves at `link-eim.<subdomain>.workers.dev`; the old Pages project keeps `link.eimlab.org` until the cutover. Deploys need a Cloudflare API token with **Workers Scripts: Edit**. Each PR preview is its own public `<branch>-link-eim.<subdomain>.workers.dev` hostname, so the Keystatic Cloud project must accept that origin for sign-in. No KV namespace is used.
 
 ---
 

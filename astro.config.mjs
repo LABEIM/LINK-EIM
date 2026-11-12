@@ -6,10 +6,11 @@ import tailwindcss from '@tailwindcss/vite';
 
 export default defineConfig({
   site: 'https://link.eimlab.org',
+  // No session stores are used; opting out keeps the adapter from provisioning a KV namespace.
+  session: false,
   integrations: [react(), keystatic()],
   adapter: cloudflare({
     imageService: 'compile',
-    entrypointResolution: 'auto',
   }),
   vite: {
     plugins: [tailwindcss()],
