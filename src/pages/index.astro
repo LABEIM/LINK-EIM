@@ -603,7 +603,7 @@ const jsonLd = {
         function readColours() {
           const tokens = getComputedStyle(canvas);
           linkColour = tokens.getPropertyValue('--color-accent').trim() || tokens.color;
-          nodeColour = tokens.getPropertyValue('--color-accent-bright').trim() || tokens.color;
+          nodeColour = tokens.getPropertyValue('--color-network').trim() || tokens.color;
         }
 
         function clearFrame() {

@@ -21,6 +21,8 @@
   --color-accent: #0c535d;
   --color-accent-bright: #0d7176;
   --color-accent-ink: #ffffff;
+  /* Decorative topology nodes, matching the apex brand cyan (2.5:1 on white). */
+  --color-network: #11b4bd;
 
   --shadow-dialog: 0 30px 80px -20px #0c535d66;
 }
