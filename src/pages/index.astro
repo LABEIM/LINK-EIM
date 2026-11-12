@@ -74,7 +74,7 @@ const jsonLd = {
 
   <body class="min-h-dvh">
     <canvas
-      id="binary-field"
+      id="network-field"
       class="pointer-events-none fixed inset-0 z-0 h-full w-full"
       aria-hidden="true"></canvas>
 
@@ -490,97 +490,180 @@ const jsonLd = {
     </script>
 
     <script>
-      const field = document.getElementById('binary-field');
+      const field = document.getElementById('network-field');
       const surface = field instanceof HTMLCanvasElement ? field : null;
       const context = surface?.getContext('2d') ?? null;
       const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
 
-      // Desktop character: the opaque card hides the field behind phones anyway,
-      // so touch-first and narrow viewports start no animation for it.
+      // The opaque card hides the field behind phones anyway, so touch-first
+      // and narrow viewports start no animation for it.
       const fieldVisible = !window.matchMedia('(max-width: 639px), (pointer: coarse)').matches;
 
       if (surface && context && fieldVisible) {
         const canvas = surface;
         const ctx = context;
         const tokens = getComputedStyle(document.documentElement);
-        const accent = tokens.getPropertyValue('--color-accent').trim();
-        const accentBright = tokens.getPropertyValue('--color-accent-bright').trim();
-        type Bit = {
+        const nodeColour = tokens.getPropertyValue('--color-accent').trim();
+        const pulseColour = tokens.getPropertyValue('--color-accent-bright').trim();
+        const LINK_DISTANCE = 210;
+        const FRAME_MS = 1000 / 30;
+        const PULSE_COUNT = 7;
+        type Dot = {
           x: number;
           y: number;
-          char: '0' | '1';
-          speed: number;
-          sway: number;
-          phase: number;
-          alpha: number;
-          fill: string;
+          vx: number;
+          vy: number;
+          r: number;
+          hub: boolean;
         };
 
-        let bits: Bit[] = [];
+        type Pulse = {
+          from: Dot;
+          to: Dot;
+          t: number;
+        };
+
+        let dots: Dot[] = [];
+        let pulses: Pulse[] = [];
         let width = 0;
         let height = 0;
         let frameId = 0;
         let last = 0;
 
-        const seed = (count: number): Bit[] =>
-          Array.from({ length: count }, () => {
-            const teal = Math.random() > 0.22;
-            const alpha = teal ? 0.07 + Math.random() * 0.14 : 0.05 + Math.random() * 0.08;
-            return {
-              x: Math.random() * width,
-              y: Math.random() * height,
-              char: Math.random() > 0.5 ? '1' : '0',
-              speed: 4 + Math.random() * 10,
-              sway: 0.2 + Math.random() * 0.8,
-              phase: Math.random() * Math.PI * 2,
-              alpha,
-              fill: teal ? accentBright : accent,
-            };
-          });
+        function seedDot(): Dot {
+          const hub = Math.random() < 0.1;
+          return {
+            x: Math.random() * width,
+            y: Math.random() * height,
+            vx: (Math.random() - 0.5) * 0.008,
+            vy: -(0.002 + Math.random() * 0.008),
+            r: hub ? 2.8 + Math.random() * 0.7 : 1.3 + Math.random() * 0.9,
+            hub,
+          };
+        }
 
-        function paint(time: number) {
-          ctx.clearRect(0, 0, width, height);
-          ctx.font = '13px "IBM Plex Mono", ui-monospace, monospace';
-          ctx.textAlign = 'center';
-          for (const bit of bits) {
-            const x = bit.x + Math.sin(time * 0.00035 + bit.phase) * 9 * bit.sway;
-            ctx.globalAlpha = bit.alpha;
-            ctx.fillStyle = bit.fill;
-            ctx.fillText(bit.char, x, bit.y);
+        function seedPulse(): Pulse | null {
+          if (dots.length < 2) return null;
+          for (let attempt = 0; attempt < 12; attempt += 1) {
+            const from = dots[Math.floor(Math.random() * dots.length)];
+            const to = dots[Math.floor(Math.random() * dots.length)];
+            if (from !== to && Math.hypot(to.x - from.x, to.y - from.y) < LINK_DISTANCE) {
+              return { from, to, t: 0 };
+            }
           }
+          return null;
+        }
+
+        function paintLinks() {
+          ctx.strokeStyle = nodeColour;
+          ctx.lineWidth = 0.8;
+          for (let i = 0; i < dots.length; i += 1) {
+            for (let j = i + 1; j < dots.length; j += 1) {
+              const from = dots[i];
+              const to = dots[j];
+              const distance = Math.hypot(to.x - from.x, to.y - from.y);
+              if (distance >= LINK_DISTANCE) continue;
+              ctx.globalAlpha = (1 - distance / LINK_DISTANCE) * 0.16;
+              ctx.beginPath();
+              ctx.moveTo(from.x, from.y);
+              ctx.lineTo(to.x, to.y);
+              ctx.stroke();
+            }
+          }
+        }
+
+        function paintPulses(dt: number) {
+          ctx.fillStyle = pulseColour;
+          ctx.strokeStyle = pulseColour;
+          ctx.lineWidth = 1.2;
+          const live: Pulse[] = [];
+          for (const pulse of pulses) {
+            const { from, to } = pulse;
+            pulse.t += dt * 0.00035;
+            if (
+              pulse.t >= 1 ||
+              Math.hypot(to.x - from.x, to.y - from.y) > LINK_DISTANCE * 1.3
+            ) {
+              const next = seedPulse();
+              if (next) live.push(next);
+              continue;
+            }
+            const x = from.x + (to.x - from.x) * pulse.t;
+            const y = from.y + (to.y - from.y) * pulse.t;
+            const tail = Math.max(0, pulse.t - 0.05);
+            ctx.globalAlpha = 0.18;
+            ctx.beginPath();
+            ctx.moveTo(from.x + (to.x - from.x) * tail, from.y + (to.y - from.y) * tail);
+            ctx.lineTo(x, y);
+            ctx.stroke();
+            ctx.globalAlpha = 0.55;
+            ctx.beginPath();
+            ctx.arc(x, y, 1.8, 0, Math.PI * 2);
+            ctx.fill();
+            live.push(pulse);
+          }
+          pulses = live;
+        }
+
+        function paintDots() {
+          ctx.fillStyle = nodeColour;
+          for (const dot of dots) {
+            ctx.globalAlpha = dot.hub ? 0.55 : 0.34;
+            ctx.beginPath();
+            ctx.arc(dot.x, dot.y, dot.r, 0, Math.PI * 2);
+            ctx.fill();
+          }
+        }
+
+        function paintStatic() {
+          ctx.clearRect(0, 0, width, height);
+          paintLinks();
+          paintDots();
           ctx.globalAlpha = 1;
         }
 
         function frame(now: number) {
-          const dt = last ? Math.min((now - last) / 1000, 0.05) : 0;
-          last = now;
-          for (const bit of bits) {
-            bit.y -= bit.speed * dt;
-            if (bit.y < -20) {
-              bit.y = height + 20;
-              bit.x = Math.random() * width;
-            }
-          }
-          paint(now);
           frameId = requestAnimationFrame(frame);
+          if (now - last < FRAME_MS) return;
+          const dt = last ? Math.min(now - last, 50) : FRAME_MS;
+          last = now;
+          for (const dot of dots) {
+            dot.x += dot.vx * dt;
+            dot.y += dot.vy * dt;
+            if (dot.y < -24) {
+              dot.y = height + 24;
+              dot.x = Math.random() * width;
+            }
+            if (dot.x < -24) dot.x = width + 24;
+            if (dot.x > width + 24) dot.x = -24;
+          }
+          ctx.clearRect(0, 0, width, height);
+          paintLinks();
+          paintPulses(dt);
+          paintDots();
+          ctx.globalAlpha = 1;
         }
 
         function resize() {
           width = window.innerWidth;
           height = window.innerHeight;
-          const dpr = Math.min(window.devicePixelRatio || 1, 2);
+          const dpr = Math.min(window.devicePixelRatio || 1, 1.5);
           canvas.width = Math.round(width * dpr);
           canvas.height = Math.round(height * dpr);
           ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-          bits = seed(Math.min(150, Math.max(36, Math.round((width * height) / 9000))));
-          if (reduceMotion.matches) paint(0);
+          const count = Math.min(64, Math.max(28, Math.round((width * height) / 18000)));
+          dots = Array.from({ length: count }, seedDot);
+          pulses = Array.from({ length: PULSE_COUNT }, seedPulse).filter(
+            (pulse): pulse is Pulse => pulse !== null,
+          );
+          if (reduceMotion.matches) paintStatic();
         }
 
         function sync() {
           cancelAnimationFrame(frameId);
           last = 0;
           if (reduceMotion.matches) {
-            paint(0);
+            paintStatic();
           } else {
             frameId = requestAnimationFrame(frame);
           }
