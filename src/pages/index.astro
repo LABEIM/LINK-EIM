@@ -506,20 +506,31 @@ const jsonLd = {
       const surface = field instanceof HTMLCanvasElement ? field : null;
       const context = surface?.getContext('2d') ?? null;
       const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+      const hoverFine = window.matchMedia('(hover: hover) and (pointer: fine)');
 
-      // Phones and coarse pointers get one static frame; only the margins show
-      // behind the opaque card, so animating there wastes battery.
-      const fieldHidden = window.matchMedia('(max-width: 639px), (pointer: coarse)');
+      // Desktop character: the opaque card hides the field behind phones anyway,
+      // so touch-first and narrow viewports start no animation for it.
+      const fieldVisible = !window.matchMedia('(max-width: 639px), (pointer: coarse)').matches;
 
-      if (surface && context) {
+      if (surface && context && fieldVisible) {
         const canvas = surface;
         const ctx = context;
-        const tokens = getComputedStyle(document.documentElement);
-        const nodeColour = tokens.getPropertyValue('--color-accent').trim();
-        const pulseColour = tokens.getPropertyValue('--color-accent-bright').trim();
-        const LINK_DISTANCE = 210;
         const FRAME_MS = 1000 / 30;
-        const PULSE_COUNT = 3;
+        const AREA_PER_NODE = 18000;
+        const MIN_NODES = 28;
+        const MAX_NODES = 64;
+        const LINK_DISTANCE = 210;
+        const LINK_ALPHA = 0.34;
+        const CURSOR_DISTANCE = 200;
+        const CURSOR_ALPHA = 0.42;
+        const NODE_ALPHA = 0.88;
+        const HUB_ALPHA = 1;
+        const PULSE_ALPHA = 0.95;
+        const PULSE_COUNT = 9;
+        const PULSE_SPEED = 0.00035;
+        const DRIFT_X = 0.008;
+        const DRIFT_Y = 0.002;
+
         type Dot = {
           x: number;
           y: number;
@@ -530,8 +541,8 @@ const jsonLd = {
         };
 
         type Pulse = {
-          from: Dot;
-          to: Dot;
+          from: Dot | null;
+          to: Dot | null;
           t: number;
         };
 
@@ -539,54 +550,69 @@ const jsonLd = {
         let pulses: Pulse[] = [];
         let width = 0;
         let height = 0;
+        let dpr = 1;
+        let linkColour = '';
+        let nodeColour = '';
+        let cursorX = 0;
+        let cursorY = 0;
+        let cursorTargetX = 0;
+        let cursorTargetY = 0;
+        let cursorActive = false;
+        let cursorSeeded = false;
+        let visible = true;
+        let running = false;
         let frameId = 0;
         let last = 0;
+        let dprQuery: MediaQueryList | null = null;
 
         function seedDot(): Dot {
-          const hub = Math.random() < 0.1;
+          const hub = dots.length > 0 && Math.random() < 0.1;
           return {
             x: Math.random() * width,
             y: Math.random() * height,
-            vx: (Math.random() - 0.5) * 0.008,
-            vy: -(0.002 + Math.random() * 0.008),
+            vx: (Math.random() - 0.5) * DRIFT_X,
+            vy: -(DRIFT_Y + Math.random() * 0.008),
             r: hub ? 2.8 + Math.random() * 0.7 : 1.3 + Math.random() * 0.9,
             hub,
           };
         }
 
-        // Stratified placement keeps the gutters evenly covered instead of
-        // clumping on one side.
-        function seedDots(count: number): Dot[] {
-          const columns = Math.max(1, Math.round(Math.sqrt(count * (width / height))));
-          const rows = Math.ceil(count / columns);
-          const cellWidth = width / columns;
-          const cellHeight = height / rows;
-          const seeded: Dot[] = [];
-          for (let row = 0; row < rows && seeded.length < count; row += 1) {
-            for (let column = 0; column < columns && seeded.length < count; column += 1) {
-              const dot = seedDot();
-              dot.x = (column + 0.15 + Math.random() * 0.7) * cellWidth;
-              dot.y = (row + 0.15 + Math.random() * 0.7) * cellHeight;
-              seeded.push(dot);
-            }
-          }
-          return seeded;
-        }
-
-        function seedPulse(): Pulse | null {
-          if (dots.length < 2) return null;
+        function seedPair(): [Dot, Dot] | null {
           for (let attempt = 0; attempt < 12; attempt += 1) {
             const from = dots[Math.floor(Math.random() * dots.length)];
-            const to = dots[Math.floor(Math.random() * dots.length)];
-            if (from !== to && Math.hypot(to.x - from.x, to.y - from.y) < LINK_DISTANCE) {
-              return { from, to, t: 0 };
+            if (!from) return null;
+            const neighbours = dots.filter(
+              (dot) =>
+                dot !== from &&
+                Math.hypot(dot.x - from.x, dot.y - from.y) < LINK_DISTANCE,
+            );
+            if (neighbours.length > 0) {
+              return [from, neighbours[Math.floor(Math.random() * neighbours.length)]];
             }
           }
           return null;
         }
 
-        function paintLinks() {
-          ctx.strokeStyle = nodeColour;
+        function reseedPulse(pulse: Pulse) {
+          const pair = seedPair();
+          pulse.from = pair ? pair[0] : null;
+          pulse.to = pair ? pair[1] : null;
+          pulse.t = 0;
+        }
+
+        function readColours() {
+          const tokens = getComputedStyle(canvas);
+          linkColour = tokens.getPropertyValue('--color-accent').trim() || tokens.color;
+          nodeColour = tokens.getPropertyValue('--color-accent-bright').trim() || tokens.color;
+        }
+
+        function clearFrame() {
+          ctx.setTransform(1, 0, 0, 1, 0, 0);
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+        }
+
+        function drawLinks() {
+          ctx.strokeStyle = linkColour;
           ctx.lineWidth = 0.8;
           for (let i = 0; i < dots.length; i += 1) {
             for (let j = i + 1; j < dots.length; j += 1) {
@@ -594,7 +620,7 @@ const jsonLd = {
               const to = dots[j];
               const distance = Math.hypot(to.x - from.x, to.y - from.y);
               if (distance >= LINK_DISTANCE) continue;
-              ctx.globalAlpha = (1 - distance / LINK_DISTANCE) * 0.16;
+              ctx.globalAlpha = (1 - distance / LINK_DISTANCE) * LINK_ALPHA;
               ctx.beginPath();
               ctx.moveTo(from.x, from.y);
               ctx.lineTo(to.x, to.y);
@@ -603,136 +629,231 @@ const jsonLd = {
           }
         }
 
-        function paintPulses(dt: number) {
-          ctx.fillStyle = pulseColour;
-          ctx.strokeStyle = pulseColour;
-          ctx.lineWidth = 1.4;
-          const live: Pulse[] = [];
-          for (const pulse of pulses) {
-            const { from, to } = pulse;
-            pulse.t += dt * 0.00035;
-            if (
-              pulse.t >= 1 ||
-              Math.hypot(to.x - from.x, to.y - from.y) > LINK_DISTANCE * 1.3
-            ) {
-              const next = seedPulse();
-              if (next) live.push(next);
-              continue;
-            }
-            const x = from.x + (to.x - from.x) * pulse.t;
-            const y = from.y + (to.y - from.y) * pulse.t;
-            const tail = Math.max(0, pulse.t - 0.1);
-            ctx.globalAlpha = 0.22;
+        function drawCursorLinks() {
+          if (!cursorActive || !cursorSeeded) return;
+          ctx.strokeStyle = nodeColour;
+          ctx.lineWidth = 0.9;
+          for (const dot of dots) {
+            const distance = Math.hypot(dot.x - cursorX, dot.y - cursorY);
+            if (distance >= CURSOR_DISTANCE) continue;
+            ctx.globalAlpha = (1 - distance / CURSOR_DISTANCE) * CURSOR_ALPHA;
             ctx.beginPath();
-            ctx.moveTo(from.x + (to.x - from.x) * tail, from.y + (to.y - from.y) * tail);
-            ctx.lineTo(x, y);
+            ctx.moveTo(cursorX, cursorY);
+            ctx.lineTo(dot.x, dot.y);
             ctx.stroke();
-            ctx.globalAlpha = 0.8;
-            ctx.beginPath();
-            ctx.arc(x, y, 2.4, 0, Math.PI * 2);
-            ctx.fill();
-            live.push(pulse);
           }
-          pulses = live;
         }
 
-        function paintDots() {
+        function drawDots() {
           ctx.fillStyle = nodeColour;
           for (const dot of dots) {
-            ctx.globalAlpha = dot.hub ? 0.55 : 0.34;
+            ctx.globalAlpha = dot.hub ? HUB_ALPHA : NODE_ALPHA;
             ctx.beginPath();
             ctx.arc(dot.x, dot.y, dot.r, 0, Math.PI * 2);
             ctx.fill();
           }
         }
 
-        function paintStatic() {
-          ctx.clearRect(0, 0, width, height);
-          paintLinks();
-          paintDots();
+        function drawPulses(dt: number) {
+          ctx.fillStyle = nodeColour;
+          ctx.strokeStyle = nodeColour;
+          ctx.lineWidth = 1.2;
+          for (const pulse of pulses) {
+            if (!pulse.from || !pulse.to) continue;
+            pulse.t += dt * PULSE_SPEED;
+            if (
+              pulse.t >= 1 ||
+              Math.hypot(pulse.to.x - pulse.from.x, pulse.to.y - pulse.from.y) >
+                LINK_DISTANCE * 1.3
+            ) {
+              reseedPulse(pulse);
+              continue;
+            }
+            const x = pulse.from.x + (pulse.to.x - pulse.from.x) * pulse.t;
+            const y = pulse.from.y + (pulse.to.y - pulse.from.y) * pulse.t;
+            const tail = Math.max(0, pulse.t - 0.05);
+            ctx.globalAlpha = PULSE_ALPHA * 0.35;
+            ctx.beginPath();
+            ctx.moveTo(
+              pulse.from.x + (pulse.to.x - pulse.from.x) * tail,
+              pulse.from.y + (pulse.to.y - pulse.from.y) * tail,
+            );
+            ctx.lineTo(x, y);
+            ctx.stroke();
+            ctx.globalAlpha = PULSE_ALPHA;
+            ctx.beginPath();
+            ctx.arc(x, y, 1.8, 0, Math.PI * 2);
+            ctx.fill();
+          }
+        }
+
+        function moveDots(dt: number) {
+          for (const dot of dots) {
+            dot.x += dot.vx * dt;
+            dot.y += dot.vy * dt;
+            if (dot.y < -24) dot.y = height + 24;
+            if (dot.y > height + 24) dot.y = -24;
+            if (dot.x < -24) dot.x = width + 24;
+            if (dot.x > width + 24) dot.x = -24;
+          }
+        }
+
+        function drawStatic() {
+          clearFrame();
+          if (dots.length === 0) return;
+          ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+          drawLinks();
+          drawDots();
+          ctx.globalAlpha = 1;
+        }
+
+        function drawFrame(dt: number) {
+          clearFrame();
+          if (dots.length === 0) return;
+          ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+          if (cursorActive && cursorSeeded) {
+            cursorX += (cursorTargetX - cursorX) * 0.1;
+            cursorY += (cursorTargetY - cursorY) * 0.1;
+          }
+          moveDots(dt);
+          drawLinks();
+          drawCursorLinks();
+          drawPulses(dt);
+          drawDots();
           ctx.globalAlpha = 1;
         }
 
         function frame(now: number) {
           frameId = requestAnimationFrame(frame);
           if (now - last < FRAME_MS) return;
-          const dt = last ? Math.min(now - last, 50) : FRAME_MS;
+          const dt = last === 0 ? FRAME_MS : Math.min(now - last, 50);
           last = now;
-          for (const dot of dots) {
-            dot.x += dot.vx * dt;
-            dot.y += dot.vy * dt;
-            if (dot.y < -24) {
-              dot.y = height + 24;
-              dot.x = Math.random() * width;
-            }
-            if (dot.x < -24) dot.x = width + 24;
-            if (dot.x > width + 24) dot.x = -24;
-          }
-          ctx.clearRect(0, 0, width, height);
-          paintLinks();
-          paintPulses(dt);
-          paintDots();
-          ctx.globalAlpha = 1;
+          drawFrame(dt);
         }
 
-        function resize() {
-          const previousWidth = width;
-          const previousHeight = height;
-          width = canvas.clientWidth;
-          height = canvas.clientHeight;
-          if (width <= 0 || height <= 0) return;
-          const dpr = Math.min(window.devicePixelRatio || 1, 1.5);
-          canvas.width = Math.round(width * dpr);
-          canvas.height = Math.round(height * dpr);
-          ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-          const count = Math.min(64, Math.max(28, Math.round((width * height) / 18000)));
-          if (previousWidth > 0 && previousHeight > 0) {
-            for (const dot of dots) {
-              dot.x = (dot.x / previousWidth) * width;
-              dot.y = (dot.y / previousHeight) * height;
-            }
-            while (dots.length > count) dots.pop();
-            while (dots.length < count) dots.push(seedDot());
-          } else {
-            dots = seedDots(count);
-          }
-          pulses = pulses.filter(
-            (pulse) => dots.includes(pulse.from) && dots.includes(pulse.to),
-          );
-          while (pulses.length < PULSE_COUNT) {
-            const pulse = seedPulse();
-            if (!pulse) break;
-            pulses.push(pulse);
-          }
+        function shouldRun() {
+          return visible && !document.hidden && !reduceMotion.matches && dots.length > 0;
+        }
+
+        function start() {
+          if (running || !shouldRun()) return;
+          running = true;
+          last = 0;
+          frameId = requestAnimationFrame(frame);
+        }
+
+        function stop() {
+          if (!running) return;
+          running = false;
+          cancelAnimationFrame(frameId);
         }
 
         function sync() {
-          cancelAnimationFrame(frameId);
-          last = 0;
-          if (fieldHidden.matches || reduceMotion.matches) {
-            paintStatic();
+          if (shouldRun()) {
+            start();
           } else {
-            frameId = requestAnimationFrame(frame);
+            stop();
           }
         }
 
-        resize();
-        sync();
-        window.addEventListener('resize', () => {
+        function resetCursor() {
+          cursorActive = false;
+          cursorSeeded = false;
+        }
+
+        function onPointerMove(event: PointerEvent) {
+          if (!hoverFine.matches || dots.length === 0) return;
+          const rect = canvas.getBoundingClientRect();
+          const x = event.clientX - rect.left;
+          const y = event.clientY - rect.top;
+          if (x < 0 || y < 0 || x > rect.width || y > rect.height) {
+            resetCursor();
+            return;
+          }
+          cursorTargetX = x;
+          cursorTargetY = y;
+          if (!cursorSeeded) {
+            cursorX = x;
+            cursorY = y;
+            cursorSeeded = true;
+          }
+          cursorActive = true;
+        }
+
+        function resize() {
+          const rect = canvas.getBoundingClientRect();
+          width = Math.round(rect.width);
+          height = Math.round(rect.height);
+          if (width <= 0 || height <= 0) {
+            dots = [];
+            pulses = [];
+            cursorSeeded = false;
+            return;
+          }
+          readColours();
+          dpr = Math.min(window.devicePixelRatio || 1, 1.5);
+          canvas.width = Math.round(width * dpr);
+          canvas.height = Math.round(height * dpr);
+          const count = Math.max(
+            MIN_NODES,
+            Math.min(MAX_NODES, Math.round((width * height) / AREA_PER_NODE)),
+          );
+          while (dots.length > count) dots.pop();
+          while (dots.length < count) dots.push(seedDot());
+          pulses = [];
+          while (pulses.length < PULSE_COUNT) {
+            const pulse: Pulse = { from: null, to: null, t: 0 };
+            reseedPulse(pulse);
+            pulses.push(pulse);
+          }
+          cursorSeeded = false;
+        }
+
+        function handleResize() {
           resize();
+          drawStatic();
+          sync();
+        }
+
+        function watchDpr() {
+          dprQuery?.removeEventListener('change', handleDprChange);
+          dprQuery = window.matchMedia(`(resolution: ${window.devicePixelRatio || 1}dppx)`);
+          dprQuery.addEventListener('change', handleDprChange);
+        }
+
+        function handleDprChange() {
+          watchDpr();
+          handleResize();
+        }
+
+        const observer = new IntersectionObserver((entries) => {
+          visible = entries.some((entry) => entry.isIntersecting);
           sync();
         });
-        reduceMotion.addEventListener('change', sync);
-        fieldHidden.addEventListener('change', sync);
-        document.addEventListener('visibilitychange', () => {
-          if (document.hidden) {
-            cancelAnimationFrame(frameId);
-            last = 0;
+        const resizeObserver = new ResizeObserver(handleResize);
+
+        window.addEventListener('pointermove', onPointerMove, { passive: true });
+        document.documentElement.addEventListener('pointerleave', resetCursor);
+        window.addEventListener('blur', resetCursor);
+        window.addEventListener('resize', handleResize);
+        document.addEventListener('visibilitychange', sync);
+        reduceMotion.addEventListener('change', () => {
+          if (reduceMotion.matches) {
+            stop();
+            drawStatic();
           } else {
             sync();
           }
         });
+
+        resize();
+        watchDpr();
+        drawStatic();
+        observer.observe(canvas);
+        resizeObserver.observe(canvas);
+        sync();
       }
     </script>
+
   </body>
 </html>
