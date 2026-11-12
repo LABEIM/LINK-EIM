@@ -71,7 +71,7 @@ npm run build
 npx wrangler deploy --config dist/server/wrangler.json
 ```
 
-The Worker is named `link-eim` and serves at `link-eim.<subdomain>.workers.dev` until `link.eimlab.org` is pointed at it; the old Pages project owns that hostname until the cutover. Deploys need a Cloudflare API token with **Workers Scripts: Edit**. Each PR preview is its own public `<branch>-link-eim.<subdomain>.workers.dev` hostname, so the Keystatic Cloud project must accept that origin for sign-in. No KV namespace is used.
+The Worker is named `link-eim` and serves at `link-eim.<subdomain>.workers.dev`; the old Pages project keeps `link.eimlab.org` until the cutover. Deploys need a Cloudflare API token with **Workers Scripts: Edit**. Each PR preview is its own public `<branch>-link-eim.<subdomain>.workers.dev` hostname, so the Keystatic Cloud project must accept that origin for sign-in. No KV namespace is used.
 
 ---
 
