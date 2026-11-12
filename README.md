@@ -39,7 +39,7 @@ The project is built around three priorities: **speed** (a prerendered public pa
 ```bash
 npm install      # install dependencies
 npm run dev      # dev server at http://localhost:4321/ (admin at /keystatic)
-npm run build    # build to dist/ (static assets + Pages Functions worker)
+npm run build    # build to dist/ (client assets + SSR Worker)
 npm run check    # Astro/TypeScript diagnostics
 ```
 
@@ -57,9 +57,10 @@ The header renders the editable **Social links** list — each item pairs a plat
 
 ### Deployment
 
-The site deploys to Cloudflare Pages, matching `eimlab.org`. `@astrojs/cloudflare` v12 emits the prerendered page plus a Pages Functions worker (`dist/_worker.js`) and `dist/_routes.json` into `dist/`; Pages serves the static files and runs `/keystatic` and `/api/keystatic/*` through that worker. The shared CI workflow deploys `dist/`:
+The site deploys to Cloudflare Workers at `link.eimlab.org`. `@astrojs/cloudflare` 14 emits the prerendered page and static assets into `dist/client/` plus a Worker entry and generated config (`dist/server/wrangler.json`); the Worker runs `/keystatic` and `/api/keystatic/*`. The shared CI workflow (v2) deploys the whole `dist/` build as a Worker:
 
 ```yaml
+cloudflare_mode: 'ssr'
 dist_dir: 'dist'
 ```
 
@@ -67,10 +68,10 @@ To deploy manually:
 
 ```bash
 npm run build
-npx wrangler pages deploy dist
+npx wrangler deploy --config dist/server/wrangler.json
 ```
 
-No Worker deployment, KV namespace, or domain cutover is needed — the custom domain stays on the Pages project as it does for `eimlab.org`.
+The Worker is named `link-eim` and serves at `link-eim.<account>.workers.dev` until `link.eimlab.org` is pointed at it; the old Pages project owns that hostname until the cutover. No KV namespace is used.
 
 ---
 

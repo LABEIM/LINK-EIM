@@ -104,7 +104,7 @@ Ensure you have the required runtimes and tools installed on your development ma
    npm install
    npm run dev      # http://localhost:4321/ (admin at /keystatic)
    npm run check    # Astro/TypeScript diagnostics
-   npm run build    # dist/ (static assets + Cloudflare Pages Functions worker)
+   npm run build    # dist/ (client assets + Cloudflare SSR Worker)
    ```
 
 ### Editing Links & Site Settings
@@ -194,7 +194,7 @@ Before submitting your Pull Request, ensure:
 
 Once your PR is opened:
 1. Automated CI/CD pipelines will execute build, lint, and test suites.
-2. If integrated with Cloudflare Pages or Vercel, a preview deployment will be generated for visual verification.
+2. The CI/CD pipeline deploys a Cloudflare Workers preview (with a PR comment) for visual verification.
 3. Ensure all CI checks pass green before requesting maintainer review.
 
 ### Code Review Process
