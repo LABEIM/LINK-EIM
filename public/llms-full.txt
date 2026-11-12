@@ -27,7 +27,7 @@ LINK-EIM is the official link-in-bio page for the EIM Research Laboratory at Tel
 - **Database / Storage:** None — content is committed to the GitHub repository through Keystatic Cloud's GitHub App.
 - **Client JavaScript:** Small inline scripts animate the decorative binary background on wide, pointer-capable viewports (paused for `prefers-reduced-motion` and hidden tabs), drive the horizontal scroller's overlay arrows, and open the share dialog (copy link, email, and native share are inline; WhatsApp, X, and LinkedIn sit under "More ways to share"). React loads only inside `/keystatic`.
 - **Authentication:** None on the public page. `/keystatic` requires a Keystatic Cloud sign-in.
-- **Hosting / Edge Platform:** Cloudflare Workers at `link.eimlab.org`; static assets are served from `dist/client/` and `/keystatic` plus `/api/keystatic/*` run in the Worker (`dist/server/`).
+- **Hosting / Edge Platform:** Cloudflare Workers (the `link.eimlab.org` cutover from Pages is pending); static assets are served from `dist/client/` and `/keystatic` plus `/api/keystatic/*` run in the Worker (`dist/server/`).
 - **CI/CD:** LABEIM Shared CI/CD v2 (`.github/workflows/ci-cd.yml`) builds the site and deploys the `link-eim` Worker with `cloudflare_mode: 'ssr'`.
 
 ### Architectural Overview

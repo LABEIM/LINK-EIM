@@ -57,7 +57,7 @@ The header renders the editable **Social links** list — each item pairs a plat
 
 ### Deployment
 
-The site deploys to Cloudflare Workers at `link.eimlab.org`. `@astrojs/cloudflare` 14 emits the prerendered page and static assets into `dist/client/` plus a Worker entry and generated config (`dist/server/wrangler.json`); the Worker runs `/keystatic` and `/api/keystatic/*`. The shared CI workflow (v2) deploys the whole `dist/` build as a Worker:
+The site deploys to Cloudflare Workers; the `link.eimlab.org` cutover from Pages is pending. `@astrojs/cloudflare` 14 emits the prerendered page and static assets into `dist/client/` plus the Worker bundle and generated config (`dist/server/wrangler.json`); the Worker runs `/keystatic` and `/api/keystatic/*`. The shared CI workflow (v2) deploys the whole `dist/` build as a Worker:
 
 ```yaml
 cloudflare_mode: 'ssr'
@@ -71,7 +71,7 @@ npm run build
 npx wrangler deploy --config dist/server/wrangler.json
 ```
 
-The Worker is named `link-eim` and serves at `link-eim.<account>.workers.dev` until `link.eimlab.org` is pointed at it; the old Pages project owns that hostname until the cutover. No KV namespace is used.
+The Worker is named `link-eim` and serves at `link-eim.<subdomain>.workers.dev` until `link.eimlab.org` is pointed at it; the old Pages project owns that hostname until the cutover. Deploys need a Cloudflare API token with **Workers Scripts: Edit**. Each PR preview is its own public `<branch>-link-eim.<subdomain>.workers.dev` hostname, so the Keystatic Cloud project must accept that origin for sign-in. No KV namespace is used.
 
 ---
 

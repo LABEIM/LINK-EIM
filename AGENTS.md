@@ -52,8 +52,8 @@ Before ending a session, the agent must perform these tasks:
 - **State Management & Data Fetching**: None on the public page; Keystatic handles content reads/writes inside the admin.
 - **Database / CMS / ORM**: Keystatic CMS with Cloud storage (`keystatic.config.ts`). Content is YAML in `src/content/` (site settings singleton + link group collection), validated and loaded at build time by `src/data/site.ts`. Site settings hold the editable lab logo (`public/images/brand/`), the reorderable highlighted-links list, and social links (built-in platform, or custom label + SVG path). Link icons come from the shared registry, a custom 24×24 SVG path (`d` attribute only), an uploaded square image (`public/images/icons/`), or none. Links may carry an optional 16:9 image with alt text, a description line, or a `highlight` flag that renders the list row with the accent treatment; groups choose a vertical list or horizontal-scroll layout (scroll requires an image on every link, enforced by the build).
 - **Typography & Icons**: Self-hosted Instrument Serif (display) plus IBM Plex Sans/Mono via Fontsource; inline Lucide SVG icons; brand assets sourced from `eimlab.org`.
-- **Runtime & Package Manager**: Node.js 20+ (verified on 24), npm.
-- **Deployment**: Cloudflare Workers at `link.eimlab.org`. `npm run build` emits `dist/client/` (prerendered page and static assets) plus `dist/server/wrangler.json` (Worker entry); deploy with `npx wrangler deploy --config dist/server/wrangler.json`.
+- **Runtime & Package Manager**: Node.js 22.23.4+ (CI uses 24), npm.
+- **Deployment**: Cloudflare Workers (the `link.eimlab.org` cutover from Pages is pending). `npm run build` emits `dist/client/` (prerendered page and static assets) plus the Worker bundle and generated config `dist/server/wrangler.json`; deploy with `npx wrangler deploy --config dist/server/wrangler.json`.
 
 ### 2.2 Directory Layout & Component Roles
 - `src/`: Application source.
@@ -140,4 +140,4 @@ Before ending a session, the agent must perform these tasks:
 
 ### 4.3 Containerization & Ports (If Applicable)
 - **Dev Server**: Local port `4321` (Astro default); override with `--port` if occupied.
-- **Production / Deployment Target**: Cloudflare Workers at `link.eimlab.org`; build output in `dist/`. Deploy with `npx wrangler deploy --config dist/server/wrangler.json` or the shared CI workflow v2 (`cloudflare_mode: 'ssr'` and `dist_dir: 'dist'` in `.github/workflows/ci-cd.yml`). The Worker serves `dist/client/` statically and runs `/keystatic` and `/api/keystatic/*` from `dist/server/`. The `link.eimlab.org` custom domain must be pointed from the old Pages project to the `link-eim` Worker.
+- **Production / Deployment Target**: Cloudflare Workers (the `link.eimlab.org` cutover from Pages is pending); build output in `dist/`. Deploy with `npx wrangler deploy --config dist/server/wrangler.json` or the shared CI workflow v2 (`cloudflare_mode: 'ssr'` and `dist_dir: 'dist'` in `.github/workflows/ci-cd.yml`). The Worker serves `dist/client/` statically and runs `/keystatic` and `/api/keystatic/*` from `dist/server/`. The `link.eimlab.org` custom domain must be pointed from the old Pages project to the `link-eim` Worker. Deploy through CI; a manual deploy is break-glass and requires the user's approval.

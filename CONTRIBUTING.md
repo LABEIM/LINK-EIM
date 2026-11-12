@@ -88,7 +88,7 @@ Whether you are fixing a bug or adding a new feature, follow the git workflow de
 
 Ensure you have the required runtimes and tools installed on your development machine:
 - **Git** (latest stable)
-- **Node.js** 20 or newer (verified on Node 24) with **npm**
+- **Node.js** 22.23.4 or newer (CI uses Node 24) with **npm**
 - **Editor**: VS Code, Cursor, or your preferred IDE
 
 ### Installation & Development Server

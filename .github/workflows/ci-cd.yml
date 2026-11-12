@@ -21,6 +21,7 @@ jobs:
     uses: LABEIM/Shared-CICD/.github/workflows/deploy-app.yml@v2
     with:
       enable_cloudflare: true
+      node_version: '24'
       # [REQUIRED] Target Cloudflare Worker name (Workers and Pages are separate namespaces).
       cloudflare_project_name: 'link-eim'
       # @astrojs/cloudflare 14 writes a Worker + static assets layout to dist/
