@@ -74,7 +74,7 @@ const jsonLd = {
 
   <body class="min-h-dvh">
     <canvas
-      id="binary-field"
+      id="network-field"
       class="pointer-events-none fixed inset-0 z-0 h-full w-full"
       aria-hidden="true"></canvas>
 
@@ -246,9 +246,9 @@ const jsonLd = {
         </div>
 
         <footer class="mt-6 border-t border-line pt-6 text-center text-[12px] leading-relaxed text-ink-muted">
-          <p>{site.address}</p>
+          <p class="text-balance">{site.address}</p>
           <p class="mt-1">{site.hours}</p>
-          <p class="mt-4">{site.faculty}</p>
+          <p class="mt-4 text-balance">{site.faculty}</p>
           <p>{site.institution}</p>
           <p class="mt-4">© {new Date().getFullYear()} {site.name}. All rights reserved.</p>
         </footer>
@@ -396,6 +396,14 @@ const jsonLd = {
           </button>
         </div>
 
+        <p
+          data-copy-hint
+          hidden
+          class="px-4 pb-4 text-center text-[12px] leading-relaxed text-ink-muted sm:px-5"
+        >
+          Select the address in your browser to copy it.
+        </p>
+
         <p class="sr-only" role="status" data-share-status></p>
       </dialog>
     </main>
@@ -409,6 +417,7 @@ const jsonLd = {
         const copyButton = shareDialog.querySelector<HTMLButtonElement>('[data-copy-action]');
         const copyLabel = shareDialog.querySelector<HTMLElement>('[data-copy-label]');
         const status = shareDialog.querySelector<HTMLElement>('[data-share-status]');
+        const copyHint = shareDialog.querySelector<HTMLElement>('[data-copy-hint]');
         const nativeButton = shareDialog.querySelector<HTMLButtonElement>('[data-share-native]');
         const pageUrl = window.location.href;
         const pageTitle = document.title;
@@ -428,12 +437,12 @@ const jsonLd = {
 
         const close = () => shareDialog.close();
 
-        const flashLabel = (message: string) => {
+        const flashLabel = (message: string, duration = 1600) => {
           if (!copyLabel) return;
           copyLabel.textContent = message;
           window.setTimeout(() => {
             copyLabel.textContent = 'Copy link';
-          }, 1600);
+          }, duration);
         };
 
         const copyLink = async () => {
@@ -441,13 +450,16 @@ const jsonLd = {
             await navigator.clipboard.writeText(pageUrl);
             announce('Link copied to clipboard');
             flashLabel('Copied');
+            if (copyHint) copyHint.hidden = true;
           } catch {
-            announce('Could not copy the link');
-            flashLabel('Copy failed');
+            announce('Could not copy the link. Select the address in your browser to copy it.');
+            flashLabel('Copy failed', 2600);
+            if (copyHint) copyHint.hidden = false;
           }
         };
 
         shareTrigger.addEventListener('click', () => {
+          if (copyHint) copyHint.hidden = true;
           shareDialog.showModal();
           lockScroll(true);
         });
@@ -490,10 +502,11 @@ const jsonLd = {
     </script>
 
     <script>
-      const field = document.getElementById('binary-field');
+      const field = document.getElementById('network-field');
       const surface = field instanceof HTMLCanvasElement ? field : null;
       const context = surface?.getContext('2d') ?? null;
       const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+      const hoverFine = window.matchMedia('(hover: hover) and (pointer: fine)');
 
       // Desktop character: the opaque card hides the field behind phones anyway,
       // so touch-first and narrow viewports start no animation for it.
@@ -502,106 +515,345 @@ const jsonLd = {
       if (surface && context && fieldVisible) {
         const canvas = surface;
         const ctx = context;
-        const tokens = getComputedStyle(document.documentElement);
-        const accent = tokens.getPropertyValue('--color-accent').trim();
-        const accentBright = tokens.getPropertyValue('--color-accent-bright').trim();
-        type Bit = {
+        const FRAME_MS = 1000 / 30;
+        const AREA_PER_NODE = 18000;
+        const MIN_NODES = 28;
+        const MAX_NODES = 64;
+        const LINK_DISTANCE = 210;
+        const LINK_ALPHA = 0.34;
+        const CURSOR_DISTANCE = 200;
+        const CURSOR_ALPHA = 0.42;
+        const NODE_ALPHA = 0.88;
+        const HUB_ALPHA = 1;
+        const PULSE_ALPHA = 0.95;
+        const PULSE_COUNT = 9;
+        const PULSE_SPEED = 0.00035;
+        const DRIFT_X = 0.008;
+        const DRIFT_Y = 0.002;
+
+        type Dot = {
           x: number;
           y: number;
-          char: '0' | '1';
-          speed: number;
-          sway: number;
-          phase: number;
-          alpha: number;
-          fill: string;
+          vx: number;
+          vy: number;
+          r: number;
+          hub: boolean;
         };
 
-        let bits: Bit[] = [];
+        type Pulse = {
+          from: Dot | null;
+          to: Dot | null;
+          t: number;
+        };
+
+        let dots: Dot[] = [];
+        let pulses: Pulse[] = [];
         let width = 0;
         let height = 0;
+        let dpr = 1;
+        let linkColour = '';
+        let nodeColour = '';
+        let cursorX = 0;
+        let cursorY = 0;
+        let cursorTargetX = 0;
+        let cursorTargetY = 0;
+        let cursorActive = false;
+        let cursorSeeded = false;
+        let visible = true;
+        let running = false;
         let frameId = 0;
         let last = 0;
+        let dprQuery: MediaQueryList | null = null;
 
-        const seed = (count: number): Bit[] =>
-          Array.from({ length: count }, () => {
-            const teal = Math.random() > 0.22;
-            const alpha = teal ? 0.07 + Math.random() * 0.14 : 0.05 + Math.random() * 0.08;
-            return {
-              x: Math.random() * width,
-              y: Math.random() * height,
-              char: Math.random() > 0.5 ? '1' : '0',
-              speed: 4 + Math.random() * 10,
-              sway: 0.2 + Math.random() * 0.8,
-              phase: Math.random() * Math.PI * 2,
-              alpha,
-              fill: teal ? accentBright : accent,
-            };
-          });
+        function seedDot(): Dot {
+          const hub = dots.length > 0 && Math.random() < 0.1;
+          return {
+            x: Math.random() * width,
+            y: Math.random() * height,
+            vx: (Math.random() - 0.5) * DRIFT_X,
+            vy: -(DRIFT_Y + Math.random() * 0.008),
+            r: hub ? 2.8 + Math.random() * 0.7 : 1.3 + Math.random() * 0.9,
+            hub,
+          };
+        }
 
-        function paint(time: number) {
-          ctx.clearRect(0, 0, width, height);
-          ctx.font = '13px "IBM Plex Mono", ui-monospace, monospace';
-          ctx.textAlign = 'center';
-          for (const bit of bits) {
-            const x = bit.x + Math.sin(time * 0.00035 + bit.phase) * 9 * bit.sway;
-            ctx.globalAlpha = bit.alpha;
-            ctx.fillStyle = bit.fill;
-            ctx.fillText(bit.char, x, bit.y);
+        function seedPair(): [Dot, Dot] | null {
+          for (let attempt = 0; attempt < 12; attempt += 1) {
+            const from = dots[Math.floor(Math.random() * dots.length)];
+            if (!from) return null;
+            const neighbours = dots.filter(
+              (dot) =>
+                dot !== from &&
+                Math.hypot(dot.x - from.x, dot.y - from.y) < LINK_DISTANCE,
+            );
+            if (neighbours.length > 0) {
+              return [from, neighbours[Math.floor(Math.random() * neighbours.length)]];
+            }
           }
+          return null;
+        }
+
+        function reseedPulse(pulse: Pulse) {
+          const pair = seedPair();
+          pulse.from = pair ? pair[0] : null;
+          pulse.to = pair ? pair[1] : null;
+          pulse.t = 0;
+        }
+
+        function readColours() {
+          const tokens = getComputedStyle(canvas);
+          linkColour = tokens.getPropertyValue('--color-accent').trim() || tokens.color;
+          nodeColour = tokens.getPropertyValue('--color-network').trim() || tokens.color;
+        }
+
+        function clearFrame() {
+          ctx.setTransform(1, 0, 0, 1, 0, 0);
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+        }
+
+        function drawLinks() {
+          ctx.strokeStyle = linkColour;
+          ctx.lineWidth = 0.8;
+          for (let i = 0; i < dots.length; i += 1) {
+            for (let j = i + 1; j < dots.length; j += 1) {
+              const from = dots[i];
+              const to = dots[j];
+              const distance = Math.hypot(to.x - from.x, to.y - from.y);
+              if (distance >= LINK_DISTANCE) continue;
+              ctx.globalAlpha = (1 - distance / LINK_DISTANCE) * LINK_ALPHA;
+              ctx.beginPath();
+              ctx.moveTo(from.x, from.y);
+              ctx.lineTo(to.x, to.y);
+              ctx.stroke();
+            }
+          }
+        }
+
+        function drawCursorLinks() {
+          if (!cursorActive || !cursorSeeded) return;
+          ctx.strokeStyle = nodeColour;
+          ctx.lineWidth = 0.9;
+          for (const dot of dots) {
+            const distance = Math.hypot(dot.x - cursorX, dot.y - cursorY);
+            if (distance >= CURSOR_DISTANCE) continue;
+            ctx.globalAlpha = (1 - distance / CURSOR_DISTANCE) * CURSOR_ALPHA;
+            ctx.beginPath();
+            ctx.moveTo(cursorX, cursorY);
+            ctx.lineTo(dot.x, dot.y);
+            ctx.stroke();
+          }
+        }
+
+        function drawDots() {
+          ctx.fillStyle = nodeColour;
+          for (const dot of dots) {
+            ctx.globalAlpha = dot.hub ? HUB_ALPHA : NODE_ALPHA;
+            ctx.beginPath();
+            ctx.arc(dot.x, dot.y, dot.r, 0, Math.PI * 2);
+            ctx.fill();
+          }
+        }
+
+        function drawPulses(dt: number) {
+          ctx.fillStyle = nodeColour;
+          ctx.strokeStyle = nodeColour;
+          ctx.lineWidth = 1.2;
+          for (const pulse of pulses) {
+            if (!pulse.from || !pulse.to) continue;
+            pulse.t += dt * PULSE_SPEED;
+            if (
+              pulse.t >= 1 ||
+              Math.hypot(pulse.to.x - pulse.from.x, pulse.to.y - pulse.from.y) >
+                LINK_DISTANCE * 1.3
+            ) {
+              reseedPulse(pulse);
+              continue;
+            }
+            const x = pulse.from.x + (pulse.to.x - pulse.from.x) * pulse.t;
+            const y = pulse.from.y + (pulse.to.y - pulse.from.y) * pulse.t;
+            const tail = Math.max(0, pulse.t - 0.05);
+            ctx.globalAlpha = PULSE_ALPHA * 0.35;
+            ctx.beginPath();
+            ctx.moveTo(
+              pulse.from.x + (pulse.to.x - pulse.from.x) * tail,
+              pulse.from.y + (pulse.to.y - pulse.from.y) * tail,
+            );
+            ctx.lineTo(x, y);
+            ctx.stroke();
+            ctx.globalAlpha = PULSE_ALPHA;
+            ctx.beginPath();
+            ctx.arc(x, y, 1.8, 0, Math.PI * 2);
+            ctx.fill();
+          }
+        }
+
+        function moveDots(dt: number) {
+          for (const dot of dots) {
+            dot.x += dot.vx * dt;
+            dot.y += dot.vy * dt;
+            if (dot.y < -24) dot.y = height + 24;
+            if (dot.y > height + 24) dot.y = -24;
+            if (dot.x < -24) dot.x = width + 24;
+            if (dot.x > width + 24) dot.x = -24;
+          }
+        }
+
+        function drawStatic() {
+          clearFrame();
+          if (dots.length === 0) return;
+          ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+          drawLinks();
+          drawDots();
+          ctx.globalAlpha = 1;
+        }
+
+        function drawFrame(dt: number) {
+          clearFrame();
+          if (dots.length === 0) return;
+          ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+          if (cursorActive && cursorSeeded) {
+            cursorX += (cursorTargetX - cursorX) * 0.1;
+            cursorY += (cursorTargetY - cursorY) * 0.1;
+          }
+          moveDots(dt);
+          drawLinks();
+          drawCursorLinks();
+          drawPulses(dt);
+          drawDots();
           ctx.globalAlpha = 1;
         }
 
         function frame(now: number) {
-          const dt = last ? Math.min((now - last) / 1000, 0.05) : 0;
+          frameId = requestAnimationFrame(frame);
+          if (now - last < FRAME_MS) return;
+          const dt = last === 0 ? FRAME_MS : Math.min(now - last, 50);
           last = now;
-          for (const bit of bits) {
-            bit.y -= bit.speed * dt;
-            if (bit.y < -20) {
-              bit.y = height + 20;
-              bit.x = Math.random() * width;
-            }
-          }
-          paint(now);
+          drawFrame(dt);
+        }
+
+        function shouldRun() {
+          return visible && !document.hidden && !reduceMotion.matches && dots.length > 0;
+        }
+
+        function start() {
+          if (running || !shouldRun()) return;
+          running = true;
+          last = 0;
           frameId = requestAnimationFrame(frame);
         }
 
-        function resize() {
-          width = window.innerWidth;
-          height = window.innerHeight;
-          const dpr = Math.min(window.devicePixelRatio || 1, 2);
-          canvas.width = Math.round(width * dpr);
-          canvas.height = Math.round(height * dpr);
-          ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-          bits = seed(Math.min(150, Math.max(36, Math.round((width * height) / 9000))));
-          if (reduceMotion.matches) paint(0);
+        function stop() {
+          if (!running) return;
+          running = false;
+          cancelAnimationFrame(frameId);
         }
 
         function sync() {
-          cancelAnimationFrame(frameId);
-          last = 0;
-          if (reduceMotion.matches) {
-            paint(0);
+          if (shouldRun()) {
+            start();
           } else {
-            frameId = requestAnimationFrame(frame);
+            stop();
           }
         }
 
-        resize();
-        sync();
-        window.addEventListener('resize', () => {
+        function resetCursor() {
+          cursorActive = false;
+          cursorSeeded = false;
+        }
+
+        function onPointerMove(event: PointerEvent) {
+          if (!hoverFine.matches || dots.length === 0) return;
+          const rect = canvas.getBoundingClientRect();
+          const x = event.clientX - rect.left;
+          const y = event.clientY - rect.top;
+          if (x < 0 || y < 0 || x > rect.width || y > rect.height) {
+            resetCursor();
+            return;
+          }
+          cursorTargetX = x;
+          cursorTargetY = y;
+          if (!cursorSeeded) {
+            cursorX = x;
+            cursorY = y;
+            cursorSeeded = true;
+          }
+          cursorActive = true;
+        }
+
+        function resize() {
+          const rect = canvas.getBoundingClientRect();
+          width = Math.round(rect.width);
+          height = Math.round(rect.height);
+          if (width <= 0 || height <= 0) {
+            dots = [];
+            pulses = [];
+            cursorSeeded = false;
+            return;
+          }
+          readColours();
+          dpr = Math.min(window.devicePixelRatio || 1, 1.5);
+          canvas.width = Math.round(width * dpr);
+          canvas.height = Math.round(height * dpr);
+          const count = Math.max(
+            MIN_NODES,
+            Math.min(MAX_NODES, Math.round((width * height) / AREA_PER_NODE)),
+          );
+          while (dots.length > count) dots.pop();
+          while (dots.length < count) dots.push(seedDot());
+          pulses = [];
+          while (pulses.length < PULSE_COUNT) {
+            const pulse: Pulse = { from: null, to: null, t: 0 };
+            reseedPulse(pulse);
+            pulses.push(pulse);
+          }
+          cursorSeeded = false;
+        }
+
+        function handleResize() {
           resize();
+          drawStatic();
+          sync();
+        }
+
+        function watchDpr() {
+          dprQuery?.removeEventListener('change', handleDprChange);
+          dprQuery = window.matchMedia(`(resolution: ${window.devicePixelRatio || 1}dppx)`);
+          dprQuery.addEventListener('change', handleDprChange);
+        }
+
+        function handleDprChange() {
+          watchDpr();
+          handleResize();
+        }
+
+        const observer = new IntersectionObserver((entries) => {
+          visible = entries.some((entry) => entry.isIntersecting);
           sync();
         });
-        reduceMotion.addEventListener('change', sync);
-        document.addEventListener('visibilitychange', () => {
-          if (document.hidden) {
-            cancelAnimationFrame(frameId);
-            last = 0;
+        const resizeObserver = new ResizeObserver(handleResize);
+
+        window.addEventListener('pointermove', onPointerMove, { passive: true });
+        document.documentElement.addEventListener('pointerleave', resetCursor);
+        window.addEventListener('blur', resetCursor);
+        window.addEventListener('resize', handleResize);
+        document.addEventListener('visibilitychange', sync);
+        reduceMotion.addEventListener('change', () => {
+          if (reduceMotion.matches) {
+            stop();
+            drawStatic();
           } else {
             sync();
           }
         });
+
+        resize();
+        watchDpr();
+        drawStatic();
+        observer.observe(canvas);
+        resizeObserver.observe(canvas);
+        sync();
       }
     </script>
+
   </body>
 </html>

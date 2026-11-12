@@ -2,8 +2,8 @@
 
 /*
  * Linktree structure, editorial finish: white ground, a cool neutral card,
- * ink and one accent in the emblem's dark teal (AA-checked), a light
- * binary field and fine film grain behind the card.
+ * ink and one accent in the emblem's dark teal (AA-checked), a drifting
+ * node network and fine film grain behind the card.
  */
 @theme {
   --font-sans: "IBM Plex Sans", ui-sans-serif, system-ui, sans-serif;
@@ -21,6 +21,8 @@
   --color-accent: #0c535d;
   --color-accent-bright: #0d7176;
   --color-accent-ink: #ffffff;
+  /* Decorative topology nodes, matching the apex brand cyan (2.5:1 on white). */
+  --color-network: #11b4bd;
 
   --shadow-dialog: 0 30px 80px -20px #0c535d66;
 }
