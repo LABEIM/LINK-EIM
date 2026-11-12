@@ -246,9 +246,9 @@ const jsonLd = {
         </div>
 
         <footer class="mt-6 border-t border-line pt-6 text-center text-[12px] leading-relaxed text-ink-muted">
-          <p>{site.address}</p>
+          <p class="text-balance">{site.address}</p>
           <p class="mt-1">{site.hours}</p>
-          <p class="mt-4">{site.faculty}</p>
+          <p class="mt-4 text-balance">{site.faculty}</p>
           <p>{site.institution}</p>
           <p class="mt-4">© {new Date().getFullYear()} {site.name}. All rights reserved.</p>
         </footer>
@@ -396,6 +396,14 @@ const jsonLd = {
           </button>
         </div>
 
+        <p
+          data-copy-hint
+          hidden
+          class="px-4 pb-4 text-center text-[12px] leading-relaxed text-ink-muted sm:px-5"
+        >
+          Select the address in your browser to copy it.
+        </p>
+
         <p class="sr-only" role="status" data-share-status></p>
       </dialog>
     </main>
@@ -409,6 +417,7 @@ const jsonLd = {
         const copyButton = shareDialog.querySelector<HTMLButtonElement>('[data-copy-action]');
         const copyLabel = shareDialog.querySelector<HTMLElement>('[data-copy-label]');
         const status = shareDialog.querySelector<HTMLElement>('[data-share-status]');
+        const copyHint = shareDialog.querySelector<HTMLElement>('[data-copy-hint]');
         const nativeButton = shareDialog.querySelector<HTMLButtonElement>('[data-share-native]');
         const pageUrl = window.location.href;
         const pageTitle = document.title;
@@ -428,12 +437,12 @@ const jsonLd = {
 
         const close = () => shareDialog.close();
 
-        const flashLabel = (message: string) => {
+        const flashLabel = (message: string, duration = 1600) => {
           if (!copyLabel) return;
           copyLabel.textContent = message;
           window.setTimeout(() => {
             copyLabel.textContent = 'Copy link';
-          }, 1600);
+          }, duration);
         };
 
         const copyLink = async () => {
@@ -441,13 +450,16 @@ const jsonLd = {
             await navigator.clipboard.writeText(pageUrl);
             announce('Link copied to clipboard');
             flashLabel('Copied');
+            if (copyHint) copyHint.hidden = true;
           } catch {
-            announce('Could not copy the link');
-            flashLabel('Copy failed');
+            announce('Could not copy the link. Select the address in your browser to copy it.');
+            flashLabel('Copy failed', 2600);
+            if (copyHint) copyHint.hidden = false;
           }
         };
 
         shareTrigger.addEventListener('click', () => {
+          if (copyHint) copyHint.hidden = true;
           shareDialog.showModal();
           lockScroll(true);
         });
@@ -495,11 +507,11 @@ const jsonLd = {
       const context = surface?.getContext('2d') ?? null;
       const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
 
-      // The opaque card hides the field behind phones anyway, so touch-first
-      // and narrow viewports start no animation for it.
-      const fieldVisible = !window.matchMedia('(max-width: 639px), (pointer: coarse)').matches;
+      // Phones and coarse pointers get one static frame; only the margins show
+      // behind the opaque card, so animating there wastes battery.
+      const fieldHidden = window.matchMedia('(max-width: 639px), (pointer: coarse)');
 
-      if (surface && context && fieldVisible) {
+      if (surface && context) {
         const canvas = surface;
         const ctx = context;
         const tokens = getComputedStyle(document.documentElement);
@@ -507,7 +519,7 @@ const jsonLd = {
         const pulseColour = tokens.getPropertyValue('--color-accent-bright').trim();
         const LINK_DISTANCE = 210;
         const FRAME_MS = 1000 / 30;
-        const PULSE_COUNT = 7;
+        const PULSE_COUNT = 3;
         type Dot = {
           x: number;
           y: number;
@@ -540,6 +552,25 @@ const jsonLd = {
             r: hub ? 2.8 + Math.random() * 0.7 : 1.3 + Math.random() * 0.9,
             hub,
           };
+        }
+
+        // Stratified placement keeps the gutters evenly covered instead of
+        // clumping on one side.
+        function seedDots(count: number): Dot[] {
+          const columns = Math.max(1, Math.round(Math.sqrt(count * (width / height))));
+          const rows = Math.ceil(count / columns);
+          const cellWidth = width / columns;
+          const cellHeight = height / rows;
+          const seeded: Dot[] = [];
+          for (let row = 0; row < rows && seeded.length < count; row += 1) {
+            for (let column = 0; column < columns && seeded.length < count; column += 1) {
+              const dot = seedDot();
+              dot.x = (column + 0.15 + Math.random() * 0.7) * cellWidth;
+              dot.y = (row + 0.15 + Math.random() * 0.7) * cellHeight;
+              seeded.push(dot);
+            }
+          }
+          return seeded;
         }
 
         function seedPulse(): Pulse | null {
@@ -575,7 +606,7 @@ const jsonLd = {
         function paintPulses(dt: number) {
           ctx.fillStyle = pulseColour;
           ctx.strokeStyle = pulseColour;
-          ctx.lineWidth = 1.2;
+          ctx.lineWidth = 1.4;
           const live: Pulse[] = [];
           for (const pulse of pulses) {
             const { from, to } = pulse;
@@ -590,15 +621,15 @@ const jsonLd = {
             }
             const x = from.x + (to.x - from.x) * pulse.t;
             const y = from.y + (to.y - from.y) * pulse.t;
-            const tail = Math.max(0, pulse.t - 0.05);
-            ctx.globalAlpha = 0.18;
+            const tail = Math.max(0, pulse.t - 0.1);
+            ctx.globalAlpha = 0.22;
             ctx.beginPath();
             ctx.moveTo(from.x + (to.x - from.x) * tail, from.y + (to.y - from.y) * tail);
             ctx.lineTo(x, y);
             ctx.stroke();
-            ctx.globalAlpha = 0.55;
+            ctx.globalAlpha = 0.8;
             ctx.beginPath();
-            ctx.arc(x, y, 1.8, 0, Math.PI * 2);
+            ctx.arc(x, y, 2.4, 0, Math.PI * 2);
             ctx.fill();
             live.push(pulse);
           }
@@ -645,24 +676,40 @@ const jsonLd = {
         }
 
         function resize() {
-          width = window.innerWidth;
-          height = window.innerHeight;
+          const previousWidth = width;
+          const previousHeight = height;
+          width = canvas.clientWidth;
+          height = canvas.clientHeight;
+          if (width <= 0 || height <= 0) return;
           const dpr = Math.min(window.devicePixelRatio || 1, 1.5);
           canvas.width = Math.round(width * dpr);
           canvas.height = Math.round(height * dpr);
           ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
           const count = Math.min(64, Math.max(28, Math.round((width * height) / 18000)));
-          dots = Array.from({ length: count }, seedDot);
-          pulses = Array.from({ length: PULSE_COUNT }, seedPulse).filter(
-            (pulse): pulse is Pulse => pulse !== null,
+          if (previousWidth > 0 && previousHeight > 0) {
+            for (const dot of dots) {
+              dot.x = (dot.x / previousWidth) * width;
+              dot.y = (dot.y / previousHeight) * height;
+            }
+            while (dots.length > count) dots.pop();
+            while (dots.length < count) dots.push(seedDot());
+          } else {
+            dots = seedDots(count);
+          }
+          pulses = pulses.filter(
+            (pulse) => dots.includes(pulse.from) && dots.includes(pulse.to),
           );
-          if (reduceMotion.matches) paintStatic();
+          while (pulses.length < PULSE_COUNT) {
+            const pulse = seedPulse();
+            if (!pulse) break;
+            pulses.push(pulse);
+          }
         }
 
         function sync() {
           cancelAnimationFrame(frameId);
           last = 0;
-          if (reduceMotion.matches) {
+          if (fieldHidden.matches || reduceMotion.matches) {
             paintStatic();
           } else {
             frameId = requestAnimationFrame(frame);
@@ -676,6 +723,7 @@ const jsonLd = {
           sync();
         });
         reduceMotion.addEventListener('change', sync);
+        fieldHidden.addEventListener('change', sync);
         document.addEventListener('visibilitychange', () => {
           if (document.hidden) {
             cancelAnimationFrame(frameId);
