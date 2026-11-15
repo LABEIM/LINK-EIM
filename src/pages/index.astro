@@ -258,9 +258,9 @@ const jsonLd = {
         id="share-dialog"
         data-share-dialog
         aria-labelledby="share-dialog-title"
-        class="m-auto w-[calc(100%-2rem)] max-w-md overflow-hidden rounded-2xl bg-card p-0 text-ink shadow-dialog"
+        class="m-auto w-[calc(100%-2rem)] max-w-md overflow-y-auto rounded-2xl bg-card p-0 text-ink shadow-dialog"
       >
-        <header class="flex items-center justify-between gap-3 px-4 pt-4 sm:px-5">
+        <div class="flex items-center justify-between gap-3 px-4 pt-4 sm:px-5">
           <h2 id="share-dialog-title" class="font-serif text-2xl leading-none">Share this page</h2>
           <button
             type="button"
@@ -270,7 +270,7 @@ const jsonLd = {
           >
             <Icon name="x" class="size-5" />
           </button>
-        </header>
+        </div>
 
         <div
           class="mx-4 mt-3 flex flex-col items-center rounded-xl bg-accent px-6 py-6 text-center text-accent-ink sm:mx-5"
@@ -286,7 +286,7 @@ const jsonLd = {
           <p class="mt-1.5 text-[12px] text-accent-ink/75">{shareHost}</p>
         </div>
 
-        <div class="flex flex-wrap justify-center gap-y-3 px-4 py-5 sm:px-5">
+        <div class="flex flex-wrap justify-center gap-y-3 px-4 py-5 select-none sm:px-5">
           <button
             type="button"
             data-copy-action
@@ -419,6 +419,7 @@ const jsonLd = {
         const status = shareDialog.querySelector<HTMLElement>('[data-share-status]');
         const copyHint = shareDialog.querySelector<HTMLElement>('[data-copy-hint]');
         const nativeButton = shareDialog.querySelector<HTMLButtonElement>('[data-share-native]');
+        const details = shareDialog.querySelector<HTMLDetailsElement>('details');
         const pageUrl = window.location.href;
         const pageTitle = document.title;
 
@@ -431,6 +432,8 @@ const jsonLd = {
           if (status) status.textContent = message;
         };
 
+        let flashTimer = 0;
+
         const lockScroll = (locked: boolean) => {
           document.documentElement.style.overflow = locked ? 'hidden' : '';
         };
@@ -439,8 +442,9 @@ const jsonLd = {
 
         const flashLabel = (message: string, duration = 1600) => {
           if (!copyLabel) return;
+          window.clearTimeout(flashTimer);
           copyLabel.textContent = message;
-          window.setTimeout(() => {
+          flashTimer = window.setTimeout(() => {
             copyLabel.textContent = 'Copy link';
           }, duration);
         };
@@ -468,6 +472,8 @@ const jsonLd = {
 
         shareDialog.addEventListener('close', () => {
           lockScroll(false);
+          // Reopen at the collapsed default rather than mid-expanded on a short viewport.
+          if (details) details.open = false;
           shareTrigger.focus();
         });
 
